@@ -4,14 +4,15 @@ import numpy as np
 import os
 
 def store_raw_images():
-    neg_images_link = 'http://image-net.org/api/text/imagenet.synset.geturls?wnid=n00523513'
+    neg_images_link =  'http://image-net.org/api/text/imagenet.synset.geturls?wnid=n07942152'
+    #neg_images_link = 'http://image-net.org/api/text/imagenet.synset.geturls?wnid=n00523513'
     neg_images_urls = urllib.urlopen(neg_images_link).read().decode()
 
     if not os.path.exists('neg'):
         os.makedirs('neg')
 
 
-    pic_num = 1
+    pic_num = 919
     for i in neg_images_urls.split('\n'):
         try:
             print(i)
