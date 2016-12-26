@@ -17,12 +17,28 @@ def store_raw_images():
             print(i)
             urllib.urlretrieve(i, "neg/" + str(pic_num)+'.jpg')
             img = cv2.imread("neg/" + str(pic_num)+'.jpg', cv2.IMREAD_GRAYSCALE)
-            resized_image = cv2.resize(img, (100,100))
-            cv2.imwrite("neg/" + str(pic_num)+'.jpg', resized_image)
+            resize_image = cv2.resize(img, (100, 100))
+            cv2.imwrite("neg/" + str(pic_num)+'.jpg', resize_image)
             pic_num += 1
 
         except Exception as e:
             print(str(e))
 
 
-store_raw_images()
+def find_uglies():
+    for file_type in ['neg']:
+        for img in os.listdir(file_type):
+            for ugly in os.listdir('uglies'):
+                try:
+                    current_image_path = str(file_type)+'/'+str(img)
+                    ugly = cv2.imread('uglies/'+str(ugly))
+                    question = cv2.imread(current_image_path)
+
+                    if ugly.shape == question.shape and not (np.bitwise_xor(ugly, question).any()):
+                        print('You ugly!')
+                        print(current_image_path)
+                        os.remove(current_image_path)
+
+                except Exception as e:
+                    print(str(e))
+
