@@ -14,12 +14,12 @@ while 1:
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
-    watches = watch_cascade.detectMultiScale(gray, 1000, 1000)
+    watches = watch_cascade.detectMultiScale(gray, 200, 200)
 
     for (x,y,w,h) in watches:
         #cv2.rectangle(img, (x,y), (x+w, y+h), (255,255,0), 2)
         font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(img, 'Ipad', (x-w, y-h), font, 0.5, (0,255,255), 2, cv2.CV_AA)
+        cv2.putText(img, 'Ipad', (x-w, y-h), font, 0.5, (0,255,255), 2, cv2.LINE_AA)
 
     for (x,y,w,h) in faces:
         cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
