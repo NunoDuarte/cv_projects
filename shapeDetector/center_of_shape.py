@@ -19,10 +19,10 @@ class CenterShape:
         # and threshold it
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-        thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
+        # thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
         # thresh = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, \
         #                                  cv2.THRESH_BINARY_INV, 11, 2)
-        # ret3, thresh = cv2.threshold(blurred,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+        ret3, thresh = cv2.threshold(blurred,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
 
         # cv2.imshow('image1', image)
         # cv2.imshow('image2', gray)

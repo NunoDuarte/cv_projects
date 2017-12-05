@@ -12,6 +12,7 @@ ap.add_argument("-i", "--image", required=True,
 args = vars(ap.parse_args())
 
 image = cv2.imread(args["image"])
+image_Shapes = image.copy()
 
 cs = CenterShape()
 sd = ShapeDetector()
@@ -37,12 +38,12 @@ for c in cnts:
         c = c.astype("float")
         c *= ratio
         c = c.astype("int")
-        cv2.drawContours(image, [c], -1, (0, 255, 0), 2)
-        cv2.putText(image, shape, (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
+        cv2.drawContours(image_Shapes, [c], -1, (0, 255, 0), 2)
+        cv2.putText(image_Shapes, shape, (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
                     0.5, (255, 255, 255), 2)
 
         # show the output image
-        resized = imutils.resize(image, width=750)
+        resized = imutils.resize(image_Shapes, width=750)
         cv2.imshow("Image_shapes", resized)
         cv2.waitKey(0)
 
