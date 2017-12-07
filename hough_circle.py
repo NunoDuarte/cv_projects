@@ -11,8 +11,8 @@ print(cimg)
 
 cimg = imutils.resize(cimg, width=750)
 
-circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 20,
-                            param1=5, param2=3, minRadius=0, maxRadius=0)
+circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 100,
+                            param1=5, param2=3, minRadius=10, maxRadius=20)
 
 circles = np.uint16(np.around(circles))
 print(circles)
