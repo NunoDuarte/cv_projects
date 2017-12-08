@@ -39,7 +39,7 @@ args = vars(ap.parse_args())
 
 # load the image, clone it for output, and then convert it to grayscale
 image = cv2.imread(args["image"])
-image = imutils.resize(image, width=200)
+image = imutils.resize(image, width=700)
 cv2.imshow("image", image)
 cv2.waitKey(0)
 output = image.copy()
@@ -47,8 +47,8 @@ gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 # detect circles in the image
 # circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1.2, 20)
-circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 100,
-                           param1=1, param2=50, minRadius=0, maxRadius=100)
+circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 200,
+                           param1=50, param2=30, minRadius=0, maxRadius=100)
 
 # ensure at least some circles were found
 if circles is not None:
