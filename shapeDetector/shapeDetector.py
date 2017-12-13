@@ -18,6 +18,7 @@ class shapeDetector:
         args = vars(ap.parse_args())
 
         image = cv2.imread(args["image"])
+        image = imutils.resize(image, width=750)
         image_Shapes = image.copy()
 
         cs = CenterShape()
@@ -51,7 +52,7 @@ class shapeDetector:
                             0.5, (255, 255, 255), 2)
 
                 # show the output image
-                resized = imutils.resize(image_Shapes, width=750)
+                # resized = imutils.resize(image_Shapes, width=750)
                 # cv2.imshow("Image_shapes", resized)
                 # cv2.waitKey(0)
 
