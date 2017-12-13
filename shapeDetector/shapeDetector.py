@@ -6,11 +6,12 @@ import imutils
 import cv2
 
 # construct the argument parse and parse the arguments
-class Shapes:
+class shapeDetector:
+
     def __init__(self):
         pass
 
-    def Constructor(self,):
+    def construct(self,):
         ap = argparse.ArgumentParser()
         ap.add_argument("-i", "--image", required=True,
                         help="path to the input image")

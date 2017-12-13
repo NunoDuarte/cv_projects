@@ -1,9 +1,9 @@
-from main import Shapes
+from shapeDetector import shapeDetector
 
 
 # initialize Algorithm to detect Shapes
-main = Shapes()
-contours, shapes, ratio = main.Constructor()
+main = shapeDetector()
+contours, shapes, ratio = main.construct()
 
 print(shapes)
 print(len(contours))
