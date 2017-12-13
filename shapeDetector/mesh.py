@@ -30,7 +30,6 @@ epsilon = 15  # the threshold in pixels allowed
 # loop over the (x, y) coordinates and radius of the circles
 for (x, y, r) in circles:
         i = 0
-        print(i)
         print(x, y, r )
         for c in contours:
 
@@ -45,32 +44,33 @@ for (x, y, r) in circles:
 
             if math.sqrt(pow(distX, 2) + pow(distY, 2)) < epsilon:
                 shape = shapes[i]
-                print("cX")
-                print(cX)
-                print(cY)
-                print("i = {}".format(i))
 
-                # multiply the contour (x, y)-coordinates by the resize ratio,
-                # then draw the contours and the name of the shape on the image
-                c = c.astype("float")
-                c *= ratio
-                c = c.astype("int")
-                cv2.drawContours(image, [c], -1, (0, 255, 0), 1)
-                cv2.putText(image, shape, (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
-                            0.5, (255, 255, 255), 1)
+                area = cv2.contourArea(c)
+                print(area)
 
-                # show the output image
-                # resized = imutils.resize(image, width=750)
-                # cv2.imshow("Image", resized)
-                # cv2.waitKey(0)
+                if area > 500 and area < 1000:
 
-                # # draw the circle in the output image, then draw a rectangle
-                # # corresponding to the center of the circle
-                cv2.circle(output, (x, y), r, (0, 255, 0), 4)
-                cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
+                    # multiply the contour (x, y)-coordinates by the resize ratio,
+                    # then draw the contours and the name of the shape on the image
+                    c = c.astype("float")
+                    c *= ratio
+                    c = c.astype("int")
+                    cv2.drawContours(image, [c], -1, (0, 255, 0), 1)
+                    cv2.putText(image, shape, (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
+                                0.5, (255, 255, 255), 1)
 
-                cv2.imshow("output", np.hstack([image, output]))
-                cv2.waitKey(0)
+                    # show the output image
+                    # resized = imutils.resize(image, width=750)
+                    # cv2.imshow("Image", resized)
+                    # cv2.waitKey(0)
+
+                    # # draw the circle in the output image, then draw a rectangle
+                    # # corresponding to the center of the circle
+                    cv2.circle(output, (x, y), r, (0, 255, 0), 4)
+                    cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
+
+                    cv2.imshow("output", np.hstack([image, output]))
+                    cv2.waitKey(0)
             i = i + 1
 #
 #
