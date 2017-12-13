@@ -29,10 +29,7 @@ class shapeDetector:
         contours = []
 
         # loop over the contours
-        a = 1
-
         for c in cnts:
-            print(a)
 
             # compute the center of the contour, then detect the name of the
             # shape using only the contour
@@ -55,10 +52,8 @@ class shapeDetector:
 
                 # show the output image
                 resized = imutils.resize(image_Shapes, width=750)
-                cv2.imshow("Image_shapes", resized)
-                cv2.waitKey(0)
-
-            a = a+1
+                # cv2.imshow("Image_shapes", resized)
+                # cv2.waitKey(0)
 
         return contours, shapes, ratio
 
