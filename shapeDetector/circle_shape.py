@@ -31,7 +31,7 @@ class ShapeDetector:
             shape = "square" if ar >= 0.95 and ar <= 1.05 else "rectangle"
 
         # if the shape is a pentagon, it will have 5 vertices
-        elif len(approx) > 4 and len(approx) < 7:
+        elif len(approx) == 5:
             shape = "pentagon"
 
         # otherwise, we assume the shape is a circle

@@ -6,47 +6,61 @@ import imutils
 import cv2
 
 # construct the argument parse and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image", required=True,
-                help="path to the input image")
-args = vars(ap.parse_args())
+class Shapes:
+    def __init__(self):
+        pass
 
-image = cv2.imread(args["image"])
-image_Shapes = image.copy()
+    def Constructor(self,):
+        ap = argparse.ArgumentParser()
+        ap.add_argument("-i", "--image", required=True,
+                        help="path to the input image")
+        args = vars(ap.parse_args())
 
-cs = CenterShape()
-sd = ShapeDetector()
+        image = cv2.imread(args["image"])
+        image_Shapes = image.copy()
 
-cnts, ratio = cs.center(image)
+        cs = CenterShape()
+        sd = ShapeDetector()
 
-# loop over the contours
-a = 1
+        cnts, ratio = cs.center(image)
 
-for c in cnts:
-    print(a)
+        shapes = list()
+        contours = []
 
-    # compute the center of the contour, then detect the name of the
-    # shape using only the contour
-    M = cv2.moments(c)
-    if M["m00"] != 0:
-        cX = int((M["m10"] / M["m00"]) * ratio)
-        cY = int((M["m01"] / M["m00"]) * ratio)
-        shape = sd.detect(c)
+        # loop over the contours
+        a = 1
 
-        # multiply the contour (x, y)-coordinates by the resize ratio,
-        # then draw the contours and the name of the shape on the image
-        c = c.astype("float")
-        c *= ratio
-        c = c.astype("int")
-        cv2.drawContours(image_Shapes, [c], -1, (0, 255, 0), 2)
-        cv2.putText(image_Shapes, shape, (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
-                    0.5, (255, 255, 255), 2)
+        for c in cnts:
+            print(a)
 
-        # show the output image
-        resized = imutils.resize(image_Shapes, width=750)
-        cv2.imshow("Image_shapes", resized)
-        cv2.waitKey(0)
+            # compute the center of the contour, then detect the name of the
+            # shape using only the contour
+            M = cv2.moments(c)
+            if M["m00"] != 0:
+                cX = int((M["m10"] / M["m00"]) * ratio)
+                cY = int((M["m01"] / M["m00"]) * ratio)
+                shape = sd.detect(c)
+                shapes.append(shape)  # save to a list all of the shapes
+                contours.append(c)
 
-    a=a+1
+                # multiply the contour (x, y)-coordinates by the resize ratio,
+                # then draw the contours and the name of the shape on the image
+                c = c.astype("float")
+                c *= ratio
+                c = c.astype("int")
+                cv2.drawContours(image_Shapes, [c], -1, (0, 255, 0), 2)
+                cv2.putText(image_Shapes, shape, (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
+                            0.5, (255, 255, 255), 2)
+
+                # show the output image
+                resized = imutils.resize(image_Shapes, width=750)
+                cv2.imshow("Image_shapes", resized)
+                cv2.waitKey(0)
+
+            a = a+1
+
+        return contours, shapes, ratio
+
+
 
 
