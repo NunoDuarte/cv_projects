@@ -6,74 +6,77 @@ import imutils
 import numpy as np
 import math
 
-# construct the argument parser and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image", required=True, help="Path to the image")
-args = vars(ap.parse_args())
 
-# load the image, clone it for output, and then convert it to grayscale
-image = cv2.imread(args["image"])
-image = imutils.resize(image, width=750)
 
-output = image.copy()
+class meshingAlg:
 
-# initialize Algorithm to detect Shapes
-main = shapeDetector()
-contours, shapes, ratio = main.construct(image)
+    def __init__(self):
+        pass
 
-# initialize Algorithm to detect Circles
-hough = houghCircle()
-circles = hough.construct(image)
 
-epsilon = 15  # the threshold in pixels allowed
+    def mesh(self, image):
 
-# loop over the (x, y) coordinates and radius of the circles
-for (x, y, r) in circles:
-        i = 0
-        print(x, y, r )
-        for c in contours:
+        image = imutils.resize(image, width=750)
 
-            # compute the center of the contour, then detect the name of the
-            # shape using only the contour
-            M = cv2.moments(c)
-            cX = int((M["m10"] / M["m00"]) * ratio)
-            cY = int((M["m01"] / M["m00"]) * ratio)
+        output = image.copy()
 
-            distX = x - cX
-            distY = y - cY
+        # initialize Algorithm to detect Shapes
+        main = shapeDetector()
+        contours, shapes, ratio = main.construct(image)
 
-            if math.sqrt(pow(distX, 2) + pow(distY, 2)) < epsilon:
-                shape = shapes[i]
+        # initialize Algorithm to detect Circles
+        hough = houghCircle()
+        circles = hough.construct(image)
 
-                area = cv2.contourArea(c)
-                print(area)
+        epsilon = 15  # the threshold in pixels allowed
 
-                if area > 500 and area < 1000:
+        # loop over the (x, y) coordinates and radius of the circles
+        for (x, y, r) in circles:
+                i = 0
+                print(x, y, r )
+                for c in contours:
 
-                    # multiply the contour (x, y)-coordinates by the resize ratio,
-                    # then draw the contours and the name of the shape on the image
-                    c = c.astype("float")
-                    c *= ratio
-                    c = c.astype("int")
-                    cv2.drawContours(image, [c], -1, (0, 255, 0), 1)
-                    cv2.putText(image, shape, (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
-                                0.5, (255, 255, 255), 1)
+                    # compute the center of the contour, then detect the name of the
+                    # shape using only the contour
+                    M = cv2.moments(c)
+                    cX = int((M["m10"] / M["m00"]) * ratio)
+                    cY = int((M["m01"] / M["m00"]) * ratio)
 
-                    # show the output image
-                    # resized = imutils.resize(image, width=750)
-                    # cv2.imshow("Image", resized)
-                    # cv2.waitKey(0)
+                    distX = x - cX
+                    distY = y - cY
 
-                    # # draw the circle in the output image, then draw a rectangle
-                    # # corresponding to the center of the circle
-                    cv2.circle(output, (x, y), r, (0, 255, 0), 4)
-                    cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
+                    if math.sqrt(pow(distX, 2) + pow(distY, 2)) < epsilon:
+                        shape = shapes[i]
 
-                    # cv2.imshow("output", np.hstack([image, output]))
-                    # cv2.waitKey(0)
-            i = i + 1
-#
-#
-# # show the output image
-cv2.imshow("output", np.hstack([image, output]))
-cv2.waitKey(0)
+                        area = cv2.contourArea(c)
+                        print(area)
+
+                        if area > 500 and area < 1000:
+
+                            # multiply the contour (x, y)-coordinates by the resize ratio,
+                            # then draw the contours and the name of the shape on the image
+                            c = c.astype("float")
+                            c *= ratio
+                            c = c.astype("int")
+                            cv2.drawContours(image, [c], -1, (0, 255, 0), 1)
+                            cv2.putText(image, shape, (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
+                                        0.5, (255, 255, 255), 1)
+
+                            # show the output image
+                            # resized = imutils.resize(image, width=750)
+                            # cv2.imshow("Image", resized)
+                            # cv2.waitKey(0)
+
+                            # # draw the circle in the output image, then draw a rectangle
+                            # # corresponding to the center of the circle
+                            cv2.circle(output, (x, y), r, (0, 255, 0), 4)
+                            cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
+
+                            # cv2.imshow("output", np.hstack([image, output]))
+                            # cv2.waitKey(0)
+                    i = i + 1
+        #
+        #
+        # # show the output image
+        cv2.imshow("output", np.hstack([image, output]))
+        cv2.waitKey(0)
