@@ -7,14 +7,8 @@ class houghCircle:
     def __init__(self):
         pass
 
-    def construct(self, ):
-        # construct the argument parser and parse the arguments
-        ap = argparse.ArgumentParser()
-        ap.add_argument("-i", "--image", required=True, help="Path to the image")
-        args = vars(ap.parse_args())
+    def construct(self, image):
 
-        # load the image, clone it for output, and then convert it to grayscale
-        image = cv2.imread(args["image"])
         image = imutils.resize(image, width=750)
         # cv2.imshow("image", image)
         # cv2.waitKey(0)

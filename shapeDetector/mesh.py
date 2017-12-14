@@ -19,11 +19,11 @@ output = image.copy()
 
 # initialize Algorithm to detect Shapes
 main = shapeDetector()
-contours, shapes, ratio = main.construct()
+contours, shapes, ratio = main.construct(image)
 
 # initialize Algorithm to detect Circles
 hough = houghCircle()
-circles = hough.construct()
+circles = hough.construct(image)
 
 epsilon = 15  # the threshold in pixels allowed
 

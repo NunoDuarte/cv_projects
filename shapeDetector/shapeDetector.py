@@ -11,13 +11,8 @@ class shapeDetector:
     def __init__(self):
         pass
 
-    def construct(self,):
-        ap = argparse.ArgumentParser()
-        ap.add_argument("-i", "--image", required=True,
-                        help="path to the input image")
-        args = vars(ap.parse_args())
+    def construct(self, image):
 
-        image = cv2.imread(args["image"])
         image = imutils.resize(image, width=750)
         image_Shapes = image.copy()
 
