@@ -24,7 +24,7 @@ class houghCircle:
         # detect circles in the image
         # circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1.2, 20)
         circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 100,
-                                   param1=100, param2=20, minRadius=0, maxRadius=30)
+                                   param1=100, param2=28, minRadius=0, maxRadius=30)
 
         # ensure at least some circles were found
         if circles is not None:
