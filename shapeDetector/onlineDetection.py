@@ -2,14 +2,16 @@ from mesh import meshingAlg
 import numpy as np
 import cv2
 
-cap = cv2.VideoCapture('world_viz.mp4')
+# cap = cv2.VideoCapture('world_viz.mp4')
 
-mesh = meshingAlg()
+# mesh = meshingAlg()
+
+timestamps = np.load('world_viz_timestamps.npy')
 
 while (True):
     ret, frame = cap.read()
     # print(frame)
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     mesh.mesh(frame)
 
     cv2.imshow('frame', frame)
