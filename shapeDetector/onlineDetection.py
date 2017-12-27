@@ -1,11 +1,11 @@
 from mesh import meshingAlg
+from find_nearest import find_nearest
 import numpy as np
 import cv2
 import csv
 
-# cap = cv2.VideoCapture('world_viz.mp4')
-
-# mesh = meshingAlg()
+cap = cv2.VideoCapture('world_viz.mp4')
+mesh = meshingAlg()
 
 timestamps_gaze = list()
 norm_pos_x = list()
@@ -26,16 +26,27 @@ with open('gaze_positions_18-12-2017.csv', newline='') as csvfile:
 timestamps = np.load('world_viz_timestamps.npy')
 cv2.waitKey(0)
 
+i = 0
+
 while (True):
     ret, frame = cap.read()
     # print(frame)
     # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     mesh.mesh(frame)
 
+    # calculate the nearest timestamp for the current frame
+    time = timestamps[i]
+    time_close, ind = find_nearest(timestamps_gaze, time)
+
+    # use the x, y position of the closest timestamp norm_pos_*
+    pos_x = norm_pos_x[ind]
+    pos_y = norm_pos_y[ind]
+
     cv2.imshow('frame', frame)
     if cv2.waitKey(25) & 0xFF == ord('q'):
         break
 
+    i = i + 1
     cv2.waitKey(0)
 
 cap.release()
