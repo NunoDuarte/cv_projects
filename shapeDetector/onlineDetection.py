@@ -1,14 +1,26 @@
 from mesh import meshingAlg
 from find_nearest import find_nearest
+from redBalltracking import redBall
+from collections import deque
 import numpy as np
 import cv2
 import csv
+import argparse
 
 cap = cv2.VideoCapture('world_viz.mp4')
 width = cap.get(3)
 height = cap.get(4)
 
+# construct the argument parse and parse the arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("-v", "--video", help="path to the (optional) video file")
+ap.add_argument("-b", "--buffer", type=int, default=64, help="max buffer size")
+args = vars(ap.parse_args())
+pts = deque(maxlen=args["buffer"])
+
 mesh = meshingAlg()
+
+ball = redBall()
 
 timestamps_gaze = list()
 norm_pos_x = list()
@@ -37,6 +49,8 @@ while (True):
     # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     if frame is not None:
         mesh.mesh(frame)
+
+        pts = ball.tracking(frame, pts, args)
 
         # calculate the nearest timestamp for the current frame
         time = timestamps[i]
