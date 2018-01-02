@@ -55,9 +55,9 @@ class redBall:
             if radius > 10 and radius < 11:
                 # draw the circle and centroid on the frame,
                 # then update the list of tracked points
-                cv2.circle(output1, (int(x), int(y)), int(radius),
+                cv2.circle(frame, (int(x), int(y)), int(radius),
                            (0, 255, 255), 2)
-                cv2.circle(output1, center, 5, (0, 0, 255), -1)
+                cv2.circle(frame, center, 5, (0, 0, 255), -1)
         # loop over the set of tracked points
         for i in range(1, len(pts)):
             # if either of the tracked points are None, ignore
@@ -68,14 +68,14 @@ class redBall:
             # otherwise, compute the thickness of the line and
             # draw the connecting lines
             thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 2.5)
-            cv2.line(output1, pts[i - 1], pts[i], (0, 0, 255), thickness)
+            cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
 
         # update the points queue
         pts.appendleft(center)
 
         # show the frame to our screen
-        cv2.imshow("output1", np.hstack([frame, output1]))
+        # cv2.imshow("output1", np.hstack([frame, output1]))
 
-        return pts
+        return frame, pts
 
 

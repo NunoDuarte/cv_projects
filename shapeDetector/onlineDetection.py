@@ -6,10 +6,9 @@ import numpy as np
 import cv2
 import csv
 import argparse
+import imutils
 
 cap = cv2.VideoCapture('world_viz.mp4')
-width = cap.get(3)
-height = cap.get(4)
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -45,12 +44,14 @@ i = 0
 
 while (True):
     ret, frame = cap.read()
-    # print(frame)
+
     # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     if frame is not None:
-        mesh.mesh(frame)
+        frame = imutils.resize(frame, width=750)
+        height, width, channels = frame.shape
+        frame = mesh.mesh(frame)
 
-        pts = ball.tracking(frame, pts, args)
+        frame, pts = ball.tracking(frame, pts, args)
 
         # calculate the nearest timestamp for the current frame
         time = timestamps[i]
