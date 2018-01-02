@@ -60,9 +60,6 @@ while True:
     # then the result is blurred
     blurred = cv2.GaussianBlur(weighted_mask, (9, 9), 3, 3)
 
-    # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
-    # hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
-
     # construct a mask for the color "red", then perform
     # a series of dilations and erosions to remove any small
     # blobs left in the mask
@@ -116,7 +113,7 @@ while True:
     if key == ord("q"):
         break
 
-    cv2.waitKey(0)
+    # cv2.waitKey(0)
 
 camera.release()
 cv2.destroyAllWindows()
