@@ -13,7 +13,7 @@ ap.add_argument("-b", "--buffer", type=int, default=64,
                 help="max buffer size")
 args = vars(ap.parse_args())
 
-# define the lower and upper boundaries of the "green"
+# define the lower and upper boundaries of the "red"
 # ball in the HSV color space, then initialize the
 # list of tracked points
 greenLower = (140, 36, 37)
@@ -42,14 +42,32 @@ while True:
     # color space
     frame = imutils.resize(frame, width=600)
     output = frame.copy()
-    # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
+
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-    # construct a mask for the color "green", then perform
+    # because hue wraps up and to extract as many "red objects" as possible, I define lower and upper boundaries for brighter and for darker red shades
+    bright_red_lower_bounds = (0, 100, 100)
+    bright_red_upper_bounds = (10, 255, 255)
+    bright_red_mask = cv2.inRange(hsv, bright_red_lower_bounds, bright_red_upper_bounds)
+
+    dark_red_lower_bounds = (160, 100, 100)
+    dark_red_upper_bounds = (179, 255, 255)
+    dark_red_mask = cv2.inRange(hsv, dark_red_lower_bounds, dark_red_upper_bounds)
+
+    # after masking the red shades out, I add the two images
+    weighted_mask = cv2.addWeighted(bright_red_mask, 1.0, dark_red_mask, 1.0, 0.0)
+
+    # then the result is blurred
+    blurred = cv2.GaussianBlur(weighted_mask, (9, 9), 3, 3)
+
+    # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
+    # hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+
+    # construct a mask for the color "red", then perform
     # a series of dilations and erosions to remove any small
     # blobs left in the mask
-    mask = cv2.inRange(hsv, greenLower, greenUpper)
-    mask = cv2.erode(mask, None, iterations=2)
+    # mask = cv2.inRange(blurred, greenLower, greenUpper)
+    mask = cv2.erode(blurred, None, iterations=2)
     mask = cv2.dilate(mask, None, iterations=2)
 
     # find contours in the mask and initialize the current
