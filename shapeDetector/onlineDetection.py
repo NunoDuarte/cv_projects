@@ -25,7 +25,7 @@ ball = redBall()
 
 cascPath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
-log.basicConfig(filename='webcam.log', level=log.INFO)
+log.basicConfig(filename='faceDetected.log', level=log.INFO)
 anterior = 0
 face = faceDetector()
 
