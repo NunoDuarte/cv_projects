@@ -1,12 +1,14 @@
 from mesh import meshingAlg
 from find_nearest import find_nearest
 from redBalltracking import redBall
+from faceDetector import faceDetector
 from collections import deque
 import numpy as np
 import cv2
 import csv
 import argparse
 import imutils
+import logging as log
 
 cap = cv2.VideoCapture('world_viz.mp4')
 
@@ -20,6 +22,12 @@ pts = deque(maxlen=args["buffer"])
 mesh = meshingAlg()
 
 ball = redBall()
+
+cascPath = "haarcascade_frontalface_default.xml"
+faceCascade = cv2.CascadeClassifier(cascPath)
+log.basicConfig(filename='webcam.log', level=log.INFO)
+anterior = 0
+face = faceDetector()
 
 timestamps_gaze = list()
 norm_pos_x = list()
@@ -52,6 +60,8 @@ while (True):
         frame = mesh.mesh(frame)
 
         frame, pts = ball.tracking(frame, pts, args)
+
+        anterior = face.detecting(frame, anterior, faceCascade)
 
         # calculate the nearest timestamp for the current frame
         time = timestamps[i]
