@@ -29,16 +29,23 @@ class gazeBehaviour:
             distY = fixation[1] - cY
 
             if math.sqrt(pow(distX, 2) + pow(distY, 2)) < epsilon:
-                file.write('time: '+str(timestamp)+' Fixation intercepts marker: '+str(marker)+'\n')
+                file.write('time: '+str(timestamp)+' Fixation intercepts Marker: '+str(marker)+'\n')
 
         for face in faces:
 
             cX = face[0]
             cY = face[1]
-            cW = face[2]
-            cH = face[3]
+            cW = face[0] + face[2]
+            cH = face[1] + face[3]
 
-            if cX < fixation[0] < cW and cH < fixation[0] < cY:
+            # print("face0 {}".format(face[0]))
+            # print("face1 {}".format(face[1]))
+            # print("face2 {}".format(face[2]))
+            # print("face3 {}".format(face[3]))
+            # print("fixation0 {}".format(fixation[0]))
+            # print("fixation1 {}".format(fixation[1]))
+
+            if cX < fixation[0] < cW and cY < fixation[0] < cH:
                 file.write('time: ' + str(timestamp) + ' Fixation intercepts Face: ' + str(face)+'\n')
 
     def close(self, file):
