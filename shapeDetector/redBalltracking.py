@@ -61,7 +61,6 @@ class redBall:
                            (0, 255, 255), 2)
                 cv2.circle(frame, center, 5, (0, 0, 255), -1)
                 ball.append([int(x), int(y)])
-                print("ball1 {}".format(ball))
 
         # loop over the set of tracked points
         for i in range(1, len(pts)):
@@ -80,7 +79,6 @@ class redBall:
 
         # show the frame to our screen
         # cv2.imshow("output1", np.hstack([frame, output1]))
-        print("ball {}".format(ball))
         return frame, pts, ball
 
 
