@@ -11,6 +11,8 @@ class redBall:
         # color space
         output1 = frame.copy()
 
+        ball = []
+
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         # because hue wraps up and to extract as many "red objects" as possible,
         # I define lower and upper boundaries for brighter and for darker red shades
@@ -58,6 +60,7 @@ class redBall:
                 cv2.circle(frame, (int(x), int(y)), int(radius),
                            (0, 255, 255), 2)
                 cv2.circle(frame, center, 5, (0, 0, 255), -1)
+                ball.append([x, y])
 
         # loop over the set of tracked points
         for i in range(1, len(pts)):
@@ -77,6 +80,6 @@ class redBall:
         # show the frame to our screen
         # cv2.imshow("output1", np.hstack([frame, output1]))
 
-        return frame, pts
+        return frame, pts, ball
 
 

@@ -21,6 +21,8 @@ class meshingAlg:
 
         epsilon = 15  # the threshold in pixels allowed
 
+        markers = []
+
         # ensure at least some circles were found
         if circles is not None:
             # loop over the (x, y) coordinates and radius of the circles
@@ -65,6 +67,8 @@ class meshingAlg:
                                 cv2.circle(image, (x, y), r, (0, 255, 0), 4)
                                 cv2.rectangle(image, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
 
+                                markers.append([x, y])
+
                                 # cv2.imshow("output", np.hstack([image, output]))
                                 # cv2.waitKey(0)
                         i = i + 1
@@ -72,4 +76,4 @@ class meshingAlg:
         # # show the output image
         # cv2.imshow("output", np.hstack([image, output]))
         # cv2.waitKey(0)
-        return image
+        return image, markers

@@ -3,6 +3,7 @@ from mesh import meshingAlg
 from find_nearest import find_nearest
 from redBalltracking import redBall
 from faceDetector import faceDetector
+from gazeBehaviour import gazeBehaviour
 # import necessary libraries
 from collections import deque
 import numpy as np
@@ -23,7 +24,7 @@ pts = deque(maxlen=args["buffer"])
 
 mesh = meshingAlg()
 
-ball = redBall()
+ballTracking = redBall()
 
 cascPath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
@@ -34,6 +35,9 @@ face = faceDetector()
 timestamps_gaze = list()
 norm_pos_x = list()
 norm_pos_y = list()
+
+gaze = gazeBehaviour()
+f = gaze.open()
 
 with open('gaze_positions_18-12-2017.csv', newline='') as csvfile:
     reader = csv.DictReader(csvfile)
@@ -60,11 +64,11 @@ while (True):
         frame = imutils.resize(frame, width=750)
         height, width, channels = frame.shape
 
-        frame = mesh.mesh(frame)
+        frame, markers = mesh.mesh(frame)
 
-        frame, pts = ball.tracking(frame, pts, args)
+        frame, pts, ball = ballTracking.tracking(frame, pts, args)
 
-        anterior = face.detecting(frame, anterior, faceCascade)
+        anterior, faces = face.detecting(frame, anterior, faceCascade)
 
         # calculate the nearest timestamp for the current frame
         time = timestamps[i]
@@ -77,6 +81,11 @@ while (True):
         print(int(float(pos_x)*width))
         print(int(height - int(float(pos_y)*height)))
         cv2.circle(frame, (int(float(pos_x)*width), int(height - int(float(pos_y)*height))), 10, (0, 255, 1), thickness=5, lineType=8, shift=0)  # draw circle
+        fixation = [(int(float(pos_x)*width)), int(height - int(float(pos_y)*height))]
+
+        # check the gaze behaviour
+        if len(ball) is not 0:
+            gaze.record(time_close, markers, ball, faces, fixation, f)
 
         cv2.imshow('frame', frame)
     if cv2.waitKey(25) & 0xFF == ord('q'):
@@ -85,5 +94,6 @@ while (True):
     i = i + 1
     #cv2.waitKey(0)
 
+gaze.close(f)
 cap.release()
 cv2.destroyAllWindows()
