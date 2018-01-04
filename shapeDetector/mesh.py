@@ -1,16 +1,12 @@
 from shapeDetector import shapeDetector
 from hough_circle import houghCircle
 import cv2
-import imutils
 import math
-
-
 
 class meshingAlg:
 
     def __init__(self):
         pass
-
 
     def mesh(self, image):
         output = image.copy()
@@ -72,8 +68,7 @@ class meshingAlg:
                                 # cv2.imshow("output", np.hstack([image, output]))
                                 # cv2.waitKey(0)
                         i = i + 1
-        #
-        #
+
         # # show the output image
         # cv2.imshow("output", np.hstack([image, output]))
         # cv2.waitKey(0)
