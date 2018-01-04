@@ -57,6 +57,7 @@ while (True):
     if frame is not None:
         frame = imutils.resize(frame, width=750)
         height, width, channels = frame.shape
+
         frame = mesh.mesh(frame)
 
         frame, pts = ball.tracking(frame, pts, args)
