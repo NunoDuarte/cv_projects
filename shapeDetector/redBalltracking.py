@@ -54,13 +54,14 @@ class redBall:
             center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
             # only proceed if the radius meets a minimum size
-            if radius > 10 and radius < 11:
+            if radius > 1:
                 # draw the circle and centroid on the frame,
                 # then update the list of tracked points
                 cv2.circle(frame, (int(x), int(y)), int(radius),
                            (0, 255, 255), 2)
                 cv2.circle(frame, center, 5, (0, 0, 255), -1)
-                ball.append([x, y])
+                ball.append([int(x), int(y)])
+                print("ball1 {}".format(ball))
 
         # loop over the set of tracked points
         for i in range(1, len(pts)):
@@ -79,7 +80,7 @@ class redBall:
 
         # show the frame to our screen
         # cv2.imshow("output1", np.hstack([frame, output1]))
-
+        print("ball {}".format(ball))
         return frame, pts, ball
 
 
