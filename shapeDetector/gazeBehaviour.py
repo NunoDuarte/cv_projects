@@ -12,13 +12,13 @@ class gazeBehaviour:
         return f
 
     def record(self, timestamp, markers, ball, faces, fixation, file):
-        epsilon = 15  # the threshold in pixels allowed
+        epsilon = 30  # the threshold in pixels allowed
 
         distX = fixation[0] - ball[0][0]
         distY = fixation[1] - ball[0][1]
 
         if math.sqrt(pow(distX, 2) + pow(distY, 2)) < epsilon:
-            file.write('time: '+str(timestamp)+' Fixation intercepts Ball: '+str(marker)+'\n')
+            file.write('time: '+str(timestamp)+' Fixation intercepts Ball: '+str(ball)+'\n')
 
         for marker in markers:
 
@@ -38,8 +38,8 @@ class gazeBehaviour:
             cW = face[2]
             cH = face[3]
 
-            if cX < fixation[0] < cW and cY < fixation[0] < cH:
-                file.write('time: ' + str(timestamp) + ' Fixation intercepts face: ' + str(face)+'\n')
+            if cX < fixation[0] < cW and cH < fixation[0] < cY:
+                file.write('time: ' + str(timestamp) + ' Fixation intercepts Face: ' + str(face)+'\n')
 
     def close(self, file):
         file.close()
