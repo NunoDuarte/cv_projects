@@ -34,7 +34,7 @@ class faceDetector:
 
         return anterior, faces
 
-    def prepare_training_data(self, data_folder_path):
+    def prepare_training_data(self, data_folder_path, faceCascade):
 
         dirs = os.listdir(data_folder_path)
 
@@ -62,7 +62,7 @@ class faceDetector:
                 cv2.imshow("Training on image...", image)
                 cv2.waitKey(100)
 
-                face, rect = detect_face(image)
+                non , face = self.detecting(image, 0, faceCascade)
 
                 if face is not None:
                     faces.append(face)
@@ -73,5 +73,5 @@ class faceDetector:
                     cv2.waitKey(1)
                     cv2.destroyAllWindows()
 
-                return faces, labels
+        return faces, labels
 
