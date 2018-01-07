@@ -17,7 +17,7 @@ class faceDetector:
 
         facesDetect = faceCascade.detectMultiScale(
             thresh,
-            scaleFactor=1.1,
+            scaleFactor=1.2,
             minNeighbors=3,
             minSize=(30, 30)
         )
