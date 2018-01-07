@@ -28,7 +28,7 @@ class meshingAlg:
             # loop over the (x, y) coordinates and radius of the circles
             for (x, y, r) in circles:
                     i = 0
-                    print(x, y, r )
+                    #print(x, y, r)
                     for c in contours:
 
                         # compute the center of the contour, then detect the name of the
@@ -44,8 +44,7 @@ class meshingAlg:
                             shape = shapes[i]
 
                             area = cv2.contourArea(c)
-                            print(area)
-
+                            #print(area)
                             if area > 500 and area < 1000:
 
                                 # multiply the contour (x, y)-coordinates by the resize ratio,
