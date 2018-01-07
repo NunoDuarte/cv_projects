@@ -11,6 +11,7 @@ class faceDetector:
     def detecting(self, frame, anterior, faceCascade):
 
         faces = []
+        faceTrain = 0
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(gray, (31, 31), 0)
@@ -27,12 +28,13 @@ class faceDetector:
         for (x, y, w, h) in facesDetect:
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
             faces.append([x, y, w, h])
+            faceTrain = gray[y:y+w, x:x+h]
 
         if anterior != len(facesDetect):
             anterior = len(facesDetect)
             log.info("faces: "+str(len(facesDetect))+" at "+str(dt.datetime.now()))
 
-        return anterior, faces
+        return anterior, faces, faceTrain
 
     def prepare_training_data(self, data_folder_path, faceCascade):
 
@@ -62,7 +64,7 @@ class faceDetector:
                 cv2.imshow("Training on image...", image)
                 cv2.waitKey(100)
 
-                non , face = self.detecting(image, 0, faceCascade)
+                non, non1, face = self.detecting(image, 0, faceCascade)
 
                 if face is not None:
                     faces.append(face)

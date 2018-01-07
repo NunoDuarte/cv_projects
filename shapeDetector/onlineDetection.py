@@ -32,6 +32,17 @@ log.basicConfig(filename='faceDetected.log', level=log.INFO)
 anterior = 0
 face = faceDetector()
 
+print("Preparing Data...")
+knownFaces, knownLabels = face.prepare_training_data("training-data", faceCascade)
+print("Data prepared")
+
+print(np.asarray(knownLabels))
+print(knownFaces)
+
+# create our LBPH face recognizer
+face_recognizer = cv2.face.LBPHFaceRecognizer_create()
+face_recognizer.train(knownFaces, np.array(knownLabels))
+
 timestamps_gaze = list()
 norm_pos_x = list()
 norm_pos_y = list()
@@ -68,7 +79,7 @@ while (True):
 
         frame, pts, ball = ballTracking.tracking(frame, pts, args)
 
-        anterior, faces = face.detecting(frame, anterior, faceCascade)
+        anterior, faces, non = face.detecting(frame, anterior, faceCascade)
 
         # calculate the nearest timestamp for the current frame
         time = timestamps[i]
