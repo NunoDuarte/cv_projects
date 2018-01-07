@@ -11,7 +11,7 @@ class faceDetector:
     def detecting(self, frame, anterior, faceCascade):
 
         faces = []
-        faceTrain = 0
+        faceTrain = []
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(gray, (31, 31), 0)
@@ -28,7 +28,7 @@ class faceDetector:
         for (x, y, w, h) in facesDetect:
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
             faces.append([x, y, w, h])
-            faceTrain = gray[y:y+w, x:x+h]
+            faceTrain.append(gray[y:y+w, x:x+h])
 
         if anterior != len(facesDetect):
             anterior = len(facesDetect)
@@ -67,8 +67,7 @@ class faceDetector:
                 non, non1, face = self.detecting(image, 0, faceCascade)
 
                 if face is not None:
-                    faces.append(face)
-
+                    faces.append(face[0])
                     labels.append(label)
 
                     cv2.destroyAllWindows()
@@ -77,17 +76,22 @@ class faceDetector:
 
         return faces, labels
 
-    def predict(self, frame, face_recognizer, faces):
+    def predict(self, frame, face_recognizer, faces, facesTrain):
 
-        print(faces)
-        if faces is not 0:
-            #for face in faces:
+        if faces is not None:
+            labels = []
+            i = 0
+            for face in facesTrain:
 
-            label = face_recognizer.predict(faces)
-            print(label)
-            label_text = self.subjects[label[0]]
+                label = face_recognizer.predict(face)
+                print(faces[i])
+                label_text = self.subjects[label[0]]
 
-            cv2.putText(frame, label_text, (faces[0][0], faces[0][1]), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
+                cv2.putText(frame, label_text, (faces[i][0], faces[i][1]-5), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
+                labels.append(label_text)
+                i = i+1
+
+            return labels
 
 
 

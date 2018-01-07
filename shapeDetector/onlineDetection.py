@@ -36,9 +36,6 @@ print("Preparing Data...")
 knownFaces, knownLabels = face.prepare_training_data("training-data", faceCascade)
 print("Data prepared")
 
-print(np.asarray(knownLabels))
-print(knownFaces)
-
 # create our LBPH face recognizer
 face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 face_recognizer.train(knownFaces, np.array(knownLabels))
@@ -63,10 +60,8 @@ with open('gaze_positions_18-12-2017.csv', newline='') as csvfile:
 # print(norm_pos_x[2])
 
 timestamps = np.load('world_viz_timestamps.npy')
-cv2.waitKey(0)
 
 i = 0
-
 while (True):
     ret, frame = cap.read()
 
@@ -79,8 +74,8 @@ while (True):
 
         frame, pts, ball = ballTracking.tracking(frame, pts, args)
 
-        anterior, faces, non = face.detecting(frame, anterior, faceCascade)
-        face.predict(frame, face_recognizer, non)
+        anterior, faces, facesTrained = face.detecting(frame, anterior, faceCascade)
+        labels = face.predict(frame, face_recognizer, faces, facesTrained)
 
         # calculate the nearest timestamp for the current frame
         time = timestamps[i]
@@ -90,14 +85,14 @@ while (True):
         pos_x = norm_pos_x[ind]
         pos_y = norm_pos_y[ind]
 
-        print(int(float(pos_x)*width))
-        print(int(height - int(float(pos_y)*height)))
+        #print(int(float(pos_x)*width))
+        #print(int(height - int(float(pos_y)*height)))
         cv2.circle(frame, (int(float(pos_x)*width), int(height - int(float(pos_y)*height))), 10, (0, 255, 1), thickness=5, lineType=8, shift=0)  # draw circle
         fixation = [(int(float(pos_x)*width)), int(height - int(float(pos_y)*height))]
 
         # check the gaze behaviour
         if len(ball) is not 0:
-            gaze.record(time_close, markers, ball, faces, fixation, f)
+            gaze.record(time_close, markers, ball, faces, fixation, labels, f)
 
         cv2.imshow('frame', frame)
     if cv2.waitKey(25) & 0xFF == ord('q'):
