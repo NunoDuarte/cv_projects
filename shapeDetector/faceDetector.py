@@ -6,7 +6,7 @@ import os
 class faceDetector:
 
     def __init__(self):
-        pass
+        self.subjects = ["", "Filomena", "Giovanni"]
 
     def detecting(self, frame, anterior, faceCascade):
 
@@ -76,4 +76,18 @@ class faceDetector:
                     cv2.destroyAllWindows()
 
         return faces, labels
+
+    def predict(self, frame, face_recognizer, faces):
+
+        print(faces)
+        if faces is not 0:
+            #for face in faces:
+
+            label = face_recognizer.predict(faces)
+            print(label)
+            label_text = self.subjects[label[0]]
+
+            cv2.putText(frame, label_text, (faces[0][0], faces[0][1]), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
+
+
 

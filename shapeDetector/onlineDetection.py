@@ -80,6 +80,7 @@ while (True):
         frame, pts, ball = ballTracking.tracking(frame, pts, args)
 
         anterior, faces, non = face.detecting(frame, anterior, faceCascade)
+        face.predict(frame, face_recognizer, non)
 
         # calculate the nearest timestamp for the current frame
         time = timestamps[i]
