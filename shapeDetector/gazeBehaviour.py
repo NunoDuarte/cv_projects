@@ -46,8 +46,8 @@ class gazeBehaviour:
             # print("fixation0 {}".format(fixation[0]))
             # print("fixation1 {}".format(fixation[1]))
 
-            if cX - 10 < fixation[0] < cW + 10 and cY -10 < fixation[0] < cH + 10:
-                file.write('time: ' + str(timestamp) + ' Fixation intercepts ' + labels[0] +'´s Face: ' + str(face)+'\n')
+            if cX - 30 < fixation[0] < cW + 30 and cY - 30 < fixation[1] < cH + 30:
+                file.write('time: ' + str(timestamp) + ' Fixation intercepts ' + labels[i] + '´s Face: ' + str(face)+ '\n')
             i = i+1
 
     def close(self, file):
