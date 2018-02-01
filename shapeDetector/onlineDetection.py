@@ -1,4 +1,6 @@
 # python3 onlineDetection.py --buffer 68
+from pylsl import StreamInlet, resolve_stream
+
 # import files
 from mesh import meshingAlg
 from find_nearest import find_nearest
