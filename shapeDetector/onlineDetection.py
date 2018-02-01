@@ -1,3 +1,4 @@
+# python3 onlineDetection.py --buffer 68
 # import files
 from mesh import meshingAlg
 from find_nearest import find_nearest
@@ -122,7 +123,7 @@ while True:
     topic, msg = recv_from_sub()
     # file = open('Failed.py', 'w')
 
-    if topic == 'frame.world':
+    if topic == 'frame.world' and i % 5 == 0:
         # file.write(str(msg))
         frame = np.frombuffer(msg['__raw_data__'][0], dtype=np.uint8).reshape(msg['height'], msg['width'], 3)
         # cv2.imshow('test', frame)
@@ -133,12 +134,12 @@ while True:
             frame = imutils.resize(frame, width=750)
             height, width, channels = frame.shape
 
-            # frame, markers = mesh.mesh(frame)
+            frame, markers = mesh.mesh(frame)
             #
             frame, pts, ball = ballTracking.tracking(frame, pts, args)
             #
-            # anterior, faces, facesTrained = face.detecting(frame, anterior, faceCascade)
-            # labels = face.predict(frame, face_recognizer, faces, facesTrained)
+            anterior, faces, facesTrained = face.detecting(frame, anterior, faceCascade)
+            labels = face.predict(frame, face_recognizer, faces, facesTrained)
             #
             # # calculate the nearest timestamp for the current frame
             # time = timestamps[i]
