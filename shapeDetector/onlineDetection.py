@@ -1,6 +1,19 @@
 # python3 onlineDetection.py --buffer 68
 from pylsl import StreamInlet, resolve_stream
 
+print("looking for an EEG stream...")
+# streams = resolve_stream('name', 'NormPose2IP')
+streams = resolve_stream('name', 'Gaze Python Representation')
+
+# create a new inlet to read from the stream
+inlet = StreamInlet(streams[0])
+
+while True:
+    # get a new sample (you can also omit the timestamp part if you're not
+    # interested in it)
+    sample, timestamp = inlet.pull_sample()
+    print(timestamp, sample)
+
 # import files
 from mesh import meshingAlg
 from find_nearest import find_nearest
