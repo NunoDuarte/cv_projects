@@ -7,11 +7,11 @@ streams = resolve_stream('name', 'NormPose2IP')
 # create a new inlet to read from the stream
 inlet = StreamInlet(streams[0])
 
-while True:
-    # get a new sample (you can also omit the timestamp part if you're not
-    # interested in it)
-    sample, timestamp = inlet.pull_sample()
-    print(timestamp, sample)
+# while True:
+#     # get a new sample (you can also omit the timestamp part if you're not
+#     # interested in it)
+#     sample, timestamp = inlet.pull_sample()
+#     print(timestamp, sample)
 
 # import files
 from mesh import meshingAlg
@@ -137,7 +137,7 @@ while True:
     topic, msg = recv_from_sub()
     # file = open('Failed.py', 'w')
 
-    if topic == 'frame.world' and i % 5 == 0:
+    if topic == 'frame.world' and i % 10 == 0:
         # file.write(str(msg))
         frame = np.frombuffer(msg['__raw_data__'][0], dtype=np.uint8).reshape(msg['height'], msg['width'], 3)
         # cv2.imshow('test', frame)
@@ -151,7 +151,7 @@ while True:
             frame, markers = mesh.mesh(frame)
             #
             frame, pts, ball = ballTracking.tracking(frame, pts, args)
-            #
+
             anterior, faces, facesTrained = face.detecting(frame, anterior, faceCascade)
             labels = face.predict(frame, face_recognizer, faces, facesTrained)
             #
@@ -159,15 +159,16 @@ while True:
             # time = timestamps[i]
             # time_close, ind = find_nearest(timestamps_gaze, float(time))
             # #
-            # # use the x, y position of the closest timestamp norm_pos_*
-            # pos_x = norm_pos_x[ind]
-            # pos_y = norm_pos_y[ind]
-            #
-            # # print(int(float(pos_x)*width))
-            # # print(int(height - int(float(pos_y)*height)))
-            # cv2.circle(frame, (int(float(pos_x) * width), int(height - int(float(pos_y) * height))), 10, (0, 255, 1),
-            #            thickness=5, lineType=8, shift=0)  # draw circle
-            # fixation = [(int(float(pos_x) * width)), int(height - int(float(pos_y) * height))]
+            # use the x, y position of the closest timestamp norm_pos_*
+            sample, timestamp = inlet.pull_sample()
+            pos_x = sample[1]
+            pos_y = sample[2]
+
+            # print(int(float(pos_x)*width))
+            # print(int(height - int(float(pos_y)*height)))
+            cv2.circle(frame, (int(float(pos_x) * width), int(height - int(float(pos_y) * height))), 10, (0, 255, 1),
+                       thickness=5, lineType=8, shift=0)  # draw circle
+            fixation = [(int(float(pos_x) * width)), int(height - int(float(pos_y) * height))]
             #
             # # check the gaze behaviour
             # if len(ball) is not 0:
