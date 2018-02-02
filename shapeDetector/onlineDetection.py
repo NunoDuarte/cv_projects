@@ -2,8 +2,7 @@
 from pylsl import StreamInlet, resolve_stream
 
 print("looking for an EEG stream...")
-# streams = resolve_stream('name', 'NormPose2IP')
-streams = resolve_stream('name', 'Gaze Python Representation')
+streams = resolve_stream('name', 'NormPose2IP')
 
 # create a new inlet to read from the stream
 inlet = StreamInlet(streams[0])
