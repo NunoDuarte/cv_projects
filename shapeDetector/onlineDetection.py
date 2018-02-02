@@ -160,16 +160,18 @@ while True:
             # time_close, ind = find_nearest(timestamps_gaze, float(time))
             # #
             # use the x, y position of the closest timestamp norm_pos_*
-            sample, timestamp = inlet.pull_sample()
-            pos_x = sample[1]
-            pos_y = sample[2]
+            sample, timestamp = inlet.pull_chunk()
+            if sample:
+                # print(sample[0])
+                pos_x = sample[0][1]
+                pos_y = sample[0][2]
 
-            # print(int(float(pos_x)*width))
-            # print(int(height - int(float(pos_y)*height)))
-            cv2.circle(frame, (int(float(pos_x) * width), int(height - int(float(pos_y) * height))), 10, (0, 255, 1),
-                       thickness=5, lineType=8, shift=0)  # draw circle
-            fixation = [(int(float(pos_x) * width)), int(height - int(float(pos_y) * height))]
-            #
+                # print(int(float(pos_x)*width))
+                # print(int(height - int(float(pos_y)*height)))
+                cv2.circle(frame, (int(float(pos_x) * width), int(height - int(float(pos_y) * height))), 10, (0, 255, 1),
+                           thickness=5, lineType=8, shift=0)  # draw circle
+                fixation = [(int(float(pos_x) * width)), int(height - int(float(pos_y) * height))]
+
             # # check the gaze behaviour
             # if len(ball) is not 0:
             #     gaze.record(time_close, markers, ball, faces, fixation, labels, f)
