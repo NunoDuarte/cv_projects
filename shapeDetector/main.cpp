@@ -3,6 +3,7 @@
 #include <fstream>
 #include <thread>         // std::thread
 #include <vector>
+#include <unistd.h>
 #include "lsl_cpp.h"
 #include "json.hpp"
 #include "yarp/os/all.h"
@@ -17,6 +18,7 @@ using namespace yarp::os;
 // for convenience
 using json = nlohmann::json;
 time_t rawtime;
+unsigned int microseconds;
 
 double sample_ot[15];
 string sample_pl1;
@@ -139,6 +141,11 @@ void pl1_capture()
         pl1_new_data_ready = 1;
   #endif
 }
+// define a packed sample struct (here a stereo sample).
+#pragma pack(1)
+struct stereo_sample {
+	double timestamps, norm_pos_x, norm_pos_y;
+};
 
 void pl1_yarp()
 {
@@ -154,21 +161,27 @@ void pl1_yarp()
 
       vector<lsl::stream_info> results = lsl::resolve_stream("name","GazePose");
       lsl::stream_inlet inlet_pl1(results[0]);
-
-      while(1)
-      {
-          cout << "2222222222222222..." << endl;
-          if (ts_pl1 = inlet_pl1.pull_sample(&sample_pl1yarp,3,0.009))//wait up to 9ms
+      try {
+          while(1)
           {
+              cout << "2222222222222222..." << endl;
+              vector<stereo_sample> result;
+              if (ts_pl1 = inlet_pl1.pull_chunk_numeric_structs(result))
+              {
 
-              pl1_new_data_ready = 1;
-              output = port.prepare();
-              output.clear();
-              output.addDouble(sample_pl1yarp[0]);
-              output.addDouble(sample_pl1yarp[1]);
-              output.addDouble(sample_pl1yarp[2]);
-              port.write();
-           }
+                  pl1_new_data_ready = 1;
+                  output = port.prepare();
+                  output.clear();
+                  output.addDouble(result[0].timestamps);
+                  output.addDouble(result[0].norm_pos_x);
+                  output.addDouble(result[0].norm_pos_y);
+                  port.write();
+               }
+               usleep(microseconds);
+
+          }
+      } catch(std::exception &e) {
+		cerr << "Got an exception: " << e.what() << endl;
       }
   #else
     while(1)
