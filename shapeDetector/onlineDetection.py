@@ -1,7 +1,7 @@
 # python3 onlineDetection.py --buffer 68
 from pylsl import StreamInlet, resolve_stream
 
-print("looking for an EEG stream...")
+print("looking for an NormPose2IP stream...")
 streams = resolve_stream('name', 'NormPose2IP')
 
 # create a new inlet to read from the stream
@@ -172,9 +172,9 @@ while True:
                            thickness=5, lineType=8, shift=0)  # draw circle
                 fixation = [(int(float(pos_x) * width)), int(height - int(float(pos_y) * height))]
 
-            # # check the gaze behaviour
-            # if len(ball) is not 0:
-            #     gaze.record(time_close, markers, ball, faces, fixation, labels, f)
+                # check the gaze behaviour
+                if len(ball) is not 0:
+                    gaze.record(sample[0][0], markers, ball, faces, fixation, labels, f)
 
         cv2.imshow('frame', frame)
 
