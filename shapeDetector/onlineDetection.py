@@ -1,17 +1,6 @@
 # python3 onlineDetection.py --buffer 68
 from pylsl import StreamInlet, resolve_stream
-
-print("looking for an NormPose2IP stream...")
-streams = resolve_stream('name', 'NormPose2IP')
-
-# create a new inlet to read from the stream
-inlet = StreamInlet(streams[0])
-
-# while True:
-#     # get a new sample (you can also omit the timestamp part if you're not
-#     # interested in it)
-#     sample, timestamp = inlet.pull_sample()
-#     print(timestamp, sample)
+from pylsl import StreamInfo, StreamOutlet
 
 # import files
 from mesh import meshingAlg
@@ -47,6 +36,13 @@ req.connect("tcp://{}:{}".format(addr, req_port))
 req.send_string('SUB_PORT')
 sub_port = req.recv_string()
 
+# create a new stream info
+info = StreamInfo("BioSemi", "EEG", 1, 100, "float32", "peraperic")
+info.desc().append_child_value("manufacturer", "Vislab")
+# next make an outlet
+outlet = StreamOutlet(info)
+
+
 # send notification:
 def notify(notification):
     """Sends ``notification`` to Pupil Remote"""
@@ -55,7 +51,6 @@ def notify(notification):
     req.send_string(topic, flags=zmq.SNDMORE)
     req.send(payload)
     return req.recv_string()
-
 
 # Start frame publisher with format BGR
 notify({'subject': 'start_plugin', 'name': 'Frame_Publisher', 'args': {'format': 'bgr'}})
@@ -115,8 +110,13 @@ timestamps_gaze = list()
 norm_pos_x = list()
 norm_pos_y = list()
 
-gaze = gazeBehaviour()
+gaze = gazeBehaviour(outlet)
 f = gaze.open()
+
+print("looking for an NormPose2IP stream...")
+streams = resolve_stream('name', 'NormPose2IP')
+# create a new inlet to read from the stream
+inlet = StreamInlet(streams[0])
 
 with open('gaze_positions_18-12-2017.csv', newline='') as csvfile:
     reader = csv.DictReader(csvfile)
