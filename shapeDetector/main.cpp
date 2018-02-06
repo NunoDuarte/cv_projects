@@ -171,7 +171,6 @@ void pl1_yarp()
               output.addDouble(input_str[3]);
 
               port.write();
-              cout << "send to yarp " << input_str[0] << endl;
             }
 
         } catch(std::exception &e) {
