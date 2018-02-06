@@ -16,6 +16,8 @@ import csv
 import argparse
 import imutils
 import logging as log
+import random
+import time
 
 """
 Receive world camera data from Pupil using ZMQ.
@@ -43,6 +45,14 @@ info.desc().append_child_value("manufacturer", "Vislab")
 # next make an outlet
 outlet = StreamOutlet(info)
 
+# print("in loop")
+# while True:
+#     # make a new random 8-channel sample; this is converted into a
+#     # pylsl.vectorf (the data type that is expected by push_sample)
+#     mysample = [random.random(), random.random(), random.random(), random.random()]  # , random.random(), random.random()]
+#     # now send it and wait for a bit
+#     outlet.push_sample(mysample)
+#     time.sleep(0.01)
 
 # send notification:
 def notify(notification):
@@ -175,7 +185,9 @@ while True:
 
                 # check the gaze behaviour
                 if len(ball) is not 0:
-                    gaze.record(sample[0][0], markers, ball, faces, fixation, labels, f)
+                    mysample = gaze.record(sample[0][0], markers, ball, faces, fixation, labels, f)
+                    if mysample is not 0:
+                        outlet.push_sample(mysample)
 
         cv2.imshow('frame', frame)
 

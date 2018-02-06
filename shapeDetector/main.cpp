@@ -154,7 +154,7 @@ void pl1_yarp()
       Network yarp;
       BufferedPort<Bottle> port;
       double result_input[4];
-      float input_str;
+      float input_str[4];
 
       Bottle& output = port.prepare();
       port.open("/pupil_gaze_tracker");
@@ -172,23 +172,23 @@ void pl1_yarp()
              {
               cout << "2222222222222222..." << endl;
               vector<stereo_sample> result;
-                ts_pl1 = inlet_plyarp.pull_sample(&input_str,1);
-                cout << "got: " << input_str << endl;
+              ts_pl1 = inlet_plyarp.pull_sample(input_str,4);
+              //ts_pl1 = inlet_plyarp.pull_sample(&input_str,1);
+              //cout << "got: " << input_str[2] << endl;
 
               /*if (ts_pl1 = inlet_plyarp.pull_chunk_numeric_structs(result))
               //if(ts_pl1 = inlet_plyarp.pull_sample(&input_str,1))
-              {
-                cout << "got: " << input_str << endl;
-                  pl1_new_data_ready = 1;
-                  output = port.prepare();
-                  output.clear();
-                  output.addDouble(result[0].timestamps);
-                  output.addDouble(result[0].type);
-                  output.addDouble(result[0].norm_pos_x);
-                  output.addDouble(result[0].norm_pos_y);
-                  port.write();
-               }*/
-               usleep(microseconds);
+              {*/
+              pl1_new_data_ready = 1;
+              output = port.prepare();
+              output.clear();
+              output.addDouble(input_str[0]);
+              output.addDouble(input_str[1]);
+              output.addDouble(input_str[2]);
+              output.addDouble(input_str[3]);
+              port.write();
+               //}
+              cout << "send to yarp " << input_str[0] << endl;
             }
 
         } catch(std::exception &e) {
