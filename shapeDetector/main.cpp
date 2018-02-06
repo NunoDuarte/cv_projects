@@ -153,22 +153,31 @@ void pl1_yarp()
       double ts_pl1;
       Network yarp;
       BufferedPort<Bottle> port;
+      double result_input[4];
+        string input_str;
 
       Bottle& output = port.prepare();
       port.open("/pupil_gaze_tracker");
 
       cout << "1111111111111111..." << endl;
 
+      //self.info = StreamInfo('GazePose', 'NormPose2IP', 4, 100, 'float32', 'myuid34234')
+
       vector<lsl::stream_info> results = lsl::resolve_stream("name","GazePose");
-      lsl::stream_inlet inlet_pl1(results[0]);
-      try {
-          while(1)
-          {
+      lsl::stream_inlet inlet_plyarp(results[0]);
+
+      while(1)
+      {
+            try {
               cout << "2222222222222222..." << endl;
               vector<stereo_sample> result;
-              if (ts_pl1 = inlet_pl1.pull_chunk_numeric_structs(result))
-              {
+                ts_pl1 = inlet_plyarp.pull_sample(&input_str,1);
+                cout << "got: " << input_str << endl;
 
+                //if (ts_pl1 = inlet_plyarp.pull_chunk_numeric_structs(result))
+              /*if(ts_pl1 = inlet_plyarp.pull_sample(&input_str,1))
+              {
+                cout << "got: " << input_str << endl;
                   pl1_new_data_ready = 1;
                   output = port.prepare();
                   output.clear();
@@ -177,12 +186,12 @@ void pl1_yarp()
                   output.addDouble(result[0].norm_pos_y);
                   port.write();
                }
-               usleep(microseconds);
+               usleep(microseconds);*/
 
-          }
-      } catch(std::exception &e) {
-		cerr << "Got an exception: " << e.what() << endl;
-      }
+            } catch(std::exception &e) {
+                cerr << "Got an exception: " << e.what() << endl;
+            }
+       }
   #else
     while(1)
         pl1yarp_new_data_ready = 1;
@@ -267,6 +276,9 @@ int main(int argc, char *argv[])
         cout << results_all[k].as_xml() << endl << endl;
 
     cout << "Now creating the inlet..." << endl;
+
+    char a;
+    cin >> a;
 
     time(&rawtime);
 
