@@ -141,11 +141,6 @@ void pl1_capture()
         pl1_new_data_ready = 1;
   #endif
 }
-// define a packed sample struct (here a stereo sample).
-#pragma pack(1)
-struct stereo_sample {
-	double timestamps, type, norm_pos_x, norm_pos_y;
-};
 
 void pl1_yarp()
 {
@@ -159,35 +154,23 @@ void pl1_yarp()
       Bottle& output = port.prepare();
       port.open("/pupil_gaze_tracker");
 
-      cout << "1111111111111111..." << endl;
-
-      //self.info = StreamInfo('GazePose', 'NormPose2IP', 4, 100, 'float32', 'myuid34234')
-
       vector<lsl::stream_info> results = lsl::resolve_stream("name","GazePose");
       lsl::stream_inlet inlet_plyarp(results[0]);
-
 
       try {
              while(1)
              {
-              cout << "2222222222222222..." << endl;
-              vector<stereo_sample> result;
-              ts_pl1 = inlet_plyarp.pull_sample(input_str,4);
-              //ts_pl1 = inlet_plyarp.pull_sample(&input_str,1);
-              //cout << "got: " << input_str[2] << endl;
-
-              /*if (ts_pl1 = inlet_plyarp.pull_chunk_numeric_structs(result))
-              //if(ts_pl1 = inlet_plyarp.pull_sample(&input_str,1))
-              {*/
               pl1_new_data_ready = 1;
+              ts_pl1 = inlet_plyarp.pull_sample(input_str,4);
+
               output = port.prepare();
               output.clear();
               output.addDouble(input_str[0]);
               output.addDouble(input_str[1]);
               output.addDouble(input_str[2]);
               output.addDouble(input_str[3]);
+
               port.write();
-               //}
               cout << "send to yarp " << input_str[0] << endl;
             }
 
@@ -271,7 +254,6 @@ int main(int argc, char *argv[])
 
 	// discover all streams on the network
 	vector<lsl::stream_info> results_all = lsl::resolve_streams();
-
 	// display them
 	cout << "Display all resolved streams: " << endl;
 
@@ -279,9 +261,6 @@ int main(int argc, char *argv[])
         cout << results_all[k].as_xml() << endl << endl;
 
     cout << "Now creating the inlet..." << endl;
-
-    char a;
-    cin >> a;
 
     time(&rawtime);
 

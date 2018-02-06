@@ -16,8 +16,6 @@ import csv
 import argparse
 import imutils
 import logging as log
-import random
-import time
 
 """
 Receive world camera data from Pupil using ZMQ.
@@ -38,21 +36,10 @@ req.connect("tcp://{}:{}".format(addr, req_port))
 req.send_string('SUB_PORT')
 sub_port = req.recv_string()
 
-# self.info = StreamInfo('GazePose', 'NormPose2IP', 4, 100, 'float32', 'myuid34234')
 # create a new stream info
 info = StreamInfo("GazePose", "NormPose2IP", 4, 100, "float32", "myuid34234")
 info.desc().append_child_value("manufacturer", "Vislab")
-# next make an outlet
 outlet = StreamOutlet(info)
-
-# print("in loop")
-# while True:
-#     # make a new random 8-channel sample; this is converted into a
-#     # pylsl.vectorf (the data type that is expected by push_sample)
-#     mysample = [random.random(), random.random(), random.random(), random.random()]  # , random.random(), random.random()]
-#     # now send it and wait for a bit
-#     outlet.push_sample(mysample)
-#     time.sleep(0.01)
 
 # send notification:
 def notify(notification):
@@ -135,11 +122,6 @@ with open('gaze_positions_18-12-2017.csv', newline='') as csvfile:
         timestamps_gaze.append(float(row['timestamp']))
         norm_pos_x.append(row['norm_pos_x'])
         norm_pos_y.append(row['norm_pos_y'])
-        # print(row['timestamp'], row['norm_pos_x'], row['norm_pos_y'])
-
-# print(timestamps_gaze[2])
-# print(norm_pos_y[2])      # dont forget it starts with 0
-# print(norm_pos_x[2])
 
 timestamps = np.load('world_viz_timestamps.npy')
 
