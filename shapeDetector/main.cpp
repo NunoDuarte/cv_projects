@@ -144,7 +144,7 @@ void pl1_capture()
 // define a packed sample struct (here a stereo sample).
 #pragma pack(1)
 struct stereo_sample {
-	double timestamps, norm_pos_x, norm_pos_y;
+	double timestamps, type, norm_pos_x, norm_pos_y;
 };
 
 void pl1_yarp()
@@ -154,7 +154,7 @@ void pl1_yarp()
       Network yarp;
       BufferedPort<Bottle> port;
       double result_input[4];
-        string input_str;
+      float input_str;
 
       Bottle& output = port.prepare();
       port.open("/pupil_gaze_tracker");
@@ -166,32 +166,35 @@ void pl1_yarp()
       vector<lsl::stream_info> results = lsl::resolve_stream("name","GazePose");
       lsl::stream_inlet inlet_plyarp(results[0]);
 
-      while(1)
-      {
-            try {
+
+      try {
+             while(1)
+             {
               cout << "2222222222222222..." << endl;
               vector<stereo_sample> result;
                 ts_pl1 = inlet_plyarp.pull_sample(&input_str,1);
                 cout << "got: " << input_str << endl;
 
-                //if (ts_pl1 = inlet_plyarp.pull_chunk_numeric_structs(result))
-              /*if(ts_pl1 = inlet_plyarp.pull_sample(&input_str,1))
+              /*if (ts_pl1 = inlet_plyarp.pull_chunk_numeric_structs(result))
+              //if(ts_pl1 = inlet_plyarp.pull_sample(&input_str,1))
               {
                 cout << "got: " << input_str << endl;
                   pl1_new_data_ready = 1;
                   output = port.prepare();
                   output.clear();
                   output.addDouble(result[0].timestamps);
+                  output.addDouble(result[0].type);
                   output.addDouble(result[0].norm_pos_x);
                   output.addDouble(result[0].norm_pos_y);
                   port.write();
-               }
-               usleep(microseconds);*/
-
-            } catch(std::exception &e) {
-                cerr << "Got an exception: " << e.what() << endl;
+               }*/
+               usleep(microseconds);
             }
-       }
+
+        } catch(std::exception &e) {
+            cerr << "Got an exception: " << e.what() << endl;
+        }
+
   #else
     while(1)
         pl1yarp_new_data_ready = 1;

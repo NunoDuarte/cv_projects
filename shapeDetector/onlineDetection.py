@@ -36,8 +36,9 @@ req.connect("tcp://{}:{}".format(addr, req_port))
 req.send_string('SUB_PORT')
 sub_port = req.recv_string()
 
+# self.info = StreamInfo('GazePose', 'NormPose2IP', 4, 100, 'float32', 'myuid34234')
 # create a new stream info
-info = StreamInfo("BioSemi", "EEG", 1, 100, "float32", "peraperic")
+info = StreamInfo("GazePose", "NormPose2IP", 4, 100, "float32", "myuid34234")
 info.desc().append_child_value("manufacturer", "Vislab")
 # next make an outlet
 outlet = StreamOutlet(info)
