@@ -48,7 +48,7 @@ class gazeBehaviour:
                 return mysample
 
             i = i+1
-        mysample = 0
+        mysample = [timestamp, 4.0, 0.0, 0.0]
         return mysample
 
     def close(self, file):
