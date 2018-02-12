@@ -1,10 +1,9 @@
-import logging as log
 import math
-
+from pylsl import StreamInfo, StreamOutlet
 
 class gazeBehaviour:
 
-    def __init__(self):
+    def __init__(self, outlet):
         pass
 
     def open(self):
@@ -19,6 +18,8 @@ class gazeBehaviour:
 
         if math.sqrt(pow(distX, 2) + pow(distY, 2)) < epsilon:
             file.write('time: '+str(timestamp)+' Fixation intercepts Ball: '+str(ball)+'\n')
+            mysample = [timestamp, 0.0, ball[0][0], ball[0][1]]
+            return mysample
 
         for marker in markers:
 
@@ -30,6 +31,8 @@ class gazeBehaviour:
 
             if math.sqrt(pow(distX, 2) + pow(distY, 2)) < epsilon:
                 file.write('time: '+str(timestamp)+' Fixation intercepts Marker: '+str(marker)+'\n')
+                mysample = [timestamp, 1.0, marker[0], marker[1]]
+                return mysample
 
         i = 0
         for face in faces:
@@ -39,16 +42,14 @@ class gazeBehaviour:
             cW = face[0] + face[2]
             cH = face[1] + face[3]
 
-            # print("face0 {}".format(face[0]))
-            # print("face1 {}".format(face[1]))
-            # print("face2 {}".format(face[2]))
-            # print("face3 {}".format(face[3]))
-            # print("fixation0 {}".format(fixation[0]))
-            # print("fixation1 {}".format(fixation[1]))
-
             if cX - 30 < fixation[0] < cW + 30 and cY - 30 < fixation[1] < cH + 30:
-                file.write('time: ' + str(timestamp) + ' Fixation intercepts ' + labels[i] + '´s Face: ' + str(face)+ '\n')
+                file.write('time: ' + str(timestamp) + ' Fixation intercepts ' + labels[i] + '´s Face: ' + str(face) + '\n')
+                mysample = [timestamp, 1+i, face[0], face[1]]
+                return mysample
+
             i = i+1
+        mysample = 0
+        return mysample
 
     def close(self, file):
         file.close()
