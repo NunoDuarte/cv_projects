@@ -3,7 +3,7 @@ from mesh import meshingAlg
 from find_nearest import find_nearest
 from redBalltracking import redBall
 from faceDetector import faceDetector
-from gazeBehaviour import gazeBehaviour
+from gazeBehaviouroff import gazeBehaviour
 # import necessary libraries
 from collections import deque
 import numpy as np
