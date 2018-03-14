@@ -2,7 +2,7 @@
 
 # inputs:
 	- video .mp4 
-	- gaze_psoitions:	
+	- gaze_positions:	
 		- timestamps
 		- norm_pos_x
 		- norm_pos_y
