@@ -13,7 +13,8 @@ import argparse
 import imutils
 import logging as log
 
-cap = cv2.VideoCapture('world_viz.mp4')
+cap = cv2.VideoCapture('CENTER-PERSON/world_viz.mp4')
+length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -47,7 +48,7 @@ norm_pos_y = list()
 gaze = gazeBehaviour()
 f = gaze.open()
 
-with open('gaze_positions_18-12-2017.csv', newline='') as csvfile:
+with open('CENTER-PERSON/gaze_positions.csv', newline='') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         timestamps_gaze.append(float(row['timestamp']))
@@ -59,10 +60,10 @@ with open('gaze_positions_18-12-2017.csv', newline='') as csvfile:
 # print(norm_pos_y[2])      # dont forget it starts with 0
 # print(norm_pos_x[2])
 
-timestamps = np.load('world_viz_timestamps.npy')
+timestamps = np.load('CENTER-PERSON/world_viz_timestamps.npy')
 
 i = 0
-while (True):
+while (i < length):
     ret, frame = cap.read()
 
     # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -99,7 +100,7 @@ while (True):
         break
 
     i = i + 1
-    #cv2.waitKey(0)
+    cv2.waitKey(0)
 
 gaze.close(f)
 cap.release()
