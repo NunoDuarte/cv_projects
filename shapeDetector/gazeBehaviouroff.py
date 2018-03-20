@@ -39,8 +39,9 @@ class gazeBehaviour:
             cY = face[1]
             cW = face[0] + face[2]
             cH = face[1] + face[3]
+            threshold = 50
 
-            if cX - 30 < fixation[0] < cW + 30 and cY - 30 < fixation[1] < cH + 30:
+            if cX - 30 < fixation[0] < cW + 30 and cY - 30 - threshold < fixation[1] < cH + 30:
                 file.write('time: ' + str(timestamp) + ' Fixation intercepts ' + labels[i] + '´s_Face: ' + str(face) + '\n')
                 print("Face")
 

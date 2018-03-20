@@ -6,7 +6,7 @@ import os
 class faceDetector:
 
     def __init__(self):
-        self.subjects = ["", "Filomena", "Giovanni"]
+        self.subjects = ["", "Giovanni", "Filomena"]
 
     def detecting(self, frame, anterior, faceCascade):
 
@@ -16,7 +16,6 @@ class faceDetector:
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(gray, (31, 31), 0)
         thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
-
         facesDetect = faceCascade.detectMultiScale(
             thresh,
             scaleFactor=1.2,
@@ -58,7 +57,6 @@ class faceDetector:
                     continue
 
                 image_path = subject_dir_path + "/" + image_name
-
                 image = cv2.imread(image_path)
 
                 cv2.imshow("Training on image...", image)
@@ -66,12 +64,10 @@ class faceDetector:
 
                 non, non1, face = self.detecting(image, 0, faceCascade)
 
-                if face is not None:
+                if face is not None and len(face) is not 0:
                     faces.append(face[0])
                     labels.append(label)
 
-                    cv2.destroyAllWindows()
-                    cv2.waitKey(1)
                     cv2.destroyAllWindows()
 
         return faces, labels
@@ -84,7 +80,7 @@ class faceDetector:
             for face in facesTrain:
 
                 label = face_recognizer.predict(face)
-                print(faces[i])
+                #print(faces[i])
                 label_text = self.subjects[label[0]]
 
                 cv2.putText(frame, label_text, (faces[i][0], faces[i][1]-5), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
