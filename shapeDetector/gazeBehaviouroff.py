@@ -6,8 +6,8 @@ class gazeBehaviour:
     def __init__(self):
         pass
 
-    def open(self):
-        f = open('gaze-CENTER-MARKER.txt', 'w')
+    def open(self, filename):
+        f = open(filename + '.txt', 'w')
         return f
 
     def record(self, timestamp, markers, ball, faces, fixation, labels, file):
