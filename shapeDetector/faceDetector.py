@@ -6,7 +6,7 @@ import os
 class faceDetector:
 
     def __init__(self):
-        self.subjects = ["", "Giovanni", "Filomena"]
+        self.subjects = ["", "Giovanni", "Filomena", "iCub"]
 
     def detecting(self, frame, anterior, faceCascade):
 
@@ -20,7 +20,7 @@ class faceDetector:
             thresh,
             scaleFactor=1.2,
             minNeighbors=3,
-            minSize=(30, 30)
+            minSize=(50, 50)
         )
 
         # Draw a rectangle around the faces
@@ -80,11 +80,12 @@ class faceDetector:
             for face in facesTrain:
 
                 label = face_recognizer.predict(face)
-                #print(faces[i])
+                print(faces[i])
                 label_text = self.subjects[label[0]]
 
                 cv2.putText(frame, label_text, (faces[i][0], faces[i][1]-5), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
                 labels.append(label_text)
+                print(label_text)
                 i = i+1
 
             return labels
