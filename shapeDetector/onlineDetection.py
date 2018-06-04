@@ -26,6 +26,9 @@ from msgpack import unpackb, packb
 import numpy as np
 import cv2
 
+dir = 'data'
+dirHaar = 'HaarClassifiers'
+
 context = zmq.Context()
 # open a req port to talk to pupil
 addr = '127.0.0.1'  # remote ip or localhost
@@ -90,14 +93,14 @@ mesh = meshingAlg()
 
 ballTracking = redBall()
 
-cascPath = "haarcascade_frontalface_default.xml"
+cascPath = dir + '/' + dirHaar + "/haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 log.basicConfig(filename='faceDetected.log', level=log.INFO)
 anterior = 0
 face = faceDetector()
 
 print("Preparing Data...")
-knownFaces, knownLabels = face.prepare_training_data("training-data", faceCascade)
+knownFaces, knownLabels = face.prepare_training_data(dir + "/training-data", faceCascade)
 print("Data prepared")
 
 # create our LBPH face recognizer
@@ -116,21 +119,21 @@ streams = resolve_stream('name', 'NormPose2IP')
 # create a new inlet to read from the stream
 inlet = StreamInlet(streams[0])
 
-with open('gaze_positions_18-12-2017.csv', newline='') as csvfile:
+with open(dir + '/gaze_positions_18-12-2017.csv', newline='') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         timestamps_gaze.append(float(row['timestamp']))
         norm_pos_x.append(row['norm_pos_x'])
         norm_pos_y.append(row['norm_pos_y'])
 
-timestamps = np.load('world_viz_timestamps.npy')
+timestamps = np.load(dir + '/world_viz_timestamps.npy')
 
 i = 0
 while True:
     topic, msg = recv_from_sub()
     # file = open('Failed.py', 'w')
 
-    if topic == 'frame.world' and i % 10 == 0:
+    if topic == 'frame.world' and i % 5 == 0:
         # file.write(str(msg))
         frame = np.frombuffer(msg['__raw_data__'][0], dtype=np.uint8).reshape(msg['height'], msg['width'], 3)
         # cv2.imshow('test', frame)
@@ -141,7 +144,7 @@ while True:
             frame = imutils.resize(frame, width=750)
             height, width, channels = frame.shape
 
-            frame, markers = mesh.mesh(frame)
+            # frame, markers = mesh.mesh(frame)
             #
             frame, pts, ball = ballTracking.tracking(frame, pts, args)
 
@@ -167,8 +170,9 @@ while True:
 
                 # check the gaze behaviour
                 if len(ball) is not 0:
-                    mysample = gaze.record(sample[0][0], markers, ball, faces, fixation, labels, f)
+                    mysample = gaze.record(sample[0][0], [], ball, faces, fixation, labels, f)
                     if mysample is not 0:
+                        #print(mysample)
                         outlet.push_sample(mysample)
 
         cv2.imshow('frame', frame)
