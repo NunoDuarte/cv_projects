@@ -19,4 +19,13 @@ image = cv2.imread(args["image"])
 rows = open(args["labels"]).read().strip().split("\n")
 classes = [r[r.find(" ") + 1:].split(",")[0] for r in rows]
 
+# our CNN requires fixed spatial dimensions for our input image(s)
+# so we need to ensure it is resized to 224x224 pixels while
+# performing mean subtraction (104, 117, 123) to normalize the input;
+# after executing this command our "blob" now has the shape:
+# (1, 3, 224, 224)
+blob = cv2.dnn.blobFromImage(image, 1, (224, 224), (104, 117, 123))
 
+# load our serialized model from disk
+print("[INFO] loading model...")
+net = cv2.dnn.readNetFromCaffe(args["prototxt"], args["model"])
