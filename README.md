@@ -22,3 +22,10 @@ export PATH=/home/nuno/anaconda3/bin:$PATH
 source activate cpy3.5_cv
 
 python3 onlineDetection --buffer 68
+
+### new goals:
+1. run haarclassifier using opencv with gpu enable
+2. use a pre-train network to detect and mark objects in a image
+3. move the application to video
+4. train a new network to the objects of my choosing
+5. check the speed in the new machine
