@@ -1,10 +1,13 @@
-import numpy as np
 import cv2
 
-# watch_cascade = cv2.CascadeClassifier('ipad-cascade-10stagesnew.xml')
-icub_cascade = cv2.CascadeClassifier('cascade-icub-30v30.xml')
-#icub_cascade = cv2.CascadeClassifier('cascade-icub-60v60.xml')
+# add path to directories
+cascadeDir = 'haarCascades'
+icubDir = cascadeDir + '/icub'
+# originalsDir = cascadeDir + '/original'
 
+# face_cascade = cv2.CascadeClassifier(originalsDir + '/haarcascade_frontalface_default.xml')
+# eye_cascade = cv2.CascadeClassifier(originalsDir + '/haarcascade_eye.xml')
+icub_cascade = cv2.CascadeClassifier(icubDir + '/cascade-icub-30v30.xml')
 
 cap = cv2.VideoCapture(0)
 

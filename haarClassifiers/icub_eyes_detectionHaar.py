@@ -1,12 +1,14 @@
-import numpy as np
 import cv2
 
-# watch_cascade = cv2.CascadeClassifier('ipad-cascade-10stagesnew.xml')
-icub_cascade = cv2.CascadeClassifier('cascade-icub-30v30.xml')
-#icub_cascade = cv2.CascadeClassifier('cascade-icub-60v60.xml')
-cascPath = "cascade-icub-60v60.xml"
-faceCascade = cv2.CascadeClassifier(cascPath)
-eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
+# add path to directories
+cascadeDir = 'haarCascades'
+icubDir = cascadeDir + '/icub'
+originalsDir = cascadeDir + '/original'
+cascPath = "/cascade-icub-60v60.xml"
+
+faceCascade = cv2.CascadeClassifier(icubDir + cascPath)
+eye_cascade = cv2.CascadeClassifier(originalsDir + '/haarcascade_eye.xml')
+icub_cascade = cv2.CascadeClassifier(icubDir + '/cascade-icub-30v30.xml')
 
 faces = []
 faceTrain = []

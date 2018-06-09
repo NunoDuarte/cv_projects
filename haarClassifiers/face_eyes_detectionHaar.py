@@ -1,12 +1,15 @@
-import numpy as np
 import cv2
 
-# This is the code for existing cascade already available online
-# now we are going to do it for our created haar cascade
-face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
+# add path to directories
+cascadeDir = 'haarCascades'
+icubDir = cascadeDir + '/icub'
+ipadDir = cascadeDir + '/ipad'
+originalsDir = cascadeDir + '/original'
 
-watch_cascade = cv2.CascadeClassifier('ipad-cascade-10stagesnew.xml')
+face_cascade = cv2.CascadeClassifier(originalsDir + '/haarcascade_frontalface_default.xml')
+eye_cascade = cv2.CascadeClassifier(originalsDir + '/haarcascade_eye.xml')
+ipad_cascade = cv2.CascadeClassifier(ipadDir + '/ipad-cascade-10stagesnew.xml')
+
 cap = cv2.VideoCapture(0)
 
 while 1:
@@ -14,12 +17,12 @@ while 1:
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
-    watches = watch_cascade.detectMultiScale(gray, 200, 200)
+    ipads = ipad_cascade.detectMultiScale(gray, 200, 200)
 
-    for (x,y,w,h) in watches:
+    for (x,y,w,h) in ipads:
         #cv2.rectangle(img, (x,y), (x+w, y+h), (255,255,0), 2)
         font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(img, 'Ipad', (x-w, y-h), font, 0.5, (0,255,255), 2, cv2.LINE_AA)
+        cv2.putText(img, 'iPad', (x-w, y-h), font, 0.5, (0,255,255), 2, cv2.LINE_AA)
 
     for (x,y,w,h) in faces:
         cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
