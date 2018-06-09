@@ -1,6 +1,5 @@
 # import files
 from mesh import meshingAlg
-from find_nearest import find_nearest
 from redBalltracking import redBall
 from faceDetector import faceDetector
 from gazeBehaviouroff import gazeBehaviour
