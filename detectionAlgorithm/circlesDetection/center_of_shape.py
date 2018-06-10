@@ -8,12 +8,6 @@ class CenterShape:
         pass
 
     def center(self, image):
-        # construct the argument parse and parse the arguments
-        ap = argparse.ArgumentParser()
-        ap.add_argument("-i", "--image", required=True,
-                        help="path to the input image")
-        args = vars(ap.parse_args())
-        print(args["image"])
 
         # load the image, convert it to grayscale, blur it slightly,
         # and threshold it
@@ -30,8 +24,8 @@ class CenterShape:
         resized = imutils.resize(thresh, width=750)
         ratio = image.shape[0] / float(thresh.shape[0])
 
-        cv2.imshow('image4', resized)
-        cv2.waitKey(0)
+        # cv2.imshow('image4', resized)
+        # cv2.waitKey(0)
         # cv2.destroyAllWindows()
 
 
@@ -41,11 +35,8 @@ class CenterShape:
         cnts = cnts[0] if imutils.is_cv2() else cnts[1]
 
         # loop over the contours
-        a = 1
-        print(len(cnts))
         for c in cnts:
 
-            print(a)
             # compute the center of the contour
             M = cv2.moments(c)
             if M["m00"] != 0:
@@ -60,8 +51,7 @@ class CenterShape:
 
                 # show the image
                 resized = imutils.resize(image, width=750)
-                cv2.imshow("Image", resized)
-                cv2.waitKey(0)
-            a=a+1
+                # cv2.imshow("Image", resized)
+                # cv2.waitKey(0)
 
         return cnts, ratio
