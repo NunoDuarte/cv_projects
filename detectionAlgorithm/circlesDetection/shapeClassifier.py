@@ -1,10 +1,8 @@
 # import the necessary packages
-import argparse
-import imutils
 import cv2
 
 
-class ShapeDetector:
+class Shape:
     def __init__(self):
         pass
 

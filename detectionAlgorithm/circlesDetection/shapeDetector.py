@@ -1,12 +1,12 @@
 # import the necessary packages
-from circle_shape import ShapeDetector
-from center_of_shape import CenterShape
-import argparse
+from shapeClassifier import Shape
+from shapeCenter import CenterShape
 import imutils
 import cv2
 
+
 # construct the argument parse and parse the arguments
-class shapeDetector:
+class ShapeDetector:
 
     def __init__(self):
         pass
@@ -17,7 +17,7 @@ class shapeDetector:
         image_Shapes = image.copy()
 
         cs = CenterShape()
-        sd = ShapeDetector()
+        sd = Shape()
 
         cnts, ratio = cs.center(image)
 

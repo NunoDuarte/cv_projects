@@ -1,9 +1,10 @@
 # import the necessary packages
-import argparse
 import imutils
 import cv2
 
+
 class CenterShape:
+
     def __init__(self):
         pass
 

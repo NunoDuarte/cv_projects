@@ -1,9 +1,10 @@
 import numpy as np
-import argparse
 import cv2
 import imutils
 
-class houghCircle:
+
+class HoughCircle:
+
     def __init__(self):
         pass
 

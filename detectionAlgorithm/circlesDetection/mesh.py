@@ -1,5 +1,5 @@
-from shapeDetector import shapeDetector
-from hough_circle import houghCircle
+from shapeDetector import ShapeDetector
+from houghCircle import HoughCircle
 import cv2
 import math
 
@@ -12,11 +12,11 @@ class meshingAlg:
         output = image.copy()
 
         # initialize Algorithm to detect Shapes
-        main = shapeDetector()
+        main = ShapeDetector()
         contours, shapes, ratio = main.construct(image)
 
         # initialize Algorithm to detect Circles
-        hough = houghCircle()
+        hough = HoughCircle()
         circles = hough.construct(image)
 
         epsilon = 15  # the threshold in pixels allowed
