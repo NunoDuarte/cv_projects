@@ -1,6 +1,6 @@
 # import files
-from mesh import meshingAlg
-from find_nearest import find_nearest
+from mesh import MeshingAlg
+from findNearest import find_nearest
 
 # import necessary libraries
 from collections import deque
@@ -19,7 +19,7 @@ ap.add_argument("-b", "--buffer", type=int, default=64, help="max buffer size")
 args = vars(ap.parse_args())
 pts = deque(maxlen=args["buffer"])
 
-mesh = meshingAlg()
+mesh = MeshingAlg()
 
 timestamps_gaze = list()
 norm_pos_x = list()

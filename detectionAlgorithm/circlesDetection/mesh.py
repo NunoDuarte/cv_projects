@@ -3,7 +3,8 @@ from houghCircle import HoughCircle
 import cv2
 import math
 
-class meshingAlg:
+
+class MeshingAlg:
 
     def __init__(self):
         pass
