@@ -1,6 +1,6 @@
 # import files
-from mesh import meshingAlg
-from findNearest import find_nearest
+from mesh import MeshingAlg
+from findNearest import findNearest
 from redBalltracking import RedBall
 from faceDetector import faceDetector
 from gazeBehaviour import GazeBehaviour
@@ -31,7 +31,7 @@ for file in os.listdir(directory):
     args = vars(ap.parse_args())
     pts = deque(maxlen=args["buffer"])
 
-    mesh = meshingAlg()
+    mesh = MeshingAlg()
 
     ballTracking = RedBall()
 
@@ -88,7 +88,7 @@ for file in os.listdir(directory):
 
             # calculate the nearest timestamp for the current frame
             time = timestamps[i]
-            time_close, ind = find_nearest(timestamps_gaze, float(time))
+            time_close, ind = findNearest(timestamps_gaze, float(time))
 
             # use the x, y position of the closest timestamp norm_pos_*
             pos_x = norm_pos_x[ind]
