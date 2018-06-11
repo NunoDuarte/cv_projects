@@ -32,7 +32,7 @@ class GazeBehaviour:
                     threshold = 50
 
                     if cX - 30 < fixation[0] < cW + 30 and cY - 30 - threshold < fixation[1] < cH + 30:
-                        file.write('[' + str(timestamp) + ', 0' + ']\n')
+                        file.write('[' + str(timestamp) + ', 1' + ']\n')
                         print("iCub Face")
 
     def dictionary(self, index):
