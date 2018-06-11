@@ -14,13 +14,16 @@ class GazeBehaviour:
         epsilon = 80  # the threshold in pixels allowed
 
         for ball in allBalls:
-            if (len(ball[0]) == 1):
+            print('ball')
+            print(ball)
+
+            if len(ball[0]) == 1:
                 distX = fixation[0] - ball[0][0][0]
                 distY = fixation[1] - ball[0][0][1]
 
                 if math.sqrt(pow(distX, 2) + pow(distY, 2)) < epsilon:
-                    file.write('time: ' + str(timestamp) + ' Fixation intercepts Ball: ' + str(ball[0]) + '\n')
-                    print("Ball")
+                    file.write('time: ' + str(timestamp) + ' Fixation intercepts Ball: ' + str(ball[1]) + '\n')
+                    self.dictionary(ball[1])
 
                 for face in faces:
 
@@ -34,6 +37,15 @@ class GazeBehaviour:
                         file.write('time: ' + str(timestamp) + ' Fixation intercepts iCub´s_Face: ' + str(
                             face) + '\n')
                         print("iCub")
+
+    def dictionary(self, index):
+        return {
+            1: print("Human Tower"),
+            2: print("iCub Tower"),
+            3: print("Brick"),
+            4: print("Human Hand"),
+            5: print("iCub Hand")
+        }[index]
 
     def close(self, file):
         file.close()
