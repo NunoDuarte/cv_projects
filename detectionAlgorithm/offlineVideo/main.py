@@ -2,7 +2,7 @@
 from mesh import MeshingAlg
 from findNearest import findNearest
 from redBalltracking import RedBall
-from faceDetector import faceDetector
+from faceDetector import FaceDetector
 from gazeBehaviour import GazeBehaviour
 # import necessary libraries
 from collections import deque
@@ -14,7 +14,7 @@ import argparse
 import imutils
 import logging as log
 
-dir = 'PERFECT 18-03 ACTIVE'
+dir = 'input'
 directory = os.fsencode(dir)
 
 for file in os.listdir(directory):
@@ -39,7 +39,7 @@ for file in os.listdir(directory):
     faceCascade = cv2.CascadeClassifier(cascPath)
     log.basicConfig(filename='faceDetected.log', level=log.INFO)
     anterior = 0
-    face = faceDetector()
+    face = FaceDetector()
 
     print("Preparing Data...")
     knownFaces, knownLabels = face.prepare_training_data("training-data", faceCascade)
@@ -56,7 +56,7 @@ for file in os.listdir(directory):
     gaze = GazeBehaviour()
     f = gaze.open(filename)
 
-    with open(dir+'/'+filename+'/gaze_postions.csv', newline='') as csvfile:
+    with open(dir+'/'+filename+'/gaze_positions.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             timestamps_gaze.append(float(row['timestamp']))
