@@ -2,7 +2,7 @@
 from mesh import MeshingAlg
 from findNearest import findNearest
 from redBalltracking import RedBall
-from faceDetector import faceDetector
+from faceDetector import FaceDetector
 from gazeBehaviour import GazeBehaviour
 # import necessary libraries
 from collections import deque
@@ -14,7 +14,7 @@ import argparse
 import imutils
 import logging as log
 
-dir = 'PERFECT 18-03 ACTIVE'
+dir = 'input'
 directory = os.fsencode(dir)
 
 for file in os.listdir(directory):
@@ -39,7 +39,7 @@ for file in os.listdir(directory):
     faceCascade = cv2.CascadeClassifier(cascPath)
     log.basicConfig(filename='faceDetected.log', level=log.INFO)
     anterior = 0
-    face = faceDetector()
+    face = FaceDetector()
 
     print("Preparing Data...")
     knownFaces, knownLabels = face.prepare_training_data("training-data", faceCascade)
@@ -94,9 +94,8 @@ for file in os.listdir(directory):
             pos_x = norm_pos_x[ind]
             pos_y = norm_pos_y[ind]
 
-            #print(int(float(pos_x)*width))
-            #print(int(height - int(float(pos_y)*height)))
-            cv2.circle(frame, (int(float(pos_x)*width), int(height - int(float(pos_y)*height))), 10, (0, 255, 1), thickness=5, lineType=8, shift=0)  # draw circle
+            cv2.circle(frame, (int(float(pos_x)*width), int(height - int(float(pos_y)*height))), 10, (0, 255, 1),
+                       thickness=5, lineType=8, shift=0)  # draw circle
             fixation = [(int(float(pos_x)*width)), int(height - int(float(pos_y)*height))]
 
             # check the gaze behaviour

@@ -7,8 +7,7 @@ import os
 class FaceDetector:
 
     def __init__(self):
-        self.subjects = ["", "iCub"]
-        self.eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
+        self.subjects = ["", "Filomena", "Giovanni"]
 
     def detecting(self, frame, anterior, faceCascade):
 
@@ -17,34 +16,20 @@ class FaceDetector:
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(gray, (31, 31), 0)
-        thresh = cv2.threshold(blurred, 127, 255, cv2.THRESH_TOZERO)[1]
+        thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
+
         facesDetect = faceCascade.detectMultiScale(
             thresh,
-            scaleFactor=1.1,
-            minNeighbors=1
+            scaleFactor=1.2,
+            minNeighbors=3,
+            minSize=(30, 30)
         )
 
         # Draw a rectangle around the faces
         for (x, y, w, h) in facesDetect:
-            # print(x,y,w,h)
-            num_eyes = 0
-
-            roi_gray = gray[y:y + h, x:x + w]
-            roi_color = frame[y:y + h, x:x + w]
-            eyes = self.eye_cascade.detectMultiScale(roi_gray)
-            for (ex, ey, ew, eh) in eyes:
-                if len(eyes) == 2:
-                    cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
-                    faces.append([x, y, w, h])
-                    faceTrain.append(gray[y:y + w, x:x + h])
-                    num_eyes = num_eyes + 1
-                    #print("hello")
-            if num_eyes == 2:
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            else:
-                faces = []
-                faceTrain = []
-            break
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            faces.append([x, y, w, h])
+            faceTrain.append(gray[y:y+w, x:x+h])
 
         if anterior != len(facesDetect):
             anterior = len(facesDetect)
@@ -74,6 +59,7 @@ class FaceDetector:
                     continue
 
                 image_path = subject_dir_path + "/" + image_name
+
                 image = cv2.imread(image_path)
 
                 cv2.imshow("Training on image...", image)
@@ -81,10 +67,12 @@ class FaceDetector:
 
                 non, non1, face = self.detecting(image, 0, faceCascade)
 
-                if face is not None and len(face) is not 0:
+                if face is not None:
                     faces.append(face[0])
                     labels.append(label)
 
+                    cv2.destroyAllWindows()
+                    cv2.waitKey(1)
                     cv2.destroyAllWindows()
 
         return faces, labels
@@ -97,7 +85,7 @@ class FaceDetector:
             for face in facesTrain:
 
                 label = face_recognizer.predict(face)
-                #print(faces[i])
+                print(faces[i])
                 label_text = self.subjects[label[0]]
 
                 cv2.putText(frame, label_text, (faces[i][0], faces[i][1]-5), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
