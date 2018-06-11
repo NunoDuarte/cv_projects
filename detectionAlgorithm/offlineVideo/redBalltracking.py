@@ -1,7 +1,8 @@
 import numpy as np
 import cv2
 
-class redBall:
+
+class RedBall:
 
     def __init__(self):
         pass

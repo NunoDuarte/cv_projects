@@ -1,5 +1,4 @@
 import math
-from pylsl import StreamInfo, StreamOutlet
 
 class gazeBehaviour:
 
