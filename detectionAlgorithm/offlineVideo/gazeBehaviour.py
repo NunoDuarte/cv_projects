@@ -1,6 +1,7 @@
 import math
 
-class gazeBehaviour:
+
+class GazeBehaviour:
 
     def __init__(self):
         pass

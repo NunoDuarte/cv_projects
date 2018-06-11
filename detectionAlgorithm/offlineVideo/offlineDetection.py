@@ -1,9 +1,9 @@
 # import files
 from mesh import meshingAlg
-from find_nearest import find_nearest
-from redBalltracking import redBall
+from findNearest import find_nearest
+from redBalltracking import RedBall
 from faceDetector import faceDetector
-from gazeBehaviouroff import gazeBehaviour
+from gazeBehaviour import GazeBehaviour
 # import necessary libraries
 from collections import deque
 import numpy as np
@@ -33,7 +33,7 @@ for file in os.listdir(directory):
 
     mesh = meshingAlg()
 
-    ballTracking = redBall()
+    ballTracking = RedBall()
 
     cascPath = "haarcascade_frontalface_default.xml"
     faceCascade = cv2.CascadeClassifier(cascPath)
@@ -53,7 +53,7 @@ for file in os.listdir(directory):
     norm_pos_x = list()
     norm_pos_y = list()
 
-    gaze = gazeBehaviour()
+    gaze = GazeBehaviour()
     f = gaze.open(filename)
 
     with open(dir+'/'+filename+'/gaze_postions.csv', newline='') as csvfile:
