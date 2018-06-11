@@ -22,7 +22,6 @@ class GazeBehaviour:
                     file.write('time: ' + str(timestamp) + ' Fixation intercepts Ball: ' + str(ball[0]) + '\n')
                     print("Ball")
 
-                i = 0
                 for face in faces:
 
                     cX = face[0]
@@ -32,11 +31,9 @@ class GazeBehaviour:
                     threshold = 50
 
                     if cX - 30 < fixation[0] < cW + 30 and cY - 30 - threshold < fixation[1] < cH + 30:
-                        file.write('time: ' + str(timestamp) + ' Fixation intercepts ' + labels[i] + '´s_Face: ' + str(
+                        file.write('time: ' + str(timestamp) + ' Fixation intercepts iCub´s_Face: ' + str(
                             face) + '\n')
-                        print("Face")
-
-                    i = i + 1
+                        print("iCub")
 
     def close(self, file):
         file.close()
