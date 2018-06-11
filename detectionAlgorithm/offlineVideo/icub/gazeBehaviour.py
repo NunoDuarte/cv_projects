@@ -11,7 +11,7 @@ class GazeBehaviour:
         return f
 
     def record(self, timestamp, markers, allBalls, faces, fixation, labels, file):
-        epsilon = 80  # the threshold in pixels allowed
+        epsilon = 5  # the threshold in pixels allowed
 
         for ball in allBalls:
 
