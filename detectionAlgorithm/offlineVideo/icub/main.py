@@ -1,6 +1,6 @@
 # import files
 from findNearest import findNearest
-from redBalltracking import RedBall
+from balltracking import Ball
 from faceDetector import FaceDetector
 from gazeBehaviour import GazeBehaviour
 # import necessary libraries
@@ -30,7 +30,7 @@ for file in os.listdir(directory):
     args = vars(ap.parse_args())
     pts = deque(maxlen=args["buffer"])
 
-    ballTracking = RedBall()
+    ballTracking = Ball()
 
     cascPath = "cascade-icub-60v60.xml"
     faceCascade = cv2.CascadeClassifier(cascPath)
@@ -63,6 +63,7 @@ for file in os.listdir(directory):
     timestamps = np.load(dir+'/'+filename+'/world_viz_timestamps.npy')
 
     i = 0
+    ball = []
     while i < length:
         ret, frame = cap.read()
 
@@ -71,7 +72,21 @@ for file in os.listdir(directory):
             frame = imutils.resize(frame, width=750)
             height, width, channels = frame.shape
 
-            frame, pts, ball = ballTracking.tracking(frame, pts, args)
+            frame, pts, ballG = ballTracking.trackingGreen(frame, pts)
+            if ballG is not [] and len(ballG) != 0:
+                ball.append([ballG, 1])
+            frame, pts, ballR = ballTracking.trackingRed(frame, pts)
+            if ballR is not [] and len(ballR) != 0:
+                ball.append([ballR, 2])
+            frame, pts, ballB = ballTracking.trackingBlue(frame, pts)
+            if ballB is not [] and len(ballB) != 0:
+                 ball.append([ballB, 3])
+            frame, pts, ballY = ballTracking.trackingYellow(frame, pts)
+            if ballY is not [] and len(ballY) != 0:
+                ball.append([ballY, 4])
+            frame, pts, ballC = ballTracking.trackingCyan(frame, pts)
+            if ballC is not [] and len(ballC) != 0:
+                ball.append([ballC, 5])
 
             anterior, faces, facesTrained = face.detecting(frame, anterior, faceCascade)
             labels = face.predict(frame, face_recognizer, faces, facesTrained)

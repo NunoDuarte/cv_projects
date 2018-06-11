@@ -10,42 +10,33 @@ class GazeBehaviour:
         f = open(filename + '.txt', 'w')
         return f
 
-    def record(self, timestamp, markers, ball, faces, fixation, labels, file):
+    def record(self, timestamp, markers, allBalls, faces, fixation, labels, file):
         epsilon = 80  # the threshold in pixels allowed
 
-        distX = fixation[0] - ball[0][0]
-        distY = fixation[1] - ball[0][1]
+        for ball in allBalls:
+            if (len(ball[0]) == 1):
+                distX = fixation[0] - ball[0][0][0]
+                distY = fixation[1] - ball[0][0][1]
 
-        if math.sqrt(pow(distX, 2) + pow(distY, 2)) < epsilon:
-            file.write('time: '+str(timestamp)+' Fixation intercepts Ball: '+str(ball[0])+'\n')
-            print("Ball")
+                if math.sqrt(pow(distX, 2) + pow(distY, 2)) < epsilon:
+                    file.write('time: ' + str(timestamp) + ' Fixation intercepts Ball: ' + str(ball[0]) + '\n')
+                    print("Ball")
 
-        for marker in markers:
+                i = 0
+                for face in faces:
 
-            cX = marker[0]
-            cY = marker[1]
+                    cX = face[0]
+                    cY = face[1]
+                    cW = face[0] + face[2]
+                    cH = face[1] + face[3]
+                    threshold = 50
 
-            distX = fixation[0] - cX
-            distY = fixation[1] - cY
+                    if cX - 30 < fixation[0] < cW + 30 and cY - 30 - threshold < fixation[1] < cH + 30:
+                        file.write('time: ' + str(timestamp) + ' Fixation intercepts ' + labels[i] + '´s_Face: ' + str(
+                            face) + '\n')
+                        print("Face")
 
-            if math.sqrt(pow(distX, 2) + pow(distY, 2)) < epsilon:
-                file.write('time: '+str(timestamp)+' Fixation intercepts Marker: '+str(marker)+'\n')
-                print("Marker")
-
-        i = 0
-        for face in faces:
-
-            cX = face[0]
-            cY = face[1]
-            cW = face[0] + face[2]
-            cH = face[1] + face[3]
-            threshold = 50
-
-            if cX - 30 < fixation[0] < cW + 30 and cY - 30 - threshold < fixation[1] < cH + 30:
-                file.write('time: ' + str(timestamp) + ' Fixation intercepts ' + labels[i] + '´s_Face: ' + str(face) + '\n')
-                print("Face")
-
-            i = i+1
+                    i = i + 1
 
     def close(self, file):
         file.close()
