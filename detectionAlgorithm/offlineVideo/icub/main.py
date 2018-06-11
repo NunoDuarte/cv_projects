@@ -1,8 +1,7 @@
 # import files
-from mesh import MeshingAlg
 from findNearest import findNearest
 from redBalltracking import RedBall
-from faceDetector import faceDetector
+from faceDetector import FaceDetector
 from gazeBehaviour import GazeBehaviour
 # import necessary libraries
 from collections import deque
@@ -14,7 +13,7 @@ import argparse
 import imutils
 import logging as log
 
-dir = 'PERFECT 18-03 ACTIVE'
+dir = 'input'
 directory = os.fsencode(dir)
 
 for file in os.listdir(directory):
@@ -31,15 +30,13 @@ for file in os.listdir(directory):
     args = vars(ap.parse_args())
     pts = deque(maxlen=args["buffer"])
 
-    mesh = MeshingAlg()
-
     ballTracking = RedBall()
 
-    cascPath = "haarcascade_frontalface_default.xml"
+    cascPath = "cascade-icub-60v60.xml"
     faceCascade = cv2.CascadeClassifier(cascPath)
     log.basicConfig(filename='faceDetected.log', level=log.INFO)
     anterior = 0
-    face = faceDetector()
+    face = FaceDetector()
 
     print("Preparing Data...")
     knownFaces, knownLabels = face.prepare_training_data("training-data", faceCascade)
@@ -56,17 +53,12 @@ for file in os.listdir(directory):
     gaze = GazeBehaviour()
     f = gaze.open(filename)
 
-    with open(dir+'/'+filename+'/gaze_postions.csv', newline='') as csvfile:
+    with open(dir+'/'+filename+'/gaze_positions.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             timestamps_gaze.append(float(row['timestamp']))
             norm_pos_x.append(row['norm_pos_x'])
             norm_pos_y.append(row['norm_pos_y'])
-            # print(row['timestamp'], row['norm_pos_x'], row['norm_pos_y'])
-
-    # print(timestamps_gaze[2])
-    # print(norm_pos_y[2])      # dont forget it starts with 0
-    # print(norm_pos_x[2])
 
     timestamps = np.load(dir+'/'+filename+'/world_viz_timestamps.npy')
 
@@ -78,8 +70,6 @@ for file in os.listdir(directory):
         if frame is not None:
             frame = imutils.resize(frame, width=750)
             height, width, channels = frame.shape
-
-            frame, markers = mesh.mesh(frame)
 
             frame, pts, ball = ballTracking.tracking(frame, pts, args)
 
@@ -94,14 +84,13 @@ for file in os.listdir(directory):
             pos_x = norm_pos_x[ind]
             pos_y = norm_pos_y[ind]
 
-            #print(int(float(pos_x)*width))
-            #print(int(height - int(float(pos_y)*height)))
-            cv2.circle(frame, (int(float(pos_x)*width), int(height - int(float(pos_y)*height))), 10, (0, 255, 1), thickness=5, lineType=8, shift=0)  # draw circle
+            cv2.circle(frame, (int(float(pos_x)*width), int(height - int(float(pos_y)*height))), 10, (0, 255, 1),
+                       thickness=5, lineType=8, shift=0)  # draw circle
             fixation = [(int(float(pos_x)*width)), int(height - int(float(pos_y)*height))]
 
             # check the gaze behaviour
             if len(ball) is not 0:
-                gaze.record(time_close, markers, ball, faces, fixation, labels, f)
+                gaze.record(time_close, [], ball, faces, fixation, labels, f)
 
             cv2.imshow('frame', frame)
         if cv2.waitKey(25) & 0xFF == ord('q'):
