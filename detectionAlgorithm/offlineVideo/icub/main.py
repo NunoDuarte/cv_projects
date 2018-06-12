@@ -60,10 +60,14 @@ for file in os.listdir(directory):
             norm_pos_x.append(row['norm_pos_x'])
             norm_pos_y.append(row['norm_pos_y'])
 
+    print(len(timestamps_gaze))
     timestamps = np.load(dir+'/'+filename+'/world_viz_timestamps.npy')
+    print(len(timestamps))
+    cv2.waitKey(0)
 
     i = 0
     ball = []
+    time0 = timestamps[i]
     while i < length:
         ret, frame = cap.read()
 
@@ -74,19 +78,19 @@ for file in os.listdir(directory):
 
             frame, pts, ballG = ballTracking.trackingGreen(frame, pts)
             if ballG is not [] and len(ballG) != 0:
-                ball.append([ballG, 1])
+                ball.append([ballG, 5])
             frame, pts, ballR = ballTracking.trackingRed(frame, pts)
             if ballR is not [] and len(ballR) != 0:
-                ball.append([ballR, 2])
+                ball.append([ballR, 4])
             frame, pts, ballB = ballTracking.trackingBlue(frame, pts)
             if ballB is not [] and len(ballB) != 0:
-                 ball.append([ballB, 3])
-            frame, pts, ballY = ballTracking.trackingYellow(frame, pts)
-            if ballY is not [] and len(ballY) != 0:
-                ball.append([ballY, 4])
-            frame, pts, ballC = ballTracking.trackingCyan(frame, pts)
-            if ballC is not [] and len(ballC) != 0:
-                ball.append([ballC, 5])
+                 ball.append([ballB, 0])
+            # frame, pts, ballY = ballTracking.trackingYellow(frame, pts)
+            # if ballY is not [] and len(ballY) != 0:
+            #     ball.append([ballY, 3])
+            # frame, pts, ballC = ballTracking.trackingCyan(frame, pts)
+            # if ballC is not [] and len(ballC) != 0:
+            #     ball.append([ballC, 2])
 
             anterior, faces, facesTrained = face.detecting(frame, anterior, faceCascade)
             labels = face.predict(frame, face_recognizer, faces, facesTrained)
@@ -105,7 +109,7 @@ for file in os.listdir(directory):
 
             # check the gaze behaviour
             if len(ball) is not 0:
-                gaze.record(time_close, [], ball, faces, fixation, labels, f)
+                gaze.record(time_close-time0, ball, faces, fixation, labels, f)
 
             cv2.imshow('frame', frame)
         if cv2.waitKey(25) & 0xFF == ord('q'):
