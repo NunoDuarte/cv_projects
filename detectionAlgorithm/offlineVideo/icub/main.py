@@ -84,7 +84,7 @@ for file in os.listdir(directory):
                 ball.append([ballR, 4])
             frame, pts, ballB = ballTracking.trackingBlue(frame, pts)
             if ballB is not [] and len(ballB) != 0:
-                 ball.append([ballB, 0])
+                ball.append([ballB, 0])
             # frame, pts, ballY = ballTracking.trackingYellow(frame, pts)
             # if ballY is not [] and len(ballY) != 0:
             #     ball.append([ballY, 3])
@@ -116,6 +116,11 @@ for file in os.listdir(directory):
             break
 
         i = i + 1
+        # clear the lists
+        ball = []
+        faces = []
+
+        # wait for key pressed
         cv2.waitKey(0)
 
 gaze.close(f)

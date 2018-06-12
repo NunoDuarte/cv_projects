@@ -11,18 +11,19 @@ class GazeBehaviour:
         return f
 
     def record(self, timestamp, allBalls, faces, fixation, labels, file):
-        epsilon = 5  # the threshold in pixels allowed
+        epsilon = 50  # the threshold in pixels allowed
 
         for ball in allBalls:
             if len(ball[0]) == 1:
                 distX = fixation[0] - ball[0][0][0]
                 distY = fixation[1] - ball[0][0][1]
 
-                if math.sqrt(pow(distX, 2) + pow(distY, 2)) < epsilon:
-                    #           time                    color of ball
+                if - epsilon < distX < epsilon and + - epsilon < distY < epsilon:
+                    #                   time               color of ball
                     file.write('[' + str(timestamp) + ',' + str(ball[1]) + ']\n')
                     print("inside")
                     print(ball[1])
+                    print(ball)
                     self.dictionary(ball[1])
 
                 for face in faces:
