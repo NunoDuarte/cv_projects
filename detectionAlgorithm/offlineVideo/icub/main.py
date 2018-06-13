@@ -85,12 +85,12 @@ for file in os.listdir(directory):
             frame, pts, ballB = ballTracking.trackingBlue(frame, pts)
             if ballB is not [] and len(ballB) != 0:
                 ball.append([ballB, 0])
-            # frame, pts, ballY = ballTracking.trackingYellow(frame, pts)
-            # if ballY is not [] and len(ballY) != 0:
-            #     ball.append([ballY, 3])
-            # frame, pts, ballC = ballTracking.trackingCyan(frame, pts)
-            # if ballC is not [] and len(ballC) != 0:
-            #     ball.append([ballC, 2])
+            frame, pts, ballY = ballTracking.trackingYellow(frame, pts)
+            if ballY is not [] and len(ballY) != 0:
+                ball.append([ballY, 3])
+            frame, pts, ballC = ballTracking.trackingCyan(frame, pts)
+            if ballC is not [] and len(ballC) != 0:
+                ball.append([ballC, 2])
 
             anterior, faces, facesTrained = face.detecting(frame, anterior, faceCascade)
             labels = face.predict(frame, face_recognizer, faces, facesTrained)

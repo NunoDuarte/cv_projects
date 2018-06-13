@@ -18,7 +18,7 @@ class GazeBehaviour:
                 distX = fixation[0] - ball[0][0][0]
                 distY = fixation[1] - ball[0][0][1]
 
-                if - epsilon < distX < epsilon and + - epsilon < distY < epsilon:
+                if math.sqrt(pow(distX, 2) + pow(distY, 2)) < epsilon:
                     #                   time               color of ball
                     file.write('[' + str(timestamp) + ',' + str(ball[1]) + ']\n')
                     print("inside")
