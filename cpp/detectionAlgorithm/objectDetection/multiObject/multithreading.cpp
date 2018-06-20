@@ -149,15 +149,15 @@ int main(int argc, char** argv)
 
 		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );;
 		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );;
-	  thread t2(task1, "Green Object", 65, 60, 60, 80, 255, 255,	65, 60, 160, 80, 255, 179);
+	  thread t2(task1, "Green Object", 65, 60, 60, 80, 255, 255, 65, 60, 160, 80, 255, 179);
 		t2.join();
 		imgOriginalTotal = imgOriginalTotal + imgLines;
 		imshow("Thresholded Green", imgThresholded); //show the thresholded image
 
-		//thread t3(task1, "Blue Object", 0, 100, 100, 10, 255, 255,	160, 100, 100, 179, 255, 255);
-		//t3.join();
-		//imgOriginal = imgOriginal + imgLines;
-		//imshow("Thresholded Blue", imgThresholded); //show the thresholded image
+		thread t3(task1, "Blue Object", 90, 50, 80, 140, 255, 255, 100, 100, 80, 140, 255, 255);
+		t3.join();
+		imgOriginal = imgOriginal + imgLines;
+		imshow("Thresholded Blue", imgThresholded); //show the thresholded image
 
 		imshow("Original", imgOriginalTotal); //show the original image
 
