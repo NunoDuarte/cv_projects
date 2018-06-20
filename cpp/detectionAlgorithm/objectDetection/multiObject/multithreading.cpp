@@ -9,6 +9,7 @@ using namespace std;
 
 Mat imgLines;
 Mat imgOriginal;
+Mat imgThresholded;
 
 int iLowH;
 int iHighH;
@@ -19,21 +20,15 @@ int iHighV;
 int iLastX; 
 int iLastY;
 
-// The function we want to execute on the new thread.
-void task1(string msg)
-{
-	cout << "task1 says: " << msg << "\n" << endl;
-}
-
-Mat image(Mat &imgOriginal, Mat &imgLines){
+void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded){
 
 	Mat imgHSV;
 
 	//Convert the captured frame from BGR to HSV
 	cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); 	
 
-	Mat imgThresholded;
-	inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
+	//Threshold the image
+	inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); 
 
 	//morphological opening (removes small objects from the foreground)
 	erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
@@ -68,7 +63,13 @@ Mat image(Mat &imgOriginal, Mat &imgLines){
 		iLastY = posY;
 	}
 
-	return imgThresholded;
+}
+
+// The function we want to execute on the new thread.
+void task1(string msg)
+{
+	cout << "task1 says: " << msg << "\n" << endl;
+	image(imgOriginal, imgLines, imgThresholded);
 }
 
 int main(int argc, char** argv)
@@ -101,6 +102,8 @@ int main(int argc, char** argv)
 	//Create a black image with the size as the camera output
 	imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );;
  
+	//thread t2(task1, "Hej Hej");
+	//thread t3(task1, "Hej da");
 
 	while (true)
 	{
@@ -113,13 +116,21 @@ int main(int argc, char** argv)
 			 break;
 		}
 
-		Mat imgThresholded;
-
-		imgThresholded = image(imgOriginal, imgLines);
+		// Makes the main thread wait for the new thread to finish execution, 
+		// 	therefore blocks its own execution.
+		// Constructs the new thread and runs it. Does not block execution.
+		thread t1(task1, "Hello");
+	  thread t2(task1, "Hej Hej");
+	  thread t3(task1, "Hej da");
+		t1.join();
+		t2.join();
+		t3.join();
 
 		imshow("Thresholded Image", imgThresholded); //show the thresholded image
 
 		imgOriginal = imgOriginal + imgLines;
+
+
 		imshow("Original", imgOriginal); //show the original image
 
 		//wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
@@ -131,16 +142,6 @@ int main(int argc, char** argv)
 
 	}
 
-	// Constructs the new thread and runs it. Does not block execution.
-	thread t1(task1, "Hello");
-	thread t2(task1, "Hej Hej");
-	thread t3(task1, "Hej da");
-
-	// Makes the main thread wait for the new thread to finish execution, 
-	// 	therefore blocks its own execution.
-	t1.join();
-	t2.join();
-	t3.join();
 }
 
 
