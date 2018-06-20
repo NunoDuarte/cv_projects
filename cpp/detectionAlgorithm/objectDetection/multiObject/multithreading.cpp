@@ -68,7 +68,7 @@ void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded){
 // The function we want to execute on the new thread.
 void task1(string msg)
 {
-	cout << "task1 says: " << msg << "\n" << endl;
+	cout  << msg << endl;
 	image(imgOriginal, imgLines, imgThresholded);
 }
 
@@ -119,9 +119,9 @@ int main(int argc, char** argv)
 		// Makes the main thread wait for the new thread to finish execution, 
 		// 	therefore blocks its own execution.
 		// Constructs the new thread and runs it. Does not block execution.
-		thread t1(task1, "Hello");
-	  thread t2(task1, "Hej Hej");
-	  thread t3(task1, "Hej da");
+		thread t1(task1, "Red Object");
+	  thread t2(task1, "Blue Object");
+	  thread t3(task1, "Green Object");
 		t1.join();
 		t2.join();
 		t3.join();
@@ -129,7 +129,6 @@ int main(int argc, char** argv)
 		imshow("Thresholded Image", imgThresholded); //show the thresholded image
 
 		imgOriginal = imgOriginal + imgLines;
-
 
 		imshow("Original", imgOriginal); //show the original image
 
