@@ -28,6 +28,7 @@ int iHighVd;
 int iLastX; 
 int iLastY;
 
+
 void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded, int iLowHb, int iLowSb, int iLowVb, int iHighHb, int iHighSb, int iHighVb, int iLowHd, int iLowSd, int iLowVd, int iHighHd, int iHighSd, int iHighVd)
 {
 
@@ -140,21 +141,23 @@ int main(int argc, char** argv)
 		}
 
 		imgOriginalTotal = imgOriginal;
-		// Makes the main thread wait for the new thread to finish execution, 
-		// 	therefore blocks its own execution.
-		// Constructs the new thread and runs it. Does not block execution.
+
 		thread t1(task1, "Red Object", 0, 100, 100, 10, 255, 255,	160, 100, 100, 179, 255, 255);
-	  //thread t3(task1, "Green Object", 0, 100, 100, 10, 255, 255,	160, 100, 100, 179, 255, 255);
 		t1.join();
 		imgOriginalTotal = imgOriginalTotal + imgLines;
 		imshow("Thresholded Red", imgThresholded); //show the thresholded image
-	  thread t2(task1, "Blue Object", 65, 60, 60, 80, 255, 255,	65, 60, 160, 80, 255, 179);
+
+		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );;
+		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );;
+	  thread t2(task1, "Green Object", 65, 60, 60, 80, 255, 255,	65, 60, 160, 80, 255, 179);
 		t2.join();
 		imgOriginalTotal = imgOriginalTotal + imgLines;
-		imshow("Thresholded Blue", imgThresholded); //show the thresholded image
+		imshow("Thresholded Green", imgThresholded); //show the thresholded image
+
+		//thread t3(task1, "Blue Object", 0, 100, 100, 10, 255, 255,	160, 100, 100, 179, 255, 255);
 		//t3.join();
 		//imgOriginal = imgOriginal + imgLines;
-		//imshow("Thresholded Green", imgThresholded); //show the thresholded image
+		//imshow("Thresholded Blue", imgThresholded); //show the thresholded image
 
 		imshow("Original", imgOriginalTotal); //show the original image
 
