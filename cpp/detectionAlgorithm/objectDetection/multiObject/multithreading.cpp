@@ -11,24 +11,36 @@ Mat imgLines;
 Mat imgOriginal;
 Mat imgThresholded;
 
-int iLowH;
-int iHighH;
-int iLowS; 
-int iHighS;
-int iLowV;
-int iHighV;
+int iLowHb;
+int iHighHb;
+int iLowSb; 
+int iHighSb;
+int iLowVb;
+int iHighVb;
+int iLowHd;
+int iHighHd;
+int iLowSd; 
+int iHighSd;
+int iLowVd;
+int iHighVd;
+
 int iLastX; 
 int iLastY;
 
 void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded){
 
 	Mat imgHSV;
+	Mat imgThresholded_bright;
+	Mat imgThresholded_dark;
 
 	//Convert the captured frame from BGR to HSV
 	cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); 	
 
 	//Threshold the image
-	inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); 
+	inRange(imgHSV, Scalar(iLowHb, iLowSb, iLowVb), Scalar(iHighHb, iHighSb, iHighVb), imgThresholded_bright); 
+	inRange(imgHSV, Scalar(iLowHd, iLowSd, iLowVd), Scalar(iHighHd, iHighSd, iHighVd), imgThresholded_dark); 
+
+	addWeighted(imgThresholded_bright, 1.0, imgThresholded_dark, 1.0, 0.0, imgThresholded);
 
 	//morphological opening (removes small objects from the foreground)
 	erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
@@ -83,14 +95,23 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	iLowH = 0;
-	iHighH = 10;
+	iLowHb = 0;
+	iHighHb = 10;
 
-	iLowS = 100; 
-	iHighS = 255;
+	iLowSb = 100; 
+	iHighSb = 255;
 
-	iLowV = 100;
-	iHighV = 255;
+	iLowVb = 100;
+	iHighVb = 255;
+
+	iLowHd = 160;
+	iHighHd = 179;
+
+	iLowSd = 100; 
+	iHighSd = 255;
+
+	iLowVd = 100;
+	iHighVd = 255;
 
 	iLastX = -1; 
 	iLastY = -1;
