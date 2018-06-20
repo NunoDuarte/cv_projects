@@ -27,7 +27,8 @@ int iHighVd;
 int iLastX; 
 int iLastY;
 
-void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded){
+void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded, int iLowHb, int iLowSb, int iLowVb, int iHighHb, int iHighSb, int iHighVb, int iLowHd, int iLowSd, int iLowVd, int iHighHd, int iHighSd, int iHighVd)
+{
 
 	Mat imgHSV;
 	Mat imgThresholded_bright;
@@ -78,10 +79,10 @@ void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded){
 }
 
 // The function we want to execute on the new thread.
-void task1(string msg)
+void task1(string msg, int iLowHb, int iLowSb, int iLowVb, int iHighHb, int iHighSb, int iHighVb, int iLowHd, int iLowSd, int iLowVd, int iHighHd, int iHighSd, int iHighVd)
 {
 	cout  << msg << endl;
-	image(imgOriginal, imgLines, imgThresholded);
+	image(imgOriginal, imgLines, imgThresholded, iLowHb, iLowSb, iLowVb, iHighHb, iHighSb, iHighVb, iLowHd, iLowSd, iLowVd, iHighHd, iHighSd, iHighVd);
 }
 
 int main(int argc, char** argv)
@@ -140,9 +141,9 @@ int main(int argc, char** argv)
 		// Makes the main thread wait for the new thread to finish execution, 
 		// 	therefore blocks its own execution.
 		// Constructs the new thread and runs it. Does not block execution.
-		thread t1(task1, "Red Object");
-	  thread t2(task1, "Blue Object");
-	  thread t3(task1, "Green Object");
+		thread t1(task1, "Red Object", 0, 100, 100, 10, 255, 255,	160, 100, 100, 179, 255, 255);
+	  thread t2(task1, "Blue Object", 0, 100, 100, 10, 255, 255,	160, 100, 100, 179, 255, 255);
+	  thread t3(task1, "Green Object", 0, 100, 100, 10, 255, 255,	160, 100, 100, 179, 255, 255);
 		t1.join();
 		t2.join();
 		t3.join();
