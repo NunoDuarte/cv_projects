@@ -17,13 +17,13 @@ using namespace std;
 
     namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
 
- int iLowH = 170;
+ int iLowH = 160;
  int iHighH = 179;
 
  int iLowS = 150; 
  int iHighS = 255;
 
- int iLowV = 60;
+ int iLowV = 150;
  int iHighV = 255;
 
  //Create trackbars in "Control" window
