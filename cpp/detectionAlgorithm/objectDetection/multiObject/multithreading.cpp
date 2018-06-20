@@ -9,6 +9,7 @@ using namespace std;
 
 Mat imgLines;
 Mat imgOriginal;
+Mat imgOriginalTotal;
 Mat imgThresholded;
 
 int iLowHb;
@@ -138,21 +139,24 @@ int main(int argc, char** argv)
 			 break;
 		}
 
+		imgOriginalTotal = imgOriginal;
 		// Makes the main thread wait for the new thread to finish execution, 
 		// 	therefore blocks its own execution.
 		// Constructs the new thread and runs it. Does not block execution.
 		thread t1(task1, "Red Object", 0, 100, 100, 10, 255, 255,	160, 100, 100, 179, 255, 255);
-	  thread t2(task1, "Blue Object", 0, 100, 100, 10, 255, 255,	160, 100, 100, 179, 255, 255);
-	  thread t3(task1, "Green Object", 0, 100, 100, 10, 255, 255,	160, 100, 100, 179, 255, 255);
+	  //thread t3(task1, "Green Object", 0, 100, 100, 10, 255, 255,	160, 100, 100, 179, 255, 255);
 		t1.join();
+		imgOriginalTotal = imgOriginalTotal + imgLines;
+		imshow("Thresholded Red", imgThresholded); //show the thresholded image
+	  thread t2(task1, "Blue Object", 65, 60, 60, 80, 255, 255,	65, 60, 160, 80, 255, 179);
 		t2.join();
-		t3.join();
+		imgOriginalTotal = imgOriginalTotal + imgLines;
+		imshow("Thresholded Blue", imgThresholded); //show the thresholded image
+		//t3.join();
+		//imgOriginal = imgOriginal + imgLines;
+		//imshow("Thresholded Green", imgThresholded); //show the thresholded image
 
-		imshow("Thresholded Image", imgThresholded); //show the thresholded image
-
-		imgOriginal = imgOriginal + imgLines;
-
-		imshow("Original", imgOriginal); //show the original image
+		imshow("Original", imgOriginalTotal); //show the original image
 
 		//wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
 		if (waitKey(30) == 27) 
