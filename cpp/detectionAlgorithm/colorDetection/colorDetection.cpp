@@ -8,12 +8,47 @@ using namespace std;
 
  int main( int argc, char** argv )
  {
-    VideoCapture cap(0); //capture the video from web cam
 
-    if ( !cap.isOpened() )  // if not success, exit program
+    string inputName;
+    bool isInputImage = false;
+    bool isInputVideo = false;
+    bool isInputCamera = false;
+
+    for (int i = 1; i < argc; ++i)
     {
-         cout << "Cannot open the web cam" << endl;
-         return -1;
+        if (string(argv[i]) == "--video")
+        {
+            inputName = argv[++i];
+            isInputVideo = true;
+        }
+        else if (string(argv[i]) == "--camera")
+        {
+            inputName = argv[++i];
+            isInputCamera = true;
+        }
+        else if (!isInputImage)
+        {
+            inputName = argv[i];
+            isInputImage = true;
+        }
+        else
+        {
+            cout << "Unknown key: " << argv[i] << endl;
+            return -1;
+        }
+    }
+
+    VideoCapture cap;
+
+    if (isInputVideo)
+    {
+        cap.open(inputName);
+        CV_Assert(cap.isOpened());
+    }
+    else
+    {
+        cap.open(atoi(inputName.c_str()));
+        CV_Assert(cap.isOpened());
     }
 
     namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
@@ -73,6 +108,32 @@ using namespace std;
             cout << "esc key is pressed by user" << endl;
             break; 
        }
+
+        if (waitKey(30) == 'p') //pause video
+       {
+            cout << "pause" << endl;
+	    while(cv::waitKey(1) != 'p'){
+
+		Mat imgHSV;
+
+		cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from BGR to HSV
+		 
+		Mat imgThresholded;
+
+		inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
+		      
+		//morphological opening (remove small objects from the foreground)
+		erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+		dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
+
+		//morphological closing (fill small holes in the foreground)
+		dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
+		erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+
+		imshow("Thresholded Image", imgThresholded); //show the thresholded image
+		imshow("Original", imgOriginal); //show the original image
+	    }
+       }    
     }
 
    return 0;
