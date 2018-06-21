@@ -153,7 +153,7 @@ int main(int argc, char** argv)
 		imgOriginalTotal = imgOriginalTotal + imgLines;
 		imshow("Thresholded Green", imgThresholded); //show the thresholded image
 
-		thread t3(task1, "Blue Object", 90, 50, 80, 140, 255, 255, 100, 100, 80, 140, 255, 255);
+		thread t3(task1, "Blue Object", 90, 130, 60, 140, 255, 255, 100, 170, 80, 140, 255, 255);
 		t3.join();
 		imgOriginal = imgOriginal + imgLines;
 		imshow("Thresholded Blue", imgThresholded); //show the thresholded image
