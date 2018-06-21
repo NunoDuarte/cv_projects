@@ -83,7 +83,6 @@ void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded, int iLowHb, int
 // The function we want to execute on the new thread.
 void task1(string msg, int iLowHb, int iLowSb, int iLowVb, int iHighHb, int iHighSb, int iHighVb, int iLowHd, int iLowSd, int iLowVd, int iHighHd, int iHighSd, int iHighVd)
 {
-	cout  << msg << endl;
 	image(imgOriginal, imgLines, imgThresholded, iLowHb, iLowSb, iLowVb, iHighHb, iHighSb, iHighVb, iLowHd, iLowSd, iLowVd, iHighHd, iHighSd, iHighVd);
 }
 
