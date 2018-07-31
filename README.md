@@ -5,6 +5,9 @@ Assignments using OpenCV and/or useful stuff that I learned to use with OpenCV
 ## Deep Neural Networks (current project) 
 1.  python3 dnnImageClassifier.py -i images/eagle.png -p bvlc_googlenet.prototxt -m bvlc_googlenet.caffemodel -l synset_words.txt
 
+2. import caffe
+export PYTHONPATH=/home/nduarte/software/caffe/python
+
 # in case you cant find a module
 python3 
 
