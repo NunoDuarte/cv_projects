@@ -3,6 +3,7 @@
 #include <thread>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/objdetect/objdetect.hpp" 	// for cascade classifier
 
 using namespace cv;
 using namespace std;
@@ -27,6 +28,17 @@ int iHighVd;
 
 int iLastX; 
 int iLastY;
+
+/** Function Headers */
+void detectAndDisplay( Mat frame );
+
+/** Global variables */
+String face_cascade_name = "cascade-icub-60v60.xml";
+String eyes_cascade_name = "haarcascade_eye.xml";
+CascadeClassifier face_cascade;
+CascadeClassifier eyes_cascade;
+string window_name = "Capture - Face detection";
+RNG rng(12345);
 
 
 void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded, int iLowHb, int iLowSb, int iLowVb, int iHighHb, int iHighSb, int iHighVb, int iLowHd, int iLowSd, int iLowVd, int iHighHd, int iHighSd, int iHighVd)
@@ -86,6 +98,40 @@ void task1(string msg, int iLowHb, int iLowSb, int iLowVb, int iHighHb, int iHig
 	image(imgOriginal, imgLines, imgThresholded, iLowHb, iLowSb, iLowVb, iHighHb, iHighSb, iHighVb, iLowHd, iLowSd, iLowVd, iHighHd, iHighSd, iHighVd);
 }
 
+/** @function detectAndDisplay */
+void detectAndDisplay( Mat frame )
+{
+	std::vector<Rect> faces;
+	Mat frame_gray;
+
+	cvtColor( frame, frame_gray, CV_BGR2GRAY );
+	equalizeHist( frame_gray, frame_gray );
+
+	//-- Detect faces
+	face_cascade.detectMultiScale( frame_gray, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
+
+	for( size_t i = 0; i < faces.size(); i++ )
+	{
+		Point center( faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5 );
+		ellipse( frame, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
+
+		Mat faceROI = frame_gray( faces[i] );
+		std::vector<Rect> eyes;
+
+		//-- In each face, detect eyes
+		eyes_cascade.detectMultiScale( faceROI, eyes, 1.1, 2, 0 |CV_HAAR_SCALE_IMAGE, Size(30, 30) );
+
+		for( size_t j = 0; j < eyes.size(); j++ )
+		{
+			Point center( faces[i].x + eyes[j].x + eyes[j].width*0.5, faces[i].y + eyes[j].y + eyes[j].height*0.5 );
+			int radius = cvRound( (eyes[j].width + eyes[j].height)*0.25 );
+			circle( frame, center, radius, Scalar( 255, 0, 0 ), 4, 8, 0 );
+		}
+	}
+	//-- Show what you got
+	imshow( window_name, frame );
+}
+
 int main(int argc, char** argv)
 {
 
@@ -125,8 +171,10 @@ int main(int argc, char** argv)
 	//Create a black image with the size as the camera output
 	imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );;
  
-	//thread t2(task1, "Hej Hej");
-	//thread t3(task1, "Hej da");
+
+	//-- 1. Load the cascades
+	if( !face_cascade.load( face_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
+	if( !eyes_cascade.load( eyes_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
 
 	while (true)
 	{
@@ -174,6 +222,8 @@ int main(int argc, char** argv)
 
 
 		//// Detect a Face
+		detectAndDisplay( imgOriginal );
+	
 
 		//wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
 		if (waitKey(30) == 27) 
