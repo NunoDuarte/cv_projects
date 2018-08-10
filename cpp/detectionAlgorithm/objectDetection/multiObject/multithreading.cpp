@@ -139,26 +139,41 @@ int main(int argc, char** argv)
 			 break;
 		}
 
+
+		//// Read the Different Objects
+		// save the original frame		
 		imgOriginalTotal = imgOriginal;
 
+		// red Object
 		thread t1(task1, "Red Object", 0, 100, 100, 10, 255, 255,	160, 100, 100, 179, 255, 255);
 		t1.join();
+
+		// add to the original frame the location of the red Object
 		imgOriginalTotal = imgOriginalTotal + imgLines;
 		imshow("Thresholded Red", imgThresholded); //show the thresholded image
 
 		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );;
 		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );;
-	  thread t2(task1, "Green Object", 65, 60, 60, 80, 255, 255, 65, 60, 160, 80, 255, 179);
+
+		// green Object
+	     	thread t2(task1, "Green Object", 65, 60, 60, 80, 255, 255, 65, 60, 160, 80, 255, 179);
 		t2.join();
+
+		// add to the original frame the location of the red Object
 		imgOriginalTotal = imgOriginalTotal + imgLines;
 		imshow("Thresholded Green", imgThresholded); //show the thresholded image
 
+		// blue Object
 		thread t3(task1, "Blue Object", 90, 130, 60, 140, 255, 255, 100, 170, 80, 140, 255, 255);
 		t3.join();
 		imgOriginal = imgOriginal + imgLines;
 		imshow("Thresholded Blue", imgThresholded); //show the thresholded image
 
+		// show the location of all the objects in the original frame
 		imshow("Original", imgOriginalTotal); //show the original image
+
+
+		//// Detect a Face
 
 		//wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
 		if (waitKey(30) == 27) 
