@@ -16,7 +16,7 @@ static void help()
                "   [--nested-cascade[=nested_cascade_path this an optional secondary classifier such as eyes]]\n"
                "   [--scale=<image scale greater or equal to 1, try 1.3 for example>]\n"
                "   [--try-flip]\n"
-               "   [filename|camera_index]\n\n"
+               "   [camera_index]\n\n"
             "see facedetect.cmd for one call:\n"
             "./FaceHaar --cascade=\"../../data/haarcascades/haarcascade_frontalface_alt.xml\" --nested-cascade=\"../../data/haarcascades/haarcascade_eye_tree_eyeglasses.xml\" --scale=1.3\n\n"
             "During execution:\n\tHit any key to quit.\n"
@@ -32,125 +32,68 @@ string nestedCascadeName;
 
 int main( int argc, const char** argv )
 {
-    VideoCapture capture;
-    Mat frame, image;
-    string inputName;
-    bool tryflip;
-    CascadeClassifier cascade, nestedCascade;
-    double scale;
+	VideoCapture capture;
+	Mat frame, image;
+	string inputName;
+	bool tryflip;
+	CascadeClassifier cascade, nestedCascade;
+	double scale;
 
-    cv::CommandLineParser parser(argc, argv,
-        "{help h||}"
-        "{cascade|../../data/haarcascades/haarcascade_frontalface_alt.xml|}"
-        "{nested-cascade|../../data/haarcascades/haarcascade_eye_tree_eyeglasses.xml|}"
-        "{scale|1|}{try-flip||}{@filename||}"
-    );
-    if (parser.has("help"))
-    {
-        help();
-        return 0;
-    }
-    cascadeName = parser.get<string>("cascade");
-    nestedCascadeName = parser.get<string>("nested-cascade");
-    scale = parser.get<double>("scale");
-    if (scale < 1)
-        scale = 1;
-    tryflip = parser.has("try-flip");
-    inputName = parser.get<string>("@filename");
-    if (!parser.check())
-    {
-        parser.printErrors();
-        return 0;
-    }
-    if ( !nestedCascade.load( nestedCascadeName ) )
-        cerr << "WARNING: Could not load classifier cascade for nested objects" << endl;
-    if( !cascade.load( cascadeName ) )
-    {
-        cerr << "ERROR: Could not load classifier cascade" << endl;
-        help();
-        return -1;
-    }
-    if( inputName.empty() || (isdigit(inputName[0]) && inputName.size() == 1) )
-    {
-        int camera = inputName.empty() ? 0 : inputName[0] - '0';
-        if(!capture.open(camera))
-            cout << "Capture from camera #" <<  camera << " didn't work" << endl;
-    }
-    else if( inputName.size() )
-    {
-        image = imread( inputName, 1 );
-        if( image.empty() )
-        {
-            if(!capture.open( inputName ))
-                cout << "Could not read " << inputName << endl;
-        }
-    }
-    else
-    {
-        image = imread( "../data/lena.jpg", 1 );
-        if(image.empty()) cout << "Couldn't read ../data/lena.jpg" << endl;
-    }
+	cv::CommandLineParser parser(argc, argv,
+		"{help h||}"
+		"{cascade|../../data/haarcascades/haarcascade_frontalface_alt.xml|}"
+		"{nested-cascade|../../data/haarcascades/haarcascade_eye_tree_eyeglasses.xml|}"
+		"{scale|1|}{try-flip||}{@filename||}"
+		);
+	if (parser.has("help"))
+	{
+		help();
+		return 0;
+	}
+	cascadeName = parser.get<string>("cascade");
+	nestedCascadeName = parser.get<string>("nested-cascade");
+	scale = parser.get<double>("scale");
+	if (scale < 1) scale = 1;
+	tryflip = parser.has("try-flip");
+	if (!parser.check())
+	{
+		parser.printErrors();
+		return 0;
+	}
+	if ( !nestedCascade.load( nestedCascadeName ) )
+		cerr << "WARNING: Could not load classifier cascade for nested objects" << endl;
+	if( !cascade.load( cascadeName ) )
+	{
+		cerr << "ERROR: Could not load classifier cascade" << endl;
+		help();
+		return -1;
+	}
 
-    if( capture.isOpened() )
-    {
-        cout << "Video capturing has been started ..." << endl;
+	capture.open(0);
+	if( capture.isOpened() )
+	{
+	cout << "Video capturing has been started ..." << endl;
 
-        for(;;)
-        {
-            capture >> frame;
-            if( frame.empty() )
-                break;
+		for(;;)
+		{
+			capture >> frame;
+			if( frame.empty() )
+			break;
 
-            Mat frame1 = frame.clone();
-            detectAndDraw( frame1, cascade, nestedCascade, scale, tryflip );
+			Mat frame1 = frame.clone();
+			detectAndDraw( frame1, cascade, nestedCascade, scale, tryflip );
 
-            char c = (char)waitKey(10);
-            if( c == 27 || c == 'q' || c == 'Q' )
-                break;
-        }
-    }
-    else
-    {
-        cout << "Detecting face(s) in " << inputName << endl;
-        if( !image.empty() )
-        {
-            detectAndDraw( image, cascade, nestedCascade, scale, tryflip );
-            waitKey(0);
-        }
-        else if( !inputName.empty() )
-        {
-            /* assume it is a text file containing the
-            list of the image filenames to be processed - one per line */
-            FILE* f = fopen( inputName.c_str(), "rt" );
-            if( f )
-            {
-                char buf[1000+1];
-                while( fgets( buf, 1000, f ) )
-                {
-                    int len = (int)strlen(buf);
-                    while( len > 0 && isspace(buf[len-1]) )
-                        len--;
-                    buf[len] = '\0';
-                    cout << "file " << buf << endl;
-                    image = imread( buf, 1 );
-                    if( !image.empty() )
-                    {
-                        detectAndDraw( image, cascade, nestedCascade, scale, tryflip );
-                        char c = (char)waitKey(0);
-                        if( c == 27 || c == 'q' || c == 'Q' )
-                            break;
-                    }
-                    else
-                    {
-                        cerr << "Aw snap, couldn't read image " << buf << endl;
-                    }
-                }
-                fclose(f);
-            }
-        }
-    }
+			char c = (char)waitKey(10);
+			if( c == 27 || c == 'q' || c == 'Q' )
+			break;
+		}
+	}
+	else
+	{
+		cout << "Could not read Camera" << endl;
+	}
 
-    return 0;
+	return 0;
 }
 
 void detectAndDraw( Mat& img, CascadeClassifier& cascade,
