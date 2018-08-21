@@ -12,3 +12,6 @@
 	- time
 	- Ball location
 	- What it is looking: Ball, Marker, Face
+
+# what to do:
+1. for onlineStream dont forget to clean the code of the hhi and icub folders
