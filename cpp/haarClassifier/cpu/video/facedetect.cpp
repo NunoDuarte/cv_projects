@@ -18,7 +18,7 @@ static void help()
                "   [--try-flip]\n"
                "   [filename|camera_index]\n\n"
             "see facedetect.cmd for one call:\n"
-            "./facedetect --cascade=\"../../data/haarcascades/haarcascade_frontalface_alt.xml\" --nested-cascade=\"../../data/haarcascades/haarcascade_eye_tree_eyeglasses.xml\" --scale=1.3\n\n"
+            "./FaceHaar --cascade=\"../../data/haarcascades/haarcascade_frontalface_alt.xml\" --nested-cascade=\"../../data/haarcascades/haarcascade_eye_tree_eyeglasses.xml\" --scale=1.3\n\n"
             "During execution:\n\tHit any key to quit.\n"
             "\tUsing OpenCV version " << CV_VERSION << "\n" << endl;
 }

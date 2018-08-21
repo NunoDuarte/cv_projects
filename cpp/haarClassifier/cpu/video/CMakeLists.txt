@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 
 # produce the cmake var PROJECT_NAME
-project(haarClassifier)
+project(FaceHaar)
 
 
 find_package( OpenCV REQUIRED )

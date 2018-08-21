@@ -1,0 +1,8 @@
+# video
+1. mkdir build
+2. cd build
+3. ccmake ..
+4. CUDA_TOOLKIT_DIR = /usr/local/cuda-8.0
+5. OpenCV_dir = /home/nduarte/software/opencv-..-../build
+6. ./haarClassifier --cascade=/home/nduarte/Documents/openCVdevelop/haarClassifiers/haarCascades/original/haarcascade_frontalface_default.xml 
+
