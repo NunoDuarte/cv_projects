@@ -31,7 +31,7 @@ include_directories(${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS})
 
 # executable
 add_executable(${PROJECT_NAME} 
-		               	${CMAKE_SOURCE_DIR}/multithreading.cpp
+		               	${CMAKE_SOURCE_DIR}/multiobject.cpp
 				)
 
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
