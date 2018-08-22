@@ -118,6 +118,8 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade,
 {
     double t = 0;
     vector<Rect> faces, faces2;
+
+    // different colors for different faces detected
     const static Scalar colors[] =
     {
         Scalar(255,0,0),
@@ -129,21 +131,29 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade,
         Scalar(0,0,255),
         Scalar(255,0,255)
     };
-    Mat gray, smallImg;
+    Mat gray, blurred, thresh, smallImg;
 
+    // cv2 - convert RGB to Gray scale
     cvtColor( img, gray, COLOR_BGR2GRAY );
-    double fx = 1 / scale;
-    resize( gray, smallImg, Size(), fx, fx, INTER_LINEAR_EXACT );
-    equalizeHist( smallImg, smallImg );
+    // cv2 - blur the gray image
+    GaussianBlur( gray, blurred, Size( 31,31), 0);
+
+    // cv2 - Threshold the blurred image
+    threshold( blurred, thresh, 127, 255, THRESH_TOZERO);
+
+    //double fx = 1 / scale;
+    //resize( thresh, smallImg, Size(), fx, fx, INTER_LINEAR_EXACT );
+    //equalizeHist( smallImg, smallImg );
 
     t = (double)getTickCount();
-    cascade.detectMultiScale( smallImg, faces,
-        1.1, 2, 0
+    cascade.detectMultiScale( thresh, faces,
+        1.1, 1//, 0
         //|CASCADE_FIND_BIGGEST_OBJECT
         //|CASCADE_DO_ROUGH_SEARCH
-        |CASCADE_SCALE_IMAGE,
-        Size(30, 30) );
-    if( tryflip )
+        |CASCADE_SCALE_IMAGE
+        //Size(30, 30) 
+	);
+    /*if( tryflip )
     {
         flip(smallImg, smallImg, 1);
         cascade.detectMultiScale( smallImg, faces2,
@@ -156,9 +166,10 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade,
         {
             faces.push_back(Rect(smallImg.cols - r->x - r->width, r->y, r->width, r->height));
         }
-    }
+    }*/
     t = (double)getTickCount() - t;
     printf( "detection time = %g ms\n", t*1000/getTickFrequency());
+    printf("number of faces = %d \n", faces.size());
     for ( size_t i = 0; i < faces.size(); i++ )
     {
         Rect r = faces[i];
