@@ -137,7 +137,6 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade,
     cvtColor( img, gray, COLOR_BGR2GRAY );
     // cv2 - blur the gray image
     GaussianBlur( gray, blurred, Size( 31,31), 0);
-
     // cv2 - Threshold the blurred image
     threshold( blurred, thresh, 127, 255, THRESH_TOZERO);
 
@@ -193,14 +192,8 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade,
                        color, 3, 8, 0);
         if( nestedCascade.empty() )
             continue;
-        smallImgROI = smallImg( r );
-        nestedCascade.detectMultiScale( smallImgROI, nestedObjects,
-            1.1, 2, 0
-            //|CASCADE_FIND_BIGGEST_OBJECT
-            //|CASCADE_DO_ROUGH_SEARCH
-            //|CASCADE_DO_CANNY_PRUNING
-            |CASCADE_SCALE_IMAGE,
-            Size(30, 30) );
+        smallImgROI = thresh( r );
+        nestedCascade.detectMultiScale( thresh, nestedObjects);
         for ( size_t j = 0; j < nestedObjects.size(); j++ )
         {
             Rect nr = nestedObjects[j];
