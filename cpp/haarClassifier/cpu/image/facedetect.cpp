@@ -140,12 +140,12 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade,
     // cv2 - Threshold the blurred image
     threshold( blurred, thresh, 127, 255, THRESH_TOZERO);
 
-    double fx = 1 / scale;
-    resize( thresh, smallImg, Size(), fx, fx, INTER_LINEAR_EXACT );
-    equalizeHist( smallImg, smallImg );
+    //double fx = 1 / scale;
+    //resize( thresh, smallImg, Size(), fx, fx, INTER_LINEAR_EXACT );
+    //equalizeHist( smallImg, smallImg );
 
     t = (double)getTickCount();
-    cascade.detectMultiScale( smallImg, faces,
+    cascade.detectMultiScale( thresh, faces,
         1.1, 1//, 0
         //|CASCADE_FIND_BIGGEST_OBJECT
         //|CASCADE_DO_ROUGH_SEARCH
@@ -188,11 +188,11 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade,
         }
         else
             rectangle( img, cvPoint(cvRound(r.x*scale), cvRound(r.y*scale)),
-                       cvPoint(cvRound((r.x + r.width-1)*scale), cvRound((r.y + r.height-1)*scale)),
-                       color, 3, 8, 0);
-        if( nestedCascade.empty() )
+                       cvPoint(cvRound((r.x + r.width-1)*scale), cvRound((r.y + r.height-1)*scale)),color, 3, 8, 0);
+        
+	if( nestedCascade.empty() )
             continue;
-        smallImgROI = smallImg( r );
+        smallImgROI = thresh( r );
         nestedCascade.detectMultiScale( smallImgROI, nestedObjects);
         for ( size_t j = 0; j < nestedObjects.size(); j++ )
         {
