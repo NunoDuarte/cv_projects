@@ -199,13 +199,12 @@ int main(int argc, char** argv)
 			 break;
 		}
 
-
 		//// Read the Different Objects
 		// save the original frame		
 		imgOriginalTotal = imgOriginal;
 
 		// red Object
-		thread t1(task1, "Red Object", 0, 100, 100, 10, 255, 255,	160, 100, 100, 179, 255, 255);
+		thread t1(task1, "Red Object", 0, 100, 100, 10, 255, 255, 160, 100, 100, 179, 255, 255);
 		t1.join();
 
 		// add to the original frame the location of the red Object
