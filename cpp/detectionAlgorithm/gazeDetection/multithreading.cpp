@@ -135,12 +135,15 @@ void detectAndDisplay( Mat frame )
 		//-- In each face, detect eyes
 		eyes_cascade.detectMultiScale( faceROI, eyes);
 
-		for( size_t j = 0; j < eyes.size(); j++ )
+		if (eyes.size() > 1 and eyes.size() < 3)
 		{
-			ellipse( frame, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
-			Point center( faces[i].x + eyes[j].x + eyes[j].width*0.5, faces[i].y + eyes[j].y + eyes[j].height*0.5 );
-			int radius = cvRound( (eyes[j].width + eyes[j].height)*0.25 );
-			circle( frame, center, radius, Scalar( 255, 0, 0 ), 4, 8, 0 );
+			for( size_t j = 0; j < eyes.size(); j++ )
+			{
+				ellipse( frame, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
+				Point center( faces[i].x + eyes[j].x + eyes[j].width*0.5, faces[i].y + eyes[j].y + eyes[j].height*0.5 );
+				int radius = cvRound( (eyes[j].width + eyes[j].height)*0.25 );
+				circle( frame, center, radius, Scalar( 255, 0, 0 ), 4, 8, 0 );
+			}
 			detected = true;
 			break;
 		}
@@ -234,7 +237,7 @@ int main(int argc, char** argv)
 		//imshow("Thresholded Blue", imgThresholded); //show the thresholded image
 
 		// show the location of all the objects in the original frame
-		imshow("Original", imgOriginalTotal); //show the original image
+		//imshow("Original", imgOriginalTotal); //show the original image
 
 		// Face Detection
 		thread t4(task2, "Face");
