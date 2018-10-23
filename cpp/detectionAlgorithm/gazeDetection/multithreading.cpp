@@ -122,11 +122,12 @@ void detectAndDisplay( Mat frame )
 
 	//-- Detect faces
 	face_cascade.detectMultiScale( gray, faces, 1.1, 1, 0|CV_HAAR_SCALE_IMAGE);
+	bool detected = false;
 
 	for( size_t i = 0; i < faces.size(); i++ )
 	{
 		Point center( faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5 );
-		ellipse( frame, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
+		//ellipse( frame, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
 
 		Mat faceROI = gray( faces[i] );
 		std::vector<Rect> eyes;
@@ -136,10 +137,14 @@ void detectAndDisplay( Mat frame )
 
 		for( size_t j = 0; j < eyes.size(); j++ )
 		{
+			ellipse( frame, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
 			Point center( faces[i].x + eyes[j].x + eyes[j].width*0.5, faces[i].y + eyes[j].y + eyes[j].height*0.5 );
 			int radius = cvRound( (eyes[j].width + eyes[j].height)*0.25 );
 			circle( frame, center, radius, Scalar( 255, 0, 0 ), 4, 8, 0 );
+			detected = true;
+			break;
 		}
+		if (detected) break;
 	}
 	frame = imgOriginal;
 }
