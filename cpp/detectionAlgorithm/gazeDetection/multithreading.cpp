@@ -196,64 +196,66 @@ int main(int argc, char** argv)
 	if( !face_cascade.load( face_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
 	if( !eyes_cascade.load( eyes_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
 
+	int i = 0;
 	while (true)
 	{
+		i++;
+		if (i%2 == 0){
+			bool bSuccess = cap.read(imgOriginal); // read a new frame from video
 
-		bool bSuccess = cap.read(imgOriginal); // read a new frame from video
+			if (!bSuccess) //if not success, break loop
+			{
+				 cout << "Cannot read a frame from video stream" << endl;
+				 break;
+			}
 
-		if (!bSuccess) //if not success, break loop
-		{
-			 cout << "Cannot read a frame from video stream" << endl;
-			 break;
-		}
+			//// Read the Different Objects
+			// save the original frame		
+			imgOriginalTotal = imgOriginal;
 
-		//// Read the Different Objects
-		// save the original frame		
-		imgOriginalTotal = imgOriginal;
+			// red Object
+			thread t1(task1, "Red Object", 0, 100, 100, 10, 255, 255, 160, 100, 100, 179, 255, 255);
+			t1.join();
 
-		// red Object
-		thread t1(task1, "Red Object", 0, 100, 100, 10, 255, 255, 160, 100, 100, 179, 255, 255);
-		t1.join();
+			// add to the original frame the location of the red Object
+			imgOriginalTotal = imgOriginalTotal + imgLines;
+			//imshow("Thresholded Red", imgThresholded); //show the thresholded image
 
-		// add to the original frame the location of the red Object
-		imgOriginalTotal = imgOriginalTotal + imgLines;
-		//imshow("Thresholded Red", imgThresholded); //show the thresholded image
+			imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );;
+			imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );;
 
-		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );;
-		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );;
+			// green Object
+		     	thread t2(task1, "Green Object", 65, 60, 60, 80, 255, 255, 65, 60, 160, 80, 255, 179);
+			t2.join();
 
-		// green Object
-	     	thread t2(task1, "Green Object", 65, 60, 60, 80, 255, 255, 65, 60, 160, 80, 255, 179);
-		t2.join();
+			// add to the original frame the location of the red Object
+			imgOriginalTotal = imgOriginalTotal + imgLines;
+			//imshow("Thresholded Green", imgThresholded); //show the thresholded image
 
-		// add to the original frame the location of the red Object
-		imgOriginalTotal = imgOriginalTotal + imgLines;
-		//imshow("Thresholded Green", imgThresholded); //show the thresholded image
+			// blue Object
+			thread t3(task1, "Blue Object", 90, 130, 60, 140, 255, 255, 100, 170, 80, 140, 255, 255);
+			t3.join();
+			imgOriginal = imgOriginal + imgLines;
+			//imshow("Thresholded Blue", imgThresholded); //show the thresholded image
 
-		// blue Object
-		thread t3(task1, "Blue Object", 90, 130, 60, 140, 255, 255, 100, 170, 80, 140, 255, 255);
-		t3.join();
-		imgOriginal = imgOriginal + imgLines;
-		//imshow("Thresholded Blue", imgThresholded); //show the thresholded image
+			// show the location of all the objects in the original frame
+			//imshow("Original", imgOriginalTotal); //show the original image
 
-		// show the location of all the objects in the original frame
-		//imshow("Original", imgOriginalTotal); //show the original image
+			// Face Detection
+			thread t4(task2, "Face");
 
-		// Face Detection
-		thread t4(task2, "Face");
-
-		t4.join();
-		//-- Show what you got
-		imshow("Faces", imgOriginal);
+			t4.join();
+			//-- Show what you got
+			imshow("Faces", imgOriginal);
 	
 
-		//wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
-		if (waitKey(30) == 27) 
-		{
-			cout << "esc key is pressed by user" << endl;
-			break; 
+			//wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
+			if (waitKey(30) == 27) 
+			{
+				cout << "esc key is pressed by user" << endl;
+				break; 
+			}
 		}
-
 	}
 
 }
