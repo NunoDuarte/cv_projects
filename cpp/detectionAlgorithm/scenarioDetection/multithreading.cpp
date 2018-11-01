@@ -40,6 +40,26 @@ CascadeClassifier eyes_cascade;
 string window_name = "Capture - Face detection";
 RNG rng(12345);
 
+double t = 0.0;
+const double fps1 = 100.0;
+const double fps2 = 10.0;
+
+const double t1 = 1.0 / fps1;
+const double t2 = 1.0 / fps2;
+
+// true - drop the frame
+// false - do NOT drop the frame
+bool NextTick()
+{
+  t += t1;
+  if ( t > t2 )
+  {
+    t -= t2;
+    return false;
+  }
+  return true;
+}
+
 
 void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded, int iLowHb, int iLowSb, int iLowVb, int iHighHb, int iHighSb, int iHighVb, int iLowHd, int iLowSd, int iLowVd, int iHighHd, int iHighSd, int iHighVd)
 {
@@ -199,22 +219,20 @@ int main(int argc, char** argv)
 	int i = 0;
 	while (true)
 	{
-		i++;
-		if (i%2 == 0){
-			bool bSuccess = cap.read(imgOriginal); // read a new frame from video
+		bool bSuccess = cap.grab(); // read a new frame from video
 
-			double fps = cap.get(CV_CAP_PROP_FPS);
-			// If you do not care about backward compatibility
-			// You can use the following instead for OpenCV 3
-			// double fps = video.get(CAP_PROP_FPS);
-			cout << "Frames per second using video.get(CV_CAP_PROP_FPS) : " << fps << endl;
-
-			if (!bSuccess) //if not success, break loop
-			{
-				 cout << "Cannot read a frame from video stream" << endl;
-				 break;
-			}
-
+		if (!bSuccess) //if not success, break loop
+		{
+			cout << "Cannot read a frame from video stream" << endl;
+			break;
+		}
+		if (NextTick()){
+		  	//std::cout<<"dropping the frame"<<std::endl;
+		}		
+		else
+		{
+			//std::cout<<"display the frame"<<std::endl;
+			bool bSuccess = cap.retrieve(imgOriginal);
 			//// Read the Different Objects
 			// save the original frame		
 			imgOriginalTotal = imgOriginal;
@@ -255,13 +273,14 @@ int main(int argc, char** argv)
 			imshow("Faces", imgOriginal);
 	
 
-			//wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
-			if (waitKey(30) == 27) 
-			{
-				cout << "esc key is pressed by user" << endl;
-				break; 
-			}
 		}
+		//wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
+		if (waitKey(30) == 27) 
+		{
+			cout << "esc key is pressed by user" << endl;
+			break; 
+		}
+
 	}
 
 }
