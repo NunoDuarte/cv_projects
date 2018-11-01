@@ -203,6 +203,12 @@ int main(int argc, char** argv)
 		if (i%2 == 0){
 			bool bSuccess = cap.read(imgOriginal); // read a new frame from video
 
+			double fps = cap.get(CV_CAP_PROP_FPS);
+			// If you do not care about backward compatibility
+			// You can use the following instead for OpenCV 3
+			// double fps = video.get(CAP_PROP_FPS);
+			cout << "Frames per second using video.get(CV_CAP_PROP_FPS) : " << fps << endl;
+
 			if (!bSuccess) //if not success, break loop
 			{
 				 cout << "Cannot read a frame from video stream" << endl;
