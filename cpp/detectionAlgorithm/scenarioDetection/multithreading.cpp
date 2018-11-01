@@ -41,7 +41,7 @@ string window_name = "Capture - Face detection";
 RNG rng(12345);
 
 double t = 0.0;
-const double fps1 = 100.0;
+const double fps1 = 50.0;
 const double fps2 = 10.0;
 
 const double t1 = 1.0 / fps1;
@@ -182,6 +182,9 @@ int main(int argc, char** argv)
 		cout << "Cannot open the web cam" << endl;
 		return -1;
 	}
+
+	// set camera resolution
+	//cout << "Resolution" << cap.get(CV_CAP_PROP_FRAME_WIDTH) << cap.get(CV_CAP_PROP_FRAME_HEIGHT) << endl;
 
 	iLowHb = 0;
 	iHighHb = 10;
