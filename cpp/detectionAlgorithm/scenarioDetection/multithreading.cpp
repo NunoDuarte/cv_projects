@@ -4,6 +4,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/objdetect/objdetect.hpp" 	// for cascade classifier
+#include "include/lsl_cpp.h"
 
 using namespace cv;
 using namespace std;
@@ -174,6 +175,21 @@ void detectAndDisplay( Mat frame )
 
 int main(int argc, char** argv)
 {
+
+	/*cout << "Now resolving streams..." << endl;
+	cout << "looking for an NormPose2IP stream..." << endl;
+	vector<lsl::stream_info> results = lsl::resolve_stream("name", "NormPose2IP");
+
+	cout << "Here is what was resolved: " << endl;
+	cout << results[0].as_xml() << endl;
+
+	// make an inlet to get data from it
+	cout << "Now creating the inlet..." << endl;
+	lsl::stream_inlet inlet(results[0]);
+
+	// start receiving & displaying the data
+	cout << "Now pulling samples..." << endl;
+*/
 
 	VideoCapture cap(0); //capture the video from webcam
 
