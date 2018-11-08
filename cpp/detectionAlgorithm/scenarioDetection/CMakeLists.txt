@@ -74,7 +74,7 @@ target_link_libraries( ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT} )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
           
-# this creates a target, links the necessary libraries and
+# this creates a target, links the necessary libraries and creates an install target for LSL packages
 target_link_libraries(${PROJECT_NAME} PRIVATE LSL::lsl)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_constexpr)
 installLSLApp(${PROJECT_NAME})
