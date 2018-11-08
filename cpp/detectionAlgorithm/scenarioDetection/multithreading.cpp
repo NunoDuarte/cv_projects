@@ -176,7 +176,7 @@ void detectAndDisplay( Mat frame )
 int main(int argc, char** argv)
 {
 
-	/*cout << "Now resolving streams..." << endl;
+	cout << "Now resolving streams..." << endl;
 	cout << "looking for an NormPose2IP stream..." << endl;
 	vector<lsl::stream_info> results = lsl::resolve_stream("name", "NormPose2IP");
 
@@ -189,7 +189,7 @@ int main(int argc, char** argv)
 
 	// start receiving & displaying the data
 	cout << "Now pulling samples..." << endl;
-*/
+
 
 	VideoCapture cap(0); //capture the video from webcam
 
