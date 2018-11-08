@@ -4,16 +4,27 @@ cmake_minimum_required(VERSION 2.8.9)
 # produce the cmake var PROJECT_NAME
 project(multiObjects)
 
+# load LSLAppBoilerplate if not done already
 if(NOT TARGET LSL::lsl)
-	# when building out of tree LSL_ROOT needs to be specified on the cmd line
-	list(APPEND LSL_INSTALL_ROOT "/home/nduarte/Documents/pupil/labstreaminglayer/build/install")
-	find_package(LSL HINTS ${LSL_INSTALL_ROOT}/lsl_Release/LSL ${LSL_INSTALL_ROOT}/lsl_Release/LSL QUIET)
-	if(NOT LSL_FOUND)
-		message(FATAL_ERROR "Precompiled LSL was not found. Set LSL_INSTALL_ROOT to the LSL installation path ( cmake -DLSL_INSTALL_ROOT=/path/to/installed/lsl)")
-	endif()
-	list(APPEND CMAKE_MODULE_PATH ${LSL_DIR})
-	message(STATUS "Looking for LSLCMake in ${LSL_DIR}")
-	include(LSLCMake)
+    if(NOT LSL_INSTALL_ROOT)
+        # If building the app out of tree, the user is expected to supply LSL_INSTALL_ROOT.
+        # This default directory is may be wrong for you. Ignore it.
+        # Just supply -DLSL_INSTALL_ROOT=/path/to/installed/lsl to the cmake command.
+        set(LSL_INSTALL_ROOT "/home/nduarte/Documents/pupil/labstreaminglayer")
+        set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_DIR}/../../build/install/lsl_Release")
+        get_filename_component(LSL_INSTALL_ROOT ${LSL_INSTALL_ROOT} ABSOLUTE)
+        if(NOT EXISTS ${LSL_INSTALL_ROOT})
+            message(FATAL_ERROR "When building a single app out of tree you need to set LSL_INSTALL_ROOT ( cmake -DLSL_INSTALL_ROOT=/path/to/installed/lsl)")
+        endif()
+    endif()
+    if(NOT IS_ABSOLUTE ${LSL_INSTALL_ROOT})
+        message(FATAL_ERROR "LSL_INSTALL_ROOT needs to be an absolute path")
+    endif()
+    file(TO_CMAKE_PATH ${LSL_INSTALL_ROOT} LSL_INSTALL_ROOT)
+    list(APPEND CMAKE_MODULE_PATH "${LSL_INSTALL_ROOT}/cmake")
+    include(LSLAppBoilerplate)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../../cmake")
+    include(LSLSaneDefaults)
 endif()
 
 find_package( Threads )
