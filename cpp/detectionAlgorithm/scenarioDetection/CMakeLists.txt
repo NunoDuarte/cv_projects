@@ -27,18 +27,6 @@ if(NOT TARGET LSL::lsl)
     include(LSLSaneDefaults)
 endif()
 
-# convenience function to add an example file
-# this creates a target, links the necessary libraries and
-# creates an install target
-#function(addlslexample name extension)
-#	add_executable(${name}
-#		${name}.${extension}
-#	)
-#	target_link_libraries(${name} PRIVATE LSL::lsl)
-#	target_compile_features(${name} PRIVATE cxx_constexpr)
-#	installLSLApp(${name})
-#endfunction()
-
 find_package( Threads )
 
 set(CMAKE_CXX_STANDARD 11)
