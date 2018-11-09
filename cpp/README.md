@@ -9,7 +9,7 @@ This folder is the main repository for the c++ modules that are separated into s
 2. haar Classifier [haarClassifier](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/haarClassifier)
 4. video Camera [videoCamera](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/videoCamera)
 
-# inside detection Algorithm
+### inside detection Algorithm
 1. color Dectection [colorDetection](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/detectionAlgorithm/colorDetection)
 2. color Dectection [colorDetection](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/detectionAlgorithm/colorDetection)
 3. object Detection [objectDetection](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/detectionAlgorithm/objectDetection)
