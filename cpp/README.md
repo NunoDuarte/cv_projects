@@ -11,7 +11,7 @@ This folder is the main repository for the c++ modules that are separated into s
 
 ### inside detection Algorithm
 1. color Dectection [colorDetection](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/detectionAlgorithm/colorDetection)
-2. color Dectection [colorDetection](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/detectionAlgorithm/colorDetection)
+2. gaze Dectection [gazeDetection](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/detectionAlgorithm/gazeDetection)
 3. object Detection [objectDetection](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/detectionAlgorithm/objectDetection)
 4. scenario Detection [scenarioDetection](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/detectionAlgorithm/scenarioDetection)
 
