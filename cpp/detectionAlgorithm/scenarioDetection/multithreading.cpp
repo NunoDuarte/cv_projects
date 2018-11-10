@@ -178,14 +178,14 @@ int main(int argc, char** argv)
 
 	cout << "Now resolving streams..." << endl;
 	cout << "looking for an NormPose2IP stream..." << endl;
-	vector<lsl::stream_info> results = lsl::resolve_stream("name", "NormPose2IP");
+	//vector<lsl::stream_info> results = lsl::resolve_stream("name", "NormPose2IP");
 
 	cout << "Here is what was resolved: " << endl;
-	cout << results[0].as_xml() << endl;
+	//cout << results[0].as_xml() << endl;
 
 	// make an inlet to get data from it
 	cout << "Now creating the inlet..." << endl;
-	lsl::stream_inlet inlet(results[0]);
+	//lsl::stream_inlet inlet(results[0]);
 
 	// start receiving & displaying the data
 	cout << "Now pulling samples..." << endl;
@@ -282,14 +282,14 @@ int main(int argc, char** argv)
 			//imshow("Thresholded Blue", imgThresholded); //show the thresholded image
 
 			// show the location of all the objects in the original frame
-			//imshow("Original", imgOriginalTotal); //show the original image
+			imshow("Original", imgOriginalTotal); //show the original image
 
 			// Face Detection
-			thread t4(task2, "Face");
+			//thread t4(task2, "Face");
 
-			t4.join();
+			//t4.join();
 			//-- Show what you got
-			imshow("Faces", imgOriginal);
+			//imshow("Faces", imgOriginal);
 	
 
 		}
