@@ -187,6 +187,11 @@ int main(int argc, char** argv)
 	cout << "Now creating the inlet..." << endl;
 	lsl::stream_inlet inlet(results[0]);
 
+	// make a new stream_info (nchannelsch) and open an outlet with it
+	lsl::stream_info info("GazePose", "NormPose2IP", 4, 100, lsl::cf_float32, "myuid34234");
+	info.desc().append_child_value("manufacturer", "VisLab");
+	lsl::stream_outlet outlet(info);
+
 	// start receiving & displaying the data
 	cout << "Now pulling samples..." << endl;
 
