@@ -178,14 +178,14 @@ int main(int argc, char** argv)
 
 	cout << "Now resolving streams..." << endl;
 	cout << "looking for an NormPose2IP stream..." << endl;
-	//vector<lsl::stream_info> results = lsl::resolve_stream("name", "NormPose2IP");
+	vector<lsl::stream_info> results = lsl::resolve_stream("name", "NormPose2IP");
 
 	cout << "Here is what was resolved: " << endl;
-	//cout << results[0].as_xml() << endl;
+	cout << results[0].as_xml() << endl;
 
 	// make an inlet to get data from it
 	cout << "Now creating the inlet..." << endl;
-	//lsl::stream_inlet inlet(results[0]);
+	lsl::stream_inlet inlet(results[0]);
 
 	// start receiving & displaying the data
 	cout << "Now pulling samples..." << endl;
@@ -250,6 +250,17 @@ int main(int argc, char** argv)
 		}		
 		else
 		{
+
+			// getting sample from inlet
+			std::vector<float> sample;
+			double ts;
+			// get the sample and timestamp
+			 ts = inlet.pull_sample(sample);
+			// display
+			std::cout << ts << ':';
+			for (auto c: sample) std::cout << "\t" << c;
+			std::cout << std::endl;
+
 			//std::cout<<"display the frame"<<std::endl;
 			bool bSuccess = cap.retrieve(imgOriginal);
 			//// Read the Different Objects
