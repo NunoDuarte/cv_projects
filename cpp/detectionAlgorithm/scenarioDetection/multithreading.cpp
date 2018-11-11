@@ -254,11 +254,13 @@ int main(int argc, char** argv)
 			std::vector<float> sample;
 			double ts;
 			// get the sample and timestamp
-			 ts = inlet.pull_sample(sample);
-			// display
-			std::cout << ts << ':';
-			for (auto c: sample) std::cout << "\t" << c;
-			std::cout << std::endl;
+			if (ts = inlet.pull_chunk_numeric_structs(sample)){
+				cout << ts << endl; // only showing the time stamps here
+				// display
+				cout << ts << ':';
+				for (auto c: sample) cout << "\t" << c;
+				cout << endl;
+			}
 
 			bool bSuccess = cap.retrieve(imgOriginal);
 			//// Read the Different Objects
