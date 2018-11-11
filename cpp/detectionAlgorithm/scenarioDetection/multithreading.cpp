@@ -250,7 +250,6 @@ int main(int argc, char** argv)
 		}		
 		else
 		{
-
 			// getting sample from inlet
 			std::vector<float> sample;
 			double ts;
@@ -261,7 +260,6 @@ int main(int argc, char** argv)
 			for (auto c: sample) std::cout << "\t" << c;
 			std::cout << std::endl;
 
-			//std::cout<<"display the frame"<<std::endl;
 			bool bSuccess = cap.retrieve(imgOriginal);
 			//// Read the Different Objects
 			// save the original frame		
