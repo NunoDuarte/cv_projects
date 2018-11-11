@@ -300,9 +300,10 @@ int main(int argc, char** argv)
 
 				float pos_x = sample[0];
 				float pos_y = sample[1];
+
+				// Draw a circle 
+				circle(imgOriginalTotal,Point(int(pos_x*(cap.get(CV_CAP_PROP_FRAME_WIDTH))), int(cap.get(CV_CAP_PROP_FRAME_HEIGHT) - int(pos_y*int(cap.get(CV_CAP_PROP_FRAME_HEIGHT))))), 10, Scalar(0,255, 1), 5, 8);
 			}
-			// Draw a circle 
-			circle(imgOriginalTotal,Point(200, 200), 32.0, Scalar(0,0, 255), 1, 8);
 
 			// show the location of all the objects in the original frame
 			imshow("Original", imgOriginalTotal); //show the original image
