@@ -42,7 +42,7 @@ string window_name = "Capture - Face detection";
 RNG rng(12345);
 
 double t = 0.0;
-const double fps1 = 50.0;
+const double fps1 = 10.0;	// change when you want to cut frames
 const double fps2 = 10.0;
 
 const double t1 = 1.0 / fps1;
@@ -254,18 +254,6 @@ int main(int argc, char** argv)
 		}		
 		else
 		{
-			// getting sample from inlet
-			std::vector<float> sample;
-			double ts;
-			// get the sample and timestamp
-			if (ts = inlet.pull_chunk_numeric_structs(sample)){
-				cout << ts << endl; // only showing the time stamps here
-				// display
-				cout << ts << ':';
-				for (auto c: sample) cout << "\t" << c;
-				cout << endl;
-			}
-
 			bool bSuccess = cap.retrieve(imgOriginal);
 			//// Read the Different Objects
 			// save the original frame		
@@ -290,11 +278,31 @@ int main(int argc, char** argv)
 			imgOriginalTotal = imgOriginalTotal + imgLines;
 			//imshow("Thresholded Green", imgThresholded); //show the thresholded image
 
+			imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );;
+			imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );;
+
 			// blue Object
 			thread t3(task1, "Blue Object", 90, 130, 60, 140, 255, 255, 100, 170, 80, 140, 255, 255);
 			t3.join();
-			imgOriginal = imgOriginal + imgLines;
+			imgOriginalTotal = imgOriginalTotal + imgLines;
 			//imshow("Thresholded Blue", imgThresholded); //show the thresholded image
+
+			// getting sample from inlet
+			vector<float> sample;
+			double ts;
+			// get the sample and timestamp
+			if (ts = inlet.pull_chunk_numeric_structs(sample)){
+				cout << ts << endl; // only showing the time stamps here
+				// display
+				cout << ts << ':';
+				for (auto c: sample) cout << "\t" << c;
+				cout << endl;
+
+				float pos_x = sample[0];
+				float pos_y = sample[1];
+			}
+			// Draw a circle 
+			circle(imgOriginalTotal,Point(200, 200), 32.0, Scalar(0,0, 255), 1, 8);
 
 			// show the location of all the objects in the original frame
 			imshow("Original", imgOriginalTotal); //show the original image
