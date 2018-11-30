@@ -95,6 +95,25 @@ multipart.send(*Sub2DSocket);
         msgpack::object obj = oh.get();
         std::cout << obj << std::endl;  //=> ["Hello", "MessagePack"]
 */
+}
+    for(int i=0; i<100; i++)
+    {
+
+        zmq::message_t msg;
+        subscriber.recv(&msg);
+	std::string msg_str = std::string(static_cast<char*>(msg.data()), msg.size());
+
+	msgpack::object_handle oh = msgpack::unpack(msg_str.data(), msg_str.size());
+	msgpack::object obj = oh.get();
+	std::cout << obj << std::endl;
+
+        subscriber.recv(&msg);
+	msg_str = std::string(static_cast<char*>(msg.data()), msg.size());
+	oh = msgpack::unpack(msg_str.data(), msg_str.size());
+	obj = oh.get();
+	std::cout << obj << std::endl;
+
+        std::cout << "Received" << std::endl;
 
     }
     return 0;
