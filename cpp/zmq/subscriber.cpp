@@ -1,13 +1,14 @@
 #include <zmq.hpp>
 #include <string>
 #include <iostream>
+#include <msgpack.hpp>
 
 int main()
 {
     zmq::context_t context(1);
     std::cout << 1 << std::endl;
     zmq::socket_t subscriber(context, ZMQ_SUB);
-    subscriber.connect("tcp://127.0.0.1:36273"); //43597
+    subscriber.connect("tcp://127.0.0.1:35607"); //43597
     std::cout << 2 << std::endl;
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
@@ -34,24 +35,67 @@ int main()
     }
 */
 
-    while(true)
+
+/*zmq::message_t FirstFrame(FirstBuffer.size());
+memcpy(FirstFrame.data(), FirstBuffer.c_str(), FirstBuffer.size());
+
+msgpack::sbuffer SecondBuf;
+msgpack::pack(SecondBuf, DetectStruct.mode);
+
+zmq::message_t SecondFrame(SecondBuf.size());
+memcpy(SecondFrame.data(), SecondBuf.data(), SecondBuf.size());
+
+zmq::multipart_t multipart;
+
+multipart.add(std::move(FirstFrame));
+multipart.add(std::move(SecondFrame));
+
+multipart.send(*Sub2DSocket);
+*/
+    for(int i=0; i<1; i++)
     {
-        std::cout << 4 << std::endl;
         zmq::message_t env;
-        std::cout << 5 << std::endl;
         subscriber.recv(&env,0);
-        std::cout << 6 << std::endl;
         std::string env_str = std::string(static_cast<char*>(env.data()), env.size());
         std::cout << "Received envelope '" << env_str << "'" << std::endl;
 
  	std::cout << "" << std::endl;
 
         zmq::message_t msg;
-        subscriber.recv(&msg, 0);
-        std::string msg_str = std::string(static_cast<char*>(msg.data()), msg.size());
+        subscriber.recv(&msg);
+/*        std::string msg_str = std::string(static_cast<char*>(msg.data()), msg.size());
         std::cout << "Received '" << msg_str << "'" << std::endl;
 
-	break;
+        // serializes this object.
+        std::vector<std::string> vec;
+        vec.push_back(msg_str); */
+/*        vec.push_back("MessagePack");
+
+        // serialize it into simple buffer.
+        msgpack::sbuffer sbuf;
+        msgpack::pack(sbuf, vec);;
+*/
+
+/*
+	msgpack::unpacked unpacked_body;
+	msgpack::unpack(&unpacked_body, static_cast<const char*>(env.data()), env.size());
+	unpacked_body.get().convert(&data);
+*/
+
+	std::string msg_str = std::string(static_cast<char*>(msg.data()), msg.size());
+
+	msgpack::object_handle oh = msgpack::unpack(msg_str.data(), msg_str.size());
+	msgpack::object obj = oh.get();
+	std::cout << obj << std::endl;
+
+/*        // deserialize it.
+        msgpack::object_handle oh = msgpack::unpack(sbuf.data(), sbuf.size());
+
+        // print the deserialized object.
+        msgpack::object obj = oh.get();
+        std::cout << obj << std::endl;  //=> ["Hello", "MessagePack"]
+*/
+
     }
     return 0;
 }
