@@ -2,21 +2,14 @@
 #include <string>
 #include <iostream>
 
-bool send(zmq::socket_t& socket, const std::string& string) {
-    zmq::message_t message(string.size());
-    std::memcpy (message.data(), string.data(), string.size());
-    bool rc = socket.send (message);
-    return (rc);
-}
-
 int main()
 {
     zmq::context_t context(1);
     std::cout << 1 << std::endl;
     zmq::socket_t subscriber(context, ZMQ_SUB);
-    subscriber.connect("tcp://127.0.0.1:43597"); //43597
+    subscriber.connect("tcp://127.0.0.1:36273"); //43597
     std::cout << 2 << std::endl;
-    subscriber.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+    subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
     std::cout << 3 << std::endl;
 
@@ -51,10 +44,14 @@ int main()
         std::string env_str = std::string(static_cast<char*>(env.data()), env.size());
         std::cout << "Received envelope '" << env_str << "'" << std::endl;
 
+ 	std::cout << "" << std::endl;
+
         zmq::message_t msg;
         subscriber.recv(&msg, 0);
         std::string msg_str = std::string(static_cast<char*>(msg.data()), msg.size());
         std::cout << "Received '" << msg_str << "'" << std::endl;
+
+	break;
     }
     return 0;
 }
