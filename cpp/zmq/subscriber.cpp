@@ -8,7 +8,7 @@ int main()
     zmq::context_t context(1);
     std::cout << 1 << std::endl;
     zmq::socket_t subscriber(context, ZMQ_SUB);
-    subscriber.connect("tcp://127.0.0.1:45141"); //43597
+    subscriber.connect("tcp://127.0.0.1:38101"); //43597
     std::cout << 2 << std::endl;
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
@@ -56,46 +56,72 @@ multipart.send(*Sub2DSocket);
     {
         zmq::message_t env;
         subscriber.recv(&env,0);
+
         std::string env_str = std::string(static_cast<char*>(env.data()), env.size());
         std::cout << "Received envelope '" << env_str << "'" << std::endl;
 
  	std::cout << "" << std::endl;
 
         zmq::message_t msg;
-        subscriber.recv(&msg);
+
+        //  Process any waiting weather updates
+        bool rc;
+        do {
+            zmq::message_t msg;
+            if ((rc = subscriber.recv(&msg, ZMQ_DONTWAIT)) == true) {
+                //  process weather update
+		std::string msg_str = std::string(static_cast<char*>(msg.data()), msg.size());
+		msgpack::object_handle oh = msgpack::unpack(msg_str.data(), msg_str.size());
+		msgpack::object obj = oh.get();
+		std::cout << obj << std::endl;
+
+            }
+        } while(rc == true);
+        /*subscriber.recv(&msg);
 
 	std::string msg_str = std::string(static_cast<char*>(msg.data()), msg.size());
 	msgpack::object_handle oh = msgpack::unpack(msg_str.data(), msg_str.size());
 	msgpack::object obj = oh.get();
 	std::cout << obj << std::endl;
-
+*/
     }
 
 
-    for(int i=0; i<1; i++)
+    for(int i=0; i<2; i++)
     {
 
+        zmq::message_t env;
+        subscriber.recv(&env,0);
+        std::string env_str = std::string(static_cast<char*>(env.data()), env.size());
+        //std::cout << "Received envelope '" << env_str << "'" << std::endl;
         zmq::message_t msg;
+        subscriber.recv(&msg, 0);
+        std::string msg_str = std::string(static_cast<char*>(msg.data()), msg.size());
+        //std::cout << "Received '" << msg_str << "'" << std::endl;
 
-        subscriber.recv(&msg);
-	std::string msg_str = std::string(static_cast<char*>(msg.data()), msg.size());
-	msgpack::object_handle oh = msgpack::unpack(msg_str.data(), msg_str.size());
-	msgpack::object obj = oh.get();
-	std::cout << obj << std::endl;
+	msgpack::unpacker pac;
+	pac.reserve_buffer( env_str.size() );
+	std::copy( env_str.begin(), env_str.end(), pac.buffer() );
+	pac.buffer_consumed( env_str.size() );
 
-        subscriber.recv(&msg);
-	msg_str = std::string(static_cast<char*>(msg.data()), msg.size());
-	oh = msgpack::unpack(msg_str.data(), msg_str.size());
-	obj = oh.get();
-	std::cout << obj << std::endl;
+    	malloc(900000);
 
-        subscriber.recv(&msg,1);
-	msg_str = std::string(static_cast<char*>(msg.data()), msg.size());
-	oh = msgpack::unpack(msg_str.data(), msg_str.size());
-	obj = oh.get();
-	std::cout << obj << std::endl;
+	msgpack::object_handle oh = msgpack::unpack(env_str.data(), env_str.size());;
+	int count = 0;
+	while ( pac.next(oh) ) {
+		msgpack::object msg = oh.get();
+		std::cout << msg << " ";
+		count++;
+	}
 
-        std::cout << "Received" << std::endl;
+        std::cout << "Received " << count << " counts" << std::endl;
+
+	/*msgpack::unpacked upd;
+	msgpack::unpack(upd, msg_str.data(), msg_str.size());
+	//msgpack::object obj = oh.get();
+	std::cout << upd.get() << std::endl;
+*/
+
 
     }
     return 0;
