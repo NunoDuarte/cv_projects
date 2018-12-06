@@ -90,8 +90,6 @@ multipart.send(*Sub2DSocket);
 	std::copy( env_str.begin(), env_str.end(), pac.buffer() );
 	pac.buffer_consumed( env_str.size() );
 
-    	malloc(2000000);
-
 	msgpack::object_handle oh1 = msgpack::unpack(env_str.data(), env_str.size());;
 	int count = 0;
 	while ( pac.next(oh1) ) {
@@ -127,8 +125,6 @@ multipart.send(*Sub2DSocket);
 	pac.reserve_buffer( env_str.size() );
 	std::copy( env_str.begin(), env_str.end(), pac.buffer() );
 	pac.buffer_consumed( env_str.size() );
-
-    	malloc(2000000);
 /*
 	msgpack::object_handle oh = msgpack::unpack(env_str.data(), env_str.size());;
 	int count = 0;
