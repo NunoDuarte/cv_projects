@@ -9,7 +9,7 @@ int main()
     zmq::socket_t subscriber(context, ZMQ_SUB);
 //    void *ctx = zmq_ctx_new ();
 //    void *dealer = zmq_socket (ctx, ZMQ_DEALER);
-    subscriber.connect("tcp://127.0.0.1:46883"); //43597
+    subscriber.connect("tcp://127.0.0.1:44231"); //43597
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
     for(int i=0; i<2; i++)
@@ -47,17 +47,6 @@ int main()
 		msgpack::object obj = oh.get();
 		std::cout << obj << std::endl;
 
-		msgpack::unpacker pac;
-		pac.reserve_buffer( msg_str.size() );
-		std::copy( msg_str.begin(), msg_str.end(), pac.buffer() );
-		pac.buffer_consumed( msg_str.size() );
-		int count = 0;
-		while ( pac.next(oh) ) {
-			msgpack::object msg = oh.get();
-			//std::cout << msg << " ";
-			count++;
-		}
-		std::cout << "Received " << count << " MSG counts" << std::endl;
             }
         } while(rc == true);	
 	std::cout << " " << std::endl;        
