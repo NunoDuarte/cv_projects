@@ -9,7 +9,7 @@ int main()
     zmq::socket_t subscriber(context, ZMQ_SUB);
 //    void *ctx = zmq_ctx_new ();
 //    void *dealer = zmq_socket (ctx, ZMQ_DEALER);
-    subscriber.connect("tcp://127.0.0.1:33555"); //43597
+    subscriber.connect("tcp://127.0.0.1:36027"); //43597
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
 /*    for(int i=0; i<10; i++)
@@ -53,9 +53,6 @@ int main()
     }*/
 
 
-    	subscriber.connect("tcp://127.0.0.1:38131"); //43597
-    	subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
-
  /*       zmq::message_t env;
         subscriber.recv(&env,0);
         std::string env_str = std::string(static_cast<char*>(env.data()), env.size());
@@ -84,17 +81,23 @@ int main()
 */
         //  Process 
         bool rc;
+	int count = 0;
         do {
 	    //std::cout << "haay!!! " << i << std::endl;
             zmq::message_t env;
-            if ((rc = subscriber.recv(&env, 0)) == true) {
+	std::cout << "hello" << count << std::endl;
+            if ((rc = subscriber.recv(&env)) == true and (count-1)%3 == 0) {
                 //  process update
 		std::string env_str = std::string(static_cast<char*>(env.data()), env.size());
 		msgpack::object_handle oh = msgpack::unpack(env_str.data(), env_str.size());
 		msgpack::object obj = oh.get();
+
 		std::cout << obj << std::endl;
 
+
             }
+		//getchar();
+		count++;
         } while(rc == true);	
 	std::cout << " " << std::endl;       
 
