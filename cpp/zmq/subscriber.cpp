@@ -2,6 +2,9 @@
 #include <string>
 #include <iostream>
 #include <msgpack.hpp>
+#include <fstream>
+
+using namespace std;
 
 int main()
 {
@@ -9,10 +12,13 @@ int main()
     zmq::socket_t subscriber(context, ZMQ_SUB);
 //    void *ctx = zmq_ctx_new ();
 //    void *dealer = zmq_socket (ctx, ZMQ_DEALER);
-    subscriber.connect("tcp://127.0.0.1:36027"); //43597
+    subscriber.connect("tcp://127.0.0.1:38423"); //43597
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
-/*    for(int i=0; i<10; i++)
+  ofstream myfile;
+  myfile.open ("example.txt");
+
+    for(int i=0; i<10; i++)
     {
 
         zmq::message_t env;
@@ -25,15 +31,17 @@ int main()
 	std::copy( env_str.begin(), env_str.end(), pac.buffer() );
 	pac.buffer_consumed( env_str.size() );
 
-	msgpack::object_handle oh1 = msgpack::unpack(env_str.data(), env_str.size());;
+	msgpack::object_handle oh = msgpack::unpack(env_str.data(), env_str.size());;
 	int count = 0;
-	while ( pac.next(oh1) ) {
-		msgpack::object msg = oh1.get();
-		std::cout << msg << " ";
+	while ( pac.next(oh) ) {
+		msgpack::object msg = oh.get();
+		myfile << msg << " ";
+		//std::cout << msg << " ";
 		count++;
 	}
 
-        //std::cout << "Received " << count << " ENV counts" << std::endl;
+	myfile.close();
+        std::cout << "Received " << count << " ENV counts" << std::endl;
 
         //  Process 
         bool rc;
@@ -44,13 +52,31 @@ int main()
                 //  process update
 		std::string msg_str = std::string(static_cast<char*>(msg.data()), msg.size());
 		msgpack::object_handle oh = msgpack::unpack(msg_str.data(), msg_str.size());
-		msgpack::object obj = oh.get();
-		std::cout << obj << std::endl;
+		//msgpack::object obj = oh.get();
+		//std::cout << obj << std::endl;
+
+		msgpack::unpacker pac1;
+		pac1.reserve_buffer( msg_str.size() );
+		std::copy( msg_str.begin(), msg_str.end(), pac1.buffer() );
+		pac1.buffer_consumed( msg_str.size() );
+
+		int count1 = 0;
+		while ( pac1.next(oh) ) {
+			msgpack::object msg = oh.get();
+			myfile << msg << " ";
+			//std::cout << msg << " ";
+			count1++;
+		}
+
+		std::cout << "Received " << count1 << " ENV counts" << std::endl;
 
             }
         } while(rc == true);	
-	std::cout << " " << std::endl;       
-    }*/
+	std::cout << "NEW FRAME" << std::endl;
+	std::cout << " " << std::endl;      
+ 
+
+    }
 
 
  /*       zmq::message_t env;
@@ -80,27 +106,49 @@ int main()
 	getchar();
 */
         //  Process 
-        bool rc;
+ /*       bool rc;
 	int count = 0;
         do {
 	    //std::cout << "haay!!! " << i << std::endl;
             zmq::message_t env;
-	std::cout << "hello" << count << std::endl;
             if ((rc = subscriber.recv(&env)) == true and (count-1)%3 == 0) {
                 //  process update
 		std::string env_str = std::string(static_cast<char*>(env.data()), env.size());
 		msgpack::object_handle oh = msgpack::unpack(env_str.data(), env_str.size());
 		msgpack::object obj = oh.get();
-
 		std::cout << obj << std::endl;
 
+		size_t env_size = env.size();
+		subscriber.getsockopt(ZMQ_RCVMORE, env.data(), &env_size);
+		if ((rc = subscriber.recv(&env)) == true) {
+			std::cout << "hello" << std::endl;
+	
+			msgpack::unpacker pac;
+			pac.reserve_buffer( env_str.size() );
+			std::copy( env_str.begin(), env_str.end(), pac.buffer() );
+			pac.buffer_consumed( env_str.size() );
+
+			env_str = std::string(static_cast<char*>(env.data()), env.size());
+			oh = msgpack::unpack(env_str.data(), env_str.size());
+			while ( pac.next(oh)) {
+				msgpack::object msg = oh.get();
+			  	myfile << msg << " ";
+				count++;
+			}
+			std::cout << "Received " << count << " counts" << std::endl;
+		}
+			
+
+  		myfile.close();
+		
+		getchar();
 
             }
-		//getchar();
+		
 		count++;
         } while(rc == true);	
 	std::cout << " " << std::endl;       
-
+*/
     
     return 0;
 }
