@@ -3,6 +3,7 @@
 #include <iostream>
 #include <msgpack.hpp>
 #include <fstream>
+#include "zhelper.hpp"
 
 using namespace std;
 
@@ -12,7 +13,7 @@ int main()
     zmq::socket_t subscriber(context, ZMQ_SUB);
 //    void *ctx = zmq_ctx_new ();
 //    void *dealer = zmq_socket (ctx, ZMQ_DEALER);
-    subscriber.connect("tcp://127.0.0.1:38423"); //43597
+    subscriber.connect("tcp://127.0.0.1:41615"); //43597
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
   ofstream myfile;
@@ -21,7 +22,7 @@ int main()
     for(int i=0; i<10; i++)
     {
 
-        zmq::message_t env;
+  /*      zmq::message_t env;
         subscriber.recv(&env,0);
         std::string env_str = std::string(static_cast<char*>(env.data()), env.size());
         std::cout << "Received '" << env_str << "'" << std::endl;
@@ -36,15 +37,41 @@ int main()
 	while ( pac.next(oh) ) {
 		msgpack::object msg = oh.get();
 		myfile << msg << " ";
-		//std::cout << msg << " ";
+		std::cout << msg << " ";
 		count++;
 	}
 
 	myfile.close();
         std::cout << "Received " << count << " ENV counts" << std::endl;
 
+
+	bool rc;
+	    zmq::message_t msg;
+	    if ((rc = subscriber.recv(&msg, ZMQ_DONTWAIT)) == true) {
+		//  process update
+		std::string msg_str = std::string(static_cast<char*>(msg.data()), msg.size());
+		msgpack::object_handle oh = msgpack::unpack(msg_str.data(), msg_str.size());
+		//msgpack::object obj = oh.get();
+		//std::cout << obj << std::endl;
+
+		msgpack::unpacker pac1;
+		pac1.reserve_buffer( msg_str.size() );
+		std::copy( msg_str.begin(), msg_str.end(), pac1.buffer() );
+		pac1.buffer_consumed( msg_str.size() );
+
+		int count1 = 0;
+		while ( pac1.next(oh) ) {
+			msgpack::object msg = oh.get();
+			myfile << msg << " ";
+			//std::cout << msg << " ";
+			count1++;
+		}
+
+		std::cout << "Received " << count1 << " ENV counts" << std::endl;
+	    }
+*/
         //  Process 
-        bool rc;
+       /* bool rc;
         do {
 	    //std::cout << "haay!!! " << i << std::endl;
             zmq::message_t msg;
@@ -75,7 +102,7 @@ int main()
 	std::cout << "NEW FRAME" << std::endl;
 	std::cout << " " << std::endl;      
  
-
+*/
     }
 
 
@@ -105,8 +132,44 @@ int main()
 
 	getchar();
 */
+
+    while (1) {
+        //  Process all parts of the message
+        zmq::message_t message;
+        subscriber.recv(&message);
+
+        //  Dump the message as text or binary
+        int size = message.size();
+        std::string data(static_cast<char*>(message.data()), size);
+
+        bool is_text = true;
+
+        int char_nbr;
+        unsigned char byte;
+        for (char_nbr = 0; char_nbr < size; char_nbr++) {
+            byte = data [char_nbr];
+            if (byte < 32 || byte > 127)
+                is_text = false;
+        }
+        std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
+        for (char_nbr = 0; char_nbr < size; char_nbr++) {
+            if (is_text)
+                std::cout << (char)data [char_nbr];
+            else
+                std::cout << std::setfill('0') << std::setw(2)
+                   << std::hex << (unsigned int) data [char_nbr];
+        }
+        std::cout << std::endl;
+	std::cout << "Received " << size << " counts" << std::endl;
+
+        int more = 0;           //  Multipart detection
+        size_t more_size = sizeof (more);
+        subscriber.getsockopt (ZMQ_RCVMORE, &more, &more_size);
+        if (!more)
+            break;              //  Last message part
+    }
         //  Process 
- /*       bool rc;
+      /*  bool rc;
 	int count = 0;
         do {
 	    //std::cout << "haay!!! " << i << std::endl;
@@ -118,9 +181,10 @@ int main()
 		msgpack::object obj = oh.get();
 		std::cout << obj << std::endl;
 
-		size_t env_size = env.size();
-		subscriber.getsockopt(ZMQ_RCVMORE, env.data(), &env_size);
-		if ((rc = subscriber.recv(&env)) == true) {
+		int more = 0; 
+		size_t more_size = sizeof (more);
+		subscriber.getsockopt(ZMQ_RCVMORE, &more, &more_size);
+		while (more) {
 			std::cout << "hello" << std::endl;
 	
 			msgpack::unpacker pac;
@@ -147,8 +211,8 @@ int main()
 		
 		count++;
         } while(rc == true);	
-	std::cout << " " << std::endl;       
-*/
+	std::cout << " " << std::endl;     */  
+
     
     return 0;
 }
