@@ -142,20 +142,8 @@ int main()
         int size = message.size();
         std::string data(static_cast<char*>(message.data()), size);
 	msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());
-
-	msgpack::unpacker pac;
-	pac.reserve_buffer( data.size() );
-	std::copy( data.begin(), data.end(), pac.buffer() );
-	pac.buffer_consumed( data.size() );
-
-	int count = 0;
-	while ( pac.next(oh) ) {
-		msgpack::object msg = oh.get();
-		myfile << msg << " ";
-		//std::cout << msg << " ";
-		count++;
-	}
-	std::cout << "Received " << count << std::endl;
+	msgpack::object obj = oh.get();
+	std::cout << obj << std::endl;
 
         bool is_text = true;
 
@@ -167,17 +155,11 @@ int main()
                 is_text = false;
         }
         std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
-        /*for (char_nbr = 0; char_nbr < size; char_nbr++) {
-	    	//std::cout << obj << " ";
-		//getchar();
-            if (is_text)
-                std::cout << (char)data [char_nbr] << " " ;
-            else
-                std::cout << std::setfill('0') << std::setw(2)
-                   << std::hex << (unsigned int) data [char_nbr] << " ";
-        }*/
+        for (char_nbr = 0; char_nbr < size; char_nbr++) {
+                std::cout << (int) data [char_nbr] << " " ;
+        }
         std::cout << std::endl;
-	std::cout << "Received " << size << " " << data.size() << " counts" << std::endl;
+	std::cout << "Received " << size << " " << data.size() <<" counts" << std::endl;
 
         int more = 0;           //  Multipart detection
         size_t more_size = sizeof (more);
@@ -186,7 +168,7 @@ int main()
      	    std::cout << "It broke!" << std::endl;
             break;              //  Last message part
 	}
-
+	std::cout << "Hello!" <<std::endl;
     }
         //  Process 
       /*  bool rc;
