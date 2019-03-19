@@ -13,7 +13,7 @@ int main()
     zmq::socket_t subscriber(context, ZMQ_SUB);
 //    void *ctx = zmq_ctx_new ();
 //    void *dealer = zmq_socket (ctx, ZMQ_DEALER);
-    subscriber.connect("tcp://127.0.0.1:41615"); //43597
+    subscriber.connect("tcp://127.0.0.1:44643"); //43597
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
   ofstream myfile;
@@ -103,7 +103,7 @@ int main()
 	std::cout << " " << std::endl;      
  
 */
-    }
+    
 
 
  /*       zmq::message_t env;
@@ -141,6 +141,9 @@ int main()
         //  Dump the message as text or binary
         int size = message.size();
         std::string data(static_cast<char*>(message.data()), size);
+	msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());
+	msgpack::object obj = oh.get();
+	std::cout << obj << std::endl;
 
         bool is_text = true;
 
@@ -151,22 +154,24 @@ int main()
             if (byte < 32 || byte > 127)
                 is_text = false;
         }
-        std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
+       /* std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
         for (char_nbr = 0; char_nbr < size; char_nbr++) {
             if (is_text)
-                std::cout << (char)data [char_nbr];
+                std::cout << (char)data [char_nbr] << " " ;
             else
                 std::cout << std::setfill('0') << std::setw(2)
-                   << std::hex << (unsigned int) data [char_nbr];
+                   << std::hex << (unsigned int) data [char_nbr] << " ";
         }
-        std::cout << std::endl;
+        std::cout << std::endl;*/
 	std::cout << "Received " << size << " counts" << std::endl;
 
         int more = 0;           //  Multipart detection
         size_t more_size = sizeof (more);
         subscriber.getsockopt (ZMQ_RCVMORE, &more, &more_size);
-        if (!more)
+        if (!more){
+     	    std::cout << "It broke!" << std::endl;
             break;              //  Last message part
+	}
     }
         //  Process 
       /*  bool rc;
@@ -213,6 +218,6 @@ int main()
         } while(rc == true);	
 	std::cout << " " << std::endl;     */  
 
-    
+    }
     return 0;
 }
