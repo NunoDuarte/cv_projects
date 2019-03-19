@@ -13,13 +13,13 @@ int main()
     zmq::socket_t subscriber(context, ZMQ_SUB);
 //    void *ctx = zmq_ctx_new ();
 //    void *dealer = zmq_socket (ctx, ZMQ_DEALER);
-    subscriber.connect("tcp://127.0.0.1:44643"); //43597
+    subscriber.connect("tcp://127.0.0.1:45077"); //43597
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
   ofstream myfile;
   myfile.open ("example.txt");
 
-    for(int i=0; i<10; i++)
+    for(int i=0; i<1; i++)
     {
 
   /*      zmq::message_t env;
@@ -142,8 +142,20 @@ int main()
         int size = message.size();
         std::string data(static_cast<char*>(message.data()), size);
 	msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());
-	msgpack::object obj = oh.get();
-	std::cout << obj << std::endl;
+
+	msgpack::unpacker pac;
+	pac.reserve_buffer( data.size() );
+	std::copy( data.begin(), data.end(), pac.buffer() );
+	pac.buffer_consumed( data.size() );
+
+	int count = 0;
+	while ( pac.next(oh) ) {
+		msgpack::object msg = oh.get();
+		myfile << msg << " ";
+		//std::cout << msg << " ";
+		count++;
+	}
+	std::cout << "Received " << count << std::endl;
 
         bool is_text = true;
 
@@ -154,16 +166,18 @@ int main()
             if (byte < 32 || byte > 127)
                 is_text = false;
         }
-       /* std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
-        for (char_nbr = 0; char_nbr < size; char_nbr++) {
+        std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
+        /*for (char_nbr = 0; char_nbr < size; char_nbr++) {
+	    	//std::cout << obj << " ";
+		//getchar();
             if (is_text)
                 std::cout << (char)data [char_nbr] << " " ;
             else
                 std::cout << std::setfill('0') << std::setw(2)
                    << std::hex << (unsigned int) data [char_nbr] << " ";
-        }
-        std::cout << std::endl;*/
-	std::cout << "Received " << size << " counts" << std::endl;
+        }*/
+        std::cout << std::endl;
+	std::cout << "Received " << size << " " << data.size() << " counts" << std::endl;
 
         int more = 0;           //  Multipart detection
         size_t more_size = sizeof (more);
@@ -172,6 +186,7 @@ int main()
      	    std::cout << "It broke!" << std::endl;
             break;              //  Last message part
 	}
+
     }
         //  Process 
       /*  bool rc;
