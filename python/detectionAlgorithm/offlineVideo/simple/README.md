@@ -9,8 +9,10 @@ To note that the each folder should contain the following files:
 3. world_viz_timestamps.npy where the timestamps of the world_viz.mp4 is stored
 
 ### Requirements
-1. create a 'input' folder to include all the PupilLabs Capture exported folders for processing
-2. make sure each folder contains the files mentioned above
+1. openCV version=3.4.0
+2. python3 version=3.5
+3. create a 'input' folder to include all the PupilLabs Capture exported folders for processing
+4. make sure each folder contains the files mentioned above
 
 ### Steps
 1. python3 main.py
