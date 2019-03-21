@@ -54,6 +54,7 @@ for file in os.listdir(directory):
     norm_pos_y = list()
 
     gaze = GazeBehaviour()
+    #print(filename)
     f = gaze.open(filename)
 
     with open(dir+'/'+filename+'/gaze_postions.csv', newline='') as csvfile:
@@ -107,7 +108,7 @@ for file in os.listdir(directory):
             break
 
         i = i + 1
-        cv2.waitKey(0)
+        #cv2.waitKey(0)
 
 gaze.close(f)
 cap.release()
