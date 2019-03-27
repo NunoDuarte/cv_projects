@@ -13,7 +13,7 @@ int main()
     zmq::socket_t subscriber(context, ZMQ_SUB);
 //    void *ctx = zmq_ctx_new ();
 //    void *dealer = zmq_socket (ctx, ZMQ_DEALER);
-    subscriber.connect("tcp://127.0.0.1:45077"); //43597
+    subscriber.connect("tcp://127.0.0.1:45797"); //43597
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
   ofstream myfile;
@@ -156,7 +156,7 @@ int main()
         }
         std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
         for (char_nbr = 0; char_nbr < size; char_nbr++) {
-                std::cout << (int) data [char_nbr] << " " ;
+                //std::cout << (int) data [char_nbr] << " " ;
         }
         std::cout << std::endl;
 	std::cout << "Received " << size << " " << data.size() <<" counts" << std::endl;
@@ -168,6 +168,7 @@ int main()
      	    std::cout << "It broke!" << std::endl;
             break;              //  Last message part
 	}
+	getchar();
 	std::cout << "Hello!" <<std::endl;
     }
         //  Process 
