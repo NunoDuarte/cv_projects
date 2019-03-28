@@ -1,6 +1,6 @@
-# openCVdevelop
-
-Assignments using OpenCV and/or useful stuff that I learned to use with OpenCV
+# [Python](https://github.com/NunoDuarte/openCVdevelop/tree/master/python) modules using openCV
+# [C++](https://github.com/NunoDuarte/openCVdevelop/tree/master/c++)  modules using openCV
+# [Deep](https://github.com/NunoDuarte/openCVdevelop/tree/master/deep) Learning modules using openCV
 
 ## Deep Neural Networks (current project) 
 1.  python3 dnnImageClassifier.py -i images/eagle.png -p bvlc_googlenet.prototxt -m bvlc_googlenet.caffemodel -l synset_words.txt
@@ -32,3 +32,16 @@ python3 onlineDetection --buffer 68
 3. move the application to video
 4. train a new network to the objects of my choosing
 5. check the speed in the new machine
+
+## Authors
+
+* **Nuno Duarte** - *Initial work* - [NunoDuarte](https://github.com/NunoDuarte)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+* openCV github python3 c++ Tensorflow Caffe
+
