@@ -1,19 +1,14 @@
 ## Getting Started
 
 This folder is the main repository for the Detection Algorithm Python modules that are separated into several subfolders:
-1. Detection of Circles [circlesDetection](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/circlesDetection)
-
-1.1. Offline Mode [offline](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/circlesDetection/offline)
-
-1.2 Online Mode [online](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/circlesDetection/online)
+1. Detection of Circles [circlesDetection](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/circlesDetection) 
+<br /> 1.1. Offline Mode [offline](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/circlesDetection/offline)
+<br /> 1.2. Online Mode [online](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/circlesDetection/online)
 
 2. Offline Video Processing [offlineVideo](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo)
-
-2.1 Human-Human Data [hhi](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/hhi)
-
-2.2 Human-Robot Data [icub](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/icub)
-
-2.3 Simoplied Version [simple](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/simple)
+<br /> 2.1. Human-Human Data [hhi](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/hhi)
+<br /> 2.2. Human-Robot Data [icub](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/icub)
+<br /> 2.3. Simoplied Version [simple](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/simple)
 
 ## openCV project of contextual detection in a HHI environment
 
