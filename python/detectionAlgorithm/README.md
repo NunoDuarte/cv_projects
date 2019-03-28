@@ -1,4 +1,4 @@
-# Getting Started
+# Overview
 
 This folder is the main repository for the Detection Algorithm Python modules that are separated into several subfolders:
 1. Detection of Circles [circlesDetection](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/circlesDetection) 
@@ -9,6 +9,13 @@ This folder is the main repository for the Detection Algorithm Python modules th
 <br /> 2.1. Human-Human Data [hhi](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/hhi)
 <br /> 2.2. Human-Robot Data [icub](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/icub)
 <br /> 2.3. Simplified Version [simple](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/simple)
+
+## Requirements
+1. openCV version=3.4.0
+2. python3 version=3.5
+3. depending on the project it may need extra inputs: 
+<br /> 3.1. offline - the inputs below
+<br /> 3.2. online - a connection to LSL network
 
 # openCV project of contextual detection in a HHI environment
 
