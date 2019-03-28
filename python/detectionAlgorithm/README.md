@@ -8,7 +8,7 @@ This folder is the main repository for the Detection Algorithm Python modules th
 2. Offline Video Processing [offlineVideo](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo)
 <br /> 2.1. Human-Human Data [hhi](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/hhi)
 <br /> 2.2. Human-Robot Data [icub](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/icub)
-<br /> 2.3. Simplied Version [simple](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/simple)
+<br /> 2.3. Simplified Version [simple](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/simple)
 
 ## openCV project of contextual detection in a HHI environment
 
