@@ -1,4 +1,4 @@
-## Getting Started
+# Getting Started
 
 This folder is the main repository for the Detection Algorithm Python modules that are separated into several subfolders:
 1. Detection of Circles [circlesDetection](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/circlesDetection) 
@@ -10,9 +10,9 @@ This folder is the main repository for the Detection Algorithm Python modules th
 <br /> 2.2. Human-Robot Data [icub](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/icub)
 <br /> 2.3. Simplified Version [simple](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/detectionAlgorithm/offlineVideo/simple)
 
-## openCV project of contextual detection in a HHI environment
+# openCV project of contextual detection in a HHI environment
 
-# inputs:
+## inputs:
 	- video .mp4 
 	- gaze_positions:	
 		- timestamps
@@ -20,12 +20,12 @@ This folder is the main repository for the Detection Algorithm Python modules th
 		- norm_pos_y
 	- world_viz_timestamps.npy
 
-# output:
+## output:
 	- time
 	- Ball location
 	- What it is looking: Ball, Marker, Face
 
-# what to do:
+## what to do:
 1. for onlineStream dont forget to clean the code of the hhi and icub folders
 
 ## Authors
