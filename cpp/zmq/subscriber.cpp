@@ -13,7 +13,7 @@ int main()
     zmq::socket_t subscriber(context, ZMQ_SUB);
 //    void *ctx = zmq_ctx_new ();
 //    void *dealer = zmq_socket (ctx, ZMQ_DEALER);
-    subscriber.connect("tcp://127.0.0.1:36633"); //43597
+    subscriber.connect("tcp://127.0.0.1:33949"); //43597
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
   ofstream myfile;
@@ -133,6 +133,7 @@ int main()
 	getchar();
 */
 
+    int line = 0;
     while (1) {
         //  Process all parts of the message
         zmq::message_t message;
@@ -157,7 +158,10 @@ int main()
 	int countL = 0;
 	int countC = 0;
         std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
-        for (char_nbr = 0; char_nbr < size; char_nbr++) {
+	
+	// check if we have passed the first two messages
+	if (line==2){
+        for (char_nbr = 0; char_nbr <= size; char_nbr++) {
 		if (countC < 1280){
 			if (countL < 720) {
 		        	//std::cout << (int) data [char_nbr] << " " ;
@@ -193,9 +197,10 @@ int main()
 		}
 			
         }
-/*
-        for (char_nbr = 0; char_nbr < size; char_nbr++) {
-		if (countC < 720){
+	
+
+        /*for (char_nbr = 0; char_nbr < size; char_nbr++) {
+		if (countC <= 720){
 			if (countL <= 1280) {
 		        	//std::cout << (int) data [char_nbr] << " " ;
 				//myfile << (int) data [char_nbr] << " ";
@@ -230,6 +235,8 @@ int main()
 		}
 			
         }*/
+
+	}
         std::cout << std::endl;
 	std::cout << "Received " << size << " " << data.size() <<" counts" << std::endl;
 
@@ -242,6 +249,8 @@ int main()
 	}
 	//getchar();
 	//std::cout << "Hello!" <<std::endl;
+
+	line++;
     }
 
     myfile.close();
