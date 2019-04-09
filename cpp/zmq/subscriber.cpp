@@ -13,7 +13,7 @@ int main()
     zmq::socket_t subscriber(context, ZMQ_SUB);
 //    void *ctx = zmq_ctx_new ();
 //    void *dealer = zmq_socket (ctx, ZMQ_DEALER);
-    subscriber.connect("tcp://127.0.0.1:33949"); //43597
+    subscriber.connect("tcp://127.0.0.1:46805"); //43597
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
   ofstream myfile;
@@ -161,7 +161,7 @@ int main()
 	
 	// check if we have passed the first two messages
 	if (line==2){
-        for (char_nbr = 0; char_nbr <= size; char_nbr++) {
+        /*for (char_nbr = 0; char_nbr <= size; char_nbr++) {
 		if (countC < 1280){
 			if (countL < 720) {
 		        	//std::cout << (int) data [char_nbr] << " " ;
@@ -197,32 +197,10 @@ int main()
 		}
 			
         }
-	
+	*/
 
-        /*for (char_nbr = 0; char_nbr < size; char_nbr++) {
-		if (countC <= 720){
-			if (countL <= 1280) {
-		        	//std::cout << (int) data [char_nbr] << " " ;
-				//myfile << (int) data [char_nbr] << " ";
-			}else{
-				//myfile << (int) data [char_nbr] << "\n";
-				countL = 0;
-				countC++;
-			}
-			countL++;
-		}
-		else if (countC > 720 and countC <= 1440){
-			if (countL < 1280) {
-		        	//std::cout << (int) data [char_nbr] << " " ;
-				//myfile << (int) data [char_nbr] << " ";
-			}else{
-				//myfile << (int) data [char_nbr] << "\n";
-				countL = 0;
-				countC++;
-			}
-			countL++;
-		}
-		else if (countC > 1440 and countC <= 2160){
+        for (char_nbr = 0; char_nbr < size; char_nbr++) {
+		if (countC < 720){
 			if (countL < 1280) {
 		        	//std::cout << (int) data [char_nbr] << " " ;
 				myfile << (int) data [char_nbr] << " ";
@@ -233,10 +211,32 @@ int main()
 			}
 			countL++;
 		}
+		else if (countC >= 720 and countC < 1440){
+			if (countL < 1280) {
+		        	//std::cout << (int) data [char_nbr] << " " ;
+				//myfile << (int) data [char_nbr] << " ";
+			}else{
+				//myfile << (int) data [char_nbr] << "\n";
+				countL = 0;
+				countC++;
+			}
+			countL++;
+		}
+		else if (countC >= 1440 and countC < 2160){
+			if (countL < 1280) {
+		        	//std::cout << (int) data [char_nbr] << " " ;
+				//myfile << (int) data [char_nbr] << " ";
+			}else{
+				//myfile << (int) data [char_nbr] << "\n";
+				countL = 0;
+				countC++;
+			}
+			countL++;
+		}
 			
-        }*/
-
+        }
 	}
+	
         std::cout << std::endl;
 	std::cout << "Received " << size << " " << data.size() <<" counts" << std::endl;
 
