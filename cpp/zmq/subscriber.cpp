@@ -50,48 +50,9 @@ int main()
 	
 			// check if we have passed the first two messages
 			if (line==2){
-				/*for (char_nbr = 0; char_nbr <= size; char_nbr++) {
-				if (countC < 1280){
-					if (countL < 720) {
-						//std::cout << (int) data [char_nbr] << " " ;
-						//myfile << (int) data [char_nbr] << " ";
-					}else{
-						//myfile << (int) data [char_nbr] << "\n";
-						countL = 0;
-						countC++;
-					}
-					countL++;
-				}
-				else if (countC >= 1280 and countC < 2560){
-					if (countL < 720) {
-						//std::cout << (int) data [char_nbr] << " " ;
-						//myfile << (int) data [char_nbr] << " ";
-					}else{
-						//myfile << (int) data [char_nbr] << "\n";
-						countL = 0;
-						countC++;
-					}
-					countL++;
-				}
-				else if (countC >= 2560 and countC <= 3840){
-					if (countL < 720) {
-						//std::cout << (int) data [char_nbr] << " " ;
-						myfile << (int) data [char_nbr] << " ";
-					}else{
-						myfile << (int) data [char_nbr] << "\n";
-						countL = 0;
-						countC++;
-					}
-					countL++;
-				}
-			
-			}
-				*/
-
-				for (char_nbr = 0; char_nbr < size; char_nbr++) {
-					if (countC < 720){
-						if (countL < 1280) {
-							//std::cout << (int) data [char_nbr] << " " ;
+				for (char_nbr = 0; char_nbr <= size; char_nbr++) {	
+					if (countC < 1280){
+						if (countL < 720) {
 							//myfile << (int) data [char_nbr] << " ";
 						}else{
 							//myfile << (int) data [char_nbr] << "\n";
@@ -100,9 +61,8 @@ int main()
 						}
 						countL++;
 					}
-					else if (countC >= 720 and countC < 1440){
-						if (countL < 1280) {
-							//std::cout << (int) data [char_nbr] << " " ;
+					else if (countC >= 1280 and countC < 2560){
+						if (countL < 720) {
 							//myfile << (int) data [char_nbr] << " ";
 						}else{
 							//myfile << (int) data [char_nbr] << "\n";
@@ -111,9 +71,8 @@ int main()
 						}
 						countL++;
 					}
-					else if (countC >= 1440 and countC < 2160){
-						if (countL < 1280) {
-							//std::cout << (int) data [char_nbr] << " " ;
+					else if (countC >= 2560 and countC <= 3840){
+						if (countL < 720) {
 							myfile << (int) data [char_nbr] << " ";
 						}else{
 							myfile << (int) data [char_nbr] << "\n";
@@ -122,10 +81,9 @@ int main()
 						}
 						countL++;
 					}
-			
 				}
 			}
-	
+				
 			
 			if (line==2) std::cout << "Received One Frame" << std::endl;
 
