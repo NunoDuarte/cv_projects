@@ -19,7 +19,7 @@ int main()
 	ofstream myfile;
 	myfile.open ("example.txt");
 
-	for(int i=0; i<10; i++)
+	for(int i=0; i<100; i++)
 	{
 
 		int line = 0;
@@ -127,9 +127,7 @@ int main()
 			}
 	
 			
-			if (line==2){
-				std::cout << "Received " << data.size() <<" counts" << std::endl;
-			}
+			if (line==2) std::cout << "Received One Frame" << std::endl;
 
 			int more = 0;           //  Multipart detection
 			size_t more_size = sizeof (more);
