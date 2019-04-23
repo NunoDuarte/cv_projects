@@ -4,6 +4,8 @@
 #include <msgpack.hpp>
 #include <fstream>
 #include "zhelper.hpp"
+#include <sstream>
+
 
 using namespace std;
 
@@ -11,9 +13,19 @@ int main(){
 
 	zmq::context_t context(1);
 	zmq::socket_t subscriber(context, ZMQ_SUB);
-	//    void *ctx = zmq_ctx_new ();
-	//    void *dealer = zmq_socket (ctx, ZMQ_DEALER);
-	subscriber.connect("tcp://127.0.0.1:45823"); //43597
+
+	std::string ip = "tcp://127.0.0.1:";
+	// request reply client for SUB_PORT
+	zmq::socket_t requester(context, ZMQ_REQ);
+	requester.connect("tcp://127.0.0.1:50020");
+
+    	int request;
+        s_send (requester, "SUB_PORT");
+        std::string req_sub = s_recv (requester);
+	std::ostringstream oss;
+	oss << ip << req_sub;
+
+	subscriber.connect(oss.str()); // connect SUB_PORT IP 
 	subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
 	ofstream myfile;
