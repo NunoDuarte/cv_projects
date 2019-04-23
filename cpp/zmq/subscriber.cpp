@@ -7,8 +7,8 @@
 
 using namespace std;
 
-int main()
-{
+int main(){
+
 	zmq::context_t context(1);
 	zmq::socket_t subscriber(context, ZMQ_SUB);
 	//    void *ctx = zmq_ctx_new ();
@@ -19,11 +19,11 @@ int main()
 	ofstream myfile;
 	myfile.open ("example.txt");
 
-	for(int i=0; i<100; i++)
-	{
+	for(int i=0; i<100; i++){
 
 		int line = 0;
 		while (1) {
+
 			//  Process all parts of the message
 			zmq::message_t message;
 			subscriber.recv(&message);
@@ -33,10 +33,8 @@ int main()
 			std::string data(static_cast<char*>(message.data()), size);
 			msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());
 			msgpack::object obj = oh.get();
-			//std::cout << obj << std::endl;
 
 			bool is_text = true;
-
 			int char_nbr;
 			unsigned char byte;
 			for (char_nbr = 0; char_nbr < size; char_nbr++) {
@@ -50,12 +48,13 @@ int main()
 	
 			// check if we have passed the first two messages
 			if (line==2){
+
 				for (char_nbr = 0; char_nbr <= size; char_nbr++) {	
 					if (countC < 1280){
 						if (countL < 720) {
-							//myfile << (int) data [char_nbr] << " ";
+							//myfile << (int) data[char_nbr] <<" ";
 						}else{
-							//myfile << (int) data [char_nbr] << "\n";
+							//myfile << (int) data[char_nbr] <<"\n";
 							countL = 0;
 							countC++;
 						}
@@ -63,9 +62,9 @@ int main()
 					}
 					else if (countC >= 1280 and countC < 2560){
 						if (countL < 720) {
-							//myfile << (int) data [char_nbr] << " ";
+							//myfile << (int) data[char_nbr] <<" ";
 						}else{
-							//myfile << (int) data [char_nbr] << "\n";
+							//myfile << (int) data[char_nbr] <<"\n";
 							countL = 0;
 							countC++;
 						}
@@ -73,9 +72,9 @@ int main()
 					}
 					else if (countC >= 2560 and countC <= 3840){
 						if (countL < 720) {
-							myfile << (int) data [char_nbr] << " ";
+							myfile << (int) data[char_nbr] <<" ";
 						}else{
-							myfile << (int) data [char_nbr] << "\n";
+							myfile << (int) data[char_nbr] <<"\n";
 							countL = 0;
 							countC++;
 						}
@@ -83,7 +82,6 @@ int main()
 					}
 				}
 			}
-				
 			
 			if (line==2) std::cout << "Received One Frame" << std::endl;
 
@@ -95,7 +93,11 @@ int main()
 			//getchar();
 			line++;
     		}
+
 	myfile.close();
+
    	}
 	return 0;
 }
+
+
