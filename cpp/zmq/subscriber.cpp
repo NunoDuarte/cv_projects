@@ -128,7 +128,6 @@ int main()
 	
 			
 			if (line==2){
-				std::cout << std::endl;
 				std::cout << "Received " << data.size() <<" counts" << std::endl;
 			}
 
@@ -136,13 +135,8 @@ int main()
 			size_t more_size = sizeof (more);
 			subscriber.getsockopt (ZMQ_RCVMORE, &more, &more_size);
 
-			if (!more){
-
-		     		std::cout << "It broke!" << std::endl;
-				break;              //  Last message part
-			}
+			if (!more) break; //  Break when there is no more message
 			//getchar();
-			//std::cout << "Hello!" <<std::endl;
 			line++;
     		}
 	myfile.close();
