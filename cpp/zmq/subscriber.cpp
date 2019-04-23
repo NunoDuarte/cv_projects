@@ -33,7 +33,7 @@ int main()
 			std::string data(static_cast<char*>(message.data()), size);
 			msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());
 			msgpack::object obj = oh.get();
-			std::cout << obj << std::endl;
+			//std::cout << obj << std::endl;
 
 			bool is_text = true;
 
@@ -46,7 +46,7 @@ int main()
 			}
 			int countL = 0;
 			int countC = 0;
-			std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
+			//std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
 	
 			// check if we have passed the first two messages
 			if (line==2){
@@ -126,8 +126,11 @@ int main()
 				}
 			}
 	
-			std::cout << std::endl;
-			std::cout << "Received " << size << " " << data.size() <<" counts" << std::endl;
+			
+			if (line==2){
+				std::cout << std::endl;
+				std::cout << "Received " << data.size() <<" counts" << std::endl;
+			}
 
 			int more = 0;           //  Multipart detection
 			size_t more_size = sizeof (more);
