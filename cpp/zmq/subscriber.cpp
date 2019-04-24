@@ -31,7 +31,7 @@ int main(){
 	ofstream myfile;
 	myfile.open ("example.txt");
 
-	for(int i=0; i<100; i++){
+	for(int i=0; i<1; i++){
 
 		int line = 0;
 		while (1) {
@@ -63,7 +63,7 @@ int main(){
 
 				for (char_nbr = 0; char_nbr <= size; char_nbr++) {	
 					if (countC < 1280){
-						if (countL < 720) {
+						if (countL < 240) {
 							//myfile << (int) data[char_nbr] <<" ";
 						}else{
 							//myfile << (int) data[char_nbr] <<"\n";
@@ -73,7 +73,7 @@ int main(){
 						countL++;
 					}
 					else if (countC >= 1280 and countC < 2560){
-						if (countL < 720) {
+						if (countL < 240) {
 							//myfile << (int) data[char_nbr] <<" ";
 						}else{
 							//myfile << (int) data[char_nbr] <<"\n";
@@ -82,8 +82,8 @@ int main(){
 						}
 						countL++;
 					}
-					else if (countC >= 2560 and countC <= 3840){
-						if (countL < 720) {
+					else if (countC >= 2560 and countC < 3840){
+						if (countL < 240) {
 							myfile << (int) data[char_nbr] <<" ";
 						}else{
 							myfile << (int) data[char_nbr] <<"\n";
