@@ -3,14 +3,17 @@ cmake_minimum_required(VERSION 3.5)
 project(cppzmq VERSION 1.0.0 LANGUAGES CXX)
 
 find_package(cppzmq)
+find_package(OpenCV)
 find_package(msgpack REQUIRED)
 include_directories(/home/nduarte/software/msgpack-c/build/INSTALL/include)
+include_directories(/home/nduarte/software/opencv-3.4.1/build/INSTALL/include)
 
-find_package( OpenCV REQUIRED )
-if( OpenCV_FOUND )
-list( APPEND ThirdParty_LIBS ${OpenCV_LIBS} )
-    include_directories( ${OpenCV_INCLUDE_DIRS} )
-endif( OpenCV_FOUND )
+
+#find_package( OpenCV REQUIRED )
+#if( OpenCV_FOUND )
+#list( APPEND ThirdParty_LIBS ${OpenCV_LIBS} )
+#    include_directories( ${OpenCV_INCLUDE_DIRS} )
+#endif( OpenCV_FOUND )
 
 enable_testing()
 add_executable(

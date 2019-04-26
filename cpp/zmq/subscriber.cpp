@@ -6,6 +6,7 @@
 #include "zhelper.hpp"
 #include <sstream>
 #include <opencv2/opencv.hpp>
+#include "opencv2/core/cuda.hpp"
 
 
 using namespace cv;
