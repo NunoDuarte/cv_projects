@@ -42,8 +42,9 @@ Mat A = Mat::zeros(720,1280, CV_8UC1);
 vector<Mat> channels;
 Mat fin_img;
 
-	for(int i=0; i<1; i++){
-
+	int count = 0;
+	while(1){
+		
 		int line = 0;
 			//		Mat A = Mat::zeros(720,1280, CV_8UC1);	
 		while (1) {
@@ -161,9 +162,12 @@ Mat fin_img;
 			line++;
     		}
 			merge(channels, fin_img);
-			imshow("threshold",fin_img);
-			waitKey(0);
-
+			if (count % 4 ==0 ) imshow("threshold",fin_img);
+			// Press  ESC on keyboard to  exit
+			char c = (char)waitKey(1);
+			if( c == 27 ) break;
+			channels.clear();
+	count++;
 	R.close();
 	G.close();
 	B.close();
