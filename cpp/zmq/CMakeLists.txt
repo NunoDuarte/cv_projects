@@ -6,6 +6,12 @@ find_package(cppzmq)
 find_package(msgpack REQUIRED)
 include_directories(/home/nduarte/software/msgpack-c/build/INSTALL/include)
 
+find_package( OpenCV REQUIRED )
+if( OpenCV_FOUND )
+list( APPEND ThirdParty_LIBS ${OpenCV_LIBS} )
+    include_directories( ${OpenCV_INCLUDE_DIRS} )
+endif( OpenCV_FOUND )
+
 enable_testing()
 add_executable(
     sub #demo
@@ -15,6 +21,7 @@ add_executable(
 target_link_libraries(
     sub
     cppzmq
+    ${OpenCV_LIBS}
     )
 
 #target_compile_options(sub PRIVATE -Werror)
@@ -25,9 +32,10 @@ include_directories( ${Boost_INCLUDE_DIRS} )
 add_executable(pub publisher.cpp)
 target_link_libraries(
     pub
-    ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} 
     cppzmq
     )
+
 
 add_test(
   NAME
