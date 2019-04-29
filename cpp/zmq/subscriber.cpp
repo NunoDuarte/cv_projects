@@ -73,12 +73,13 @@ int main(){
 
 			//  Process all parts of the message
 			zmq::message_t message;
-			subscriber.recv(&message, 0);
+			subscriber.recv(&message, 10);
 
 			//  Dump the message as text or binary
 			int size = message.size();
 			std::string data(static_cast<char*>(message.data()), size);
 			malloc(100000000);
+			std::cout << message.size() << std::endl;
 			msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());
 			msgpack::object obj = oh.get();
 
@@ -103,9 +104,6 @@ int main(){
 					}
 					//std::cout << "r" << std::endl;
 					A1.data[A1.channels()*(A1.cols*countC + countL) + 1] = (int) data [char_nbr];
-					//std::cout << "a" << std::endl;
-					//std::count << A.data[0] << std::endl;
-					//std::cout << A.data[A.channels()*(A.cols*countC + countL) + 0] << std::endl;
 				}
 				channels.push_back(A1);
 				Mat A2 = Mat(720,1280, CV_8UC1);
