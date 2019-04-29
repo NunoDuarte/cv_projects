@@ -8,6 +8,12 @@
 #include <opencv2/opencv.hpp>
 #include "opencv2/core/cuda.hpp"
 #include <opencv2/core/ocl.hpp>
+#include "opencv2/objdetect.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/cudaobjdetect.hpp"
+#include "opencv2/cudaimgproc.hpp"
+#include "opencv2/cudawarping.hpp"
 #include "cuda_runtime_api.h"
 #include "device_launch_parameters.h"
 
@@ -18,27 +24,30 @@ using namespace cv::cuda;
 
 int main(){
 
-    if (!cv::ocl::haveOpenCL())
-    {
-        cout << "OpenCL is not avaiable..." << endl;
-        return -1;
-    }
-    cv::ocl::Context context1;
-    if (!context1.create(cv::ocl::Device::TYPE_GPU))
-    {
-        cout << "Failed creating the context..." << endl;
-        return -1;
-    }
+	/*if (!cv::ocl::haveOpenCL()){
+		cout << "OpenCL is not avaiable..." << endl;
+		return -1;
+	}
+	cv::ocl::Context context1;
+	if (!context1.create(cv::ocl::Device::TYPE_GPU)){
+		cout << "Failed creating the context..." << endl;
+		return -1;
+	}
 
-    // In OpenCV 3.0.0 beta, only a single device is detected.
-    cout << context1.ndevices() << " GPU devices are detected." << endl;
+	// In OpenCV 3.0.0 beta, only a single device is detected.
+	cout << context1.ndevices() << " GPU devices are detected." << endl;
+
+
+
+	cuda::GpuMat gI;
+
+	getchar();*/
+	cuda::GpuMat gI;
+
 
 	zmq::context_t context(1);
 	zmq::socket_t subscriber(context, ZMQ_SUB);
 
-	cuda::GpuMat gI;
-
-	getchar();
 	std::string ip = "tcp://127.0.0.1:";
 	// request reply client for SUB_PORT
 	zmq::socket_t requester(context, ZMQ_REQ);
@@ -61,15 +70,16 @@ int main(){
 	B.open ("april25b.txt");
 
 
-Mat A = Mat::zeros(720,1280, CV_8UC1);
-vector<Mat> channels;
-Mat fin_img;
+	Mat A = Mat::zeros(720,1280, CV_8UC1);
+	vector<Mat> channels;
+	Mat fin_img;
 
 	int count = 0;
 	while(1){
 		
 		int line = 0;
 			//		Mat A = Mat::zeros(720,1280, CV_8UC1);	
+		Mat A1 = Mat::zeros(720,1280, CV_8UC1);
 		while (1) {
 
 			//  Process all parts of the message
@@ -96,16 +106,16 @@ Mat fin_img;
 
 			// check if we have passed the first two messages
 			if (line==2){
-				Mat A1 = Mat::zeros(720,1280, CV_8UC1);
+				
 				for (char_nbr = 0; char_nbr < size; char_nbr+=3) {
  					if (countC < 720){
 						if (countL < 1279) {
-							R << (int) data [char_nbr] << " ";
+							//R << (int) data [char_nbr] << " ";
 							//G << (int) data [char_nbr + 1] << " ";
 							//B << (int) data [char_nbr + 2] << " ";
 							countL++;
 						}else{
-							R << (int) data [char_nbr] << ";\n";
+							//R << (int) data [char_nbr] << ";\n";
 							//G << ";\n";
 							//B << ";\n";
 							countC++;
@@ -123,12 +133,12 @@ Mat fin_img;
 				for (char_nbr = 1; char_nbr < size; char_nbr+=3) {
  					if (countC < 720){
 						if (countL < 1279) {
-							G << (int) data [char_nbr] << " ";
+							//G << (int) data [char_nbr] << " ";
 							//G << (int) data [char_nbr + 1] << " ";
 							//B << (int) data [char_nbr + 2] << " ";
 							countL++;
 						}else{
-							G << (int) data [char_nbr] << ";\n";
+							//G << (int) data [char_nbr] << ";\n";
 							//G << ";\n";
 							//B << ";\n";
 							countC++;
@@ -144,12 +154,12 @@ Mat fin_img;
 				for (char_nbr = 2; char_nbr < size; char_nbr+=3) {
  					if (countC < 720){
 						if (countL < 1279) {
-							B << (int) data [char_nbr] << " ";
+							//B << (int) data [char_nbr] << " ";
 							//G << (int) data [char_nbr + 1] << " ";
 							//B << (int) data [char_nbr + 2] << " ";
 							countL++;
 						}else{
-							B << (int) data [char_nbr] << ";\n";
+							//B << (int) data [char_nbr] << ";\n";
 							//G << ";\n";
 							//B << ";\n";
 							countC++;
@@ -185,8 +195,8 @@ Mat fin_img;
 			line++;
     		}
 			merge(channels, fin_img);
-			gI.upload(fin_img);
-			if (count % 4 ==0 ) imshow("threshold",gI);
+			gI.upload(A1);
+			if (count % 4 ==0 ) imshow("threshold",fin_img);
 			// Press  ESC on keyboard to  exit
 			char c = (char)waitKey(1);
 			if( c == 27 ) break;

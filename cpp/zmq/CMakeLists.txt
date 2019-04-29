@@ -9,6 +9,7 @@ include_directories(/home/nduarte/software/msgpack-c/build/INSTALL/include)
 #include_directories(/home/nduarte/software/opencv-3.4.1/build_w_atabak/include)
 include_directories(/home/nduarte/software/opencv-3.4.1/build/INSTALL/include/)
 include_directories(/usr/local/cuda-8.0/include)
+#include_directories(/usr/include)
 
 #find_package( OpenCV REQUIRED )
 
