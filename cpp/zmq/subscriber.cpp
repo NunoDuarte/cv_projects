@@ -7,16 +7,38 @@
 #include <sstream>
 #include <opencv2/opencv.hpp>
 #include "opencv2/core/cuda.hpp"
+#include <opencv2/core/ocl.hpp>
+#include "cuda_runtime_api.h"
+#include "device_launch_parameters.h"
 
 
 using namespace cv;
 using namespace std;
+using namespace cv::cuda;
 
 int main(){
+
+    if (!cv::ocl::haveOpenCL())
+    {
+        cout << "OpenCL is not avaiable..." << endl;
+        return -1;
+    }
+    cv::ocl::Context context1;
+    if (!context1.create(cv::ocl::Device::TYPE_GPU))
+    {
+        cout << "Failed creating the context..." << endl;
+        return -1;
+    }
+
+    // In OpenCV 3.0.0 beta, only a single device is detected.
+    cout << context1.ndevices() << " GPU devices are detected." << endl;
 
 	zmq::context_t context(1);
 	zmq::socket_t subscriber(context, ZMQ_SUB);
 
+	cuda::GpuMat gI;
+
+	getchar();
 	std::string ip = "tcp://127.0.0.1:";
 	// request reply client for SUB_PORT
 	zmq::socket_t requester(context, ZMQ_REQ);
@@ -163,7 +185,8 @@ Mat fin_img;
 			line++;
     		}
 			merge(channels, fin_img);
-			if (count % 4 ==0 ) imshow("threshold",fin_img);
+			gI.upload(fin_img);
+			if (count % 4 ==0 ) imshow("threshold",gI);
 			// Press  ESC on keyboard to  exit
 			char c = (char)waitKey(1);
 			if( c == 27 ) break;
