@@ -37,13 +37,11 @@ int main(){
 	// In OpenCV 3.0.0 beta, only a single device is detected.
 	cout << context1.ndevices() << " GPU devices are detected." << endl;
 
-
-
 	cuda::GpuMat gI;
 
 	getchar();*/
-	cuda::GpuMat gI;
 
+	Mat gI;
 
 	zmq::context_t context(1);
 	zmq::socket_t subscriber(context, ZMQ_SUB);
@@ -71,34 +69,27 @@ int main(){
 		
 		int line = 0;
 			//		Mat A = Mat::zeros(720,1280, CV_8UC1);	
-		Mat A1 = Mat::zeros(720,1280, CV_8UC1);
 		while (1) {
 
 			//  Process all parts of the message
 			zmq::message_t message;
-			subscriber.recv(&message);
+			subscriber.recv(&message, 0);
 
 			//  Dump the message as text or binary
 			int size = message.size();
 			std::string data(static_cast<char*>(message.data()), size);
+			malloc(100000000);
 			msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());
 			msgpack::object obj = oh.get();
 
-			bool is_text = true;
 			int char_nbr;
-			unsigned char byte;
-			for (char_nbr = 0; char_nbr < size; char_nbr++) {
-			    byte = data [char_nbr];
-			    if (byte < 32 || byte > 127)
-				is_text = false;
-			}
 			int countL = 0;
 			int countC = 0;
 			//std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
-
 			// check if we have passed the first two messages
 			if (line==2){
 				
+				Mat A1 = Mat(720,1280, CV_8UC1);
 				for (char_nbr = 0; char_nbr < size; char_nbr+=3) {
  					if (countC < 720){
 						if (countL < 1279) {
@@ -110,12 +101,14 @@ int main(){
 							countL = 0;
 						}
 					}
-					A1.data[A1.channels()*(A1.cols*countC + countL) + 0] = (int) data [char_nbr];
+					//std::cout << "r" << std::endl;
+					A1.data[A1.channels()*(A1.cols*countC + countL) + 1] = (int) data [char_nbr];
+					//std::cout << "a" << std::endl;
 					//std::count << A.data[0] << std::endl;
 					//std::cout << A.data[A.channels()*(A.cols*countC + countL) + 0] << std::endl;
 				}
 				channels.push_back(A1);
-				Mat A2 = Mat::zeros(720,1280, CV_8UC1);
+				Mat A2 = Mat(720,1280, CV_8UC1);
 				countL = 0;
 				countC = 0;
 				for (char_nbr = 1; char_nbr < size; char_nbr+=3) {
@@ -130,7 +123,7 @@ int main(){
 					A2.data[A2.channels()*(A2.cols*countC + countL) + 1] = (int) data [char_nbr];
 				}
 				channels.push_back(A2);
-				Mat A3 = Mat::zeros(720,1280, CV_8UC1);
+				Mat A3 = Mat(720,1280, CV_8UC1);
 				countL = 0;
 				countC = 0;
 				for (char_nbr = 2; char_nbr < size; char_nbr+=3) {
@@ -147,7 +140,7 @@ int main(){
 				channels.push_back(A3);
 			}
 			
-			if (line==2) std::cout << "Received One Frame" << std::endl;
+			//if (line==2) std::cout << "Received One Frame" << std::endl;
 
 			int more = 0;           //  Multipart detection
 			size_t more_size = sizeof (more);
@@ -158,8 +151,8 @@ int main(){
 			line++;
     		}
 			merge(channels, fin_img);
-			gI.upload(A1);
-			if (count % 4 ==0 ) imshow("threshold",fin_img);
+			//fin_img.download(gI);
+			if (count % 1 ==0 ) imshow("threshold",fin_img);
 			// Press  ESC on keyboard to  exit
 			char c = (char)waitKey(1);
 			if( c == 27 ) break;
