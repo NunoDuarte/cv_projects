@@ -16,6 +16,7 @@
 #include "opencv2/cudawarping.hpp"
 #include "cuda_runtime_api.h"
 #include "device_launch_parameters.h"
+#include <jpeglib.h>
 
 
 using namespace cv;
@@ -68,28 +69,26 @@ int main(){
 	while(1){
 		
 		int line = 0;
-			//		Mat A = Mat::zeros(720,1280, CV_8UC1);	
 		while (1) {
 
 			//  Process all parts of the message
 			zmq::message_t message;
-			subscriber.recv(&message, 10);
+			subscriber.recv(&message);
 
 			//  Dump the message as text or binary
 			int size = message.size();
 			std::string data(static_cast<char*>(message.data()), size);
-			malloc(100000000);
-			std::cout << message.size() << std::endl;
-			msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());
-			msgpack::object obj = oh.get();
+			//msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());
+			//msgpack::object obj = oh.get();
 
 			int char_nbr;
 			int countL = 0;
 			int countC = 0;
 			//std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
+
 			// check if we have passed the first two messages
 			if (line==2){
-				
+
 				Mat A1 = Mat(720,1280, CV_8UC1);
 				for (char_nbr = 0; char_nbr < size; char_nbr+=3) {
  					if (countC < 720){
@@ -102,7 +101,6 @@ int main(){
 							countL = 0;
 						}
 					}
-					//std::cout << "r" << std::endl;
 					A1.data[A1.channels()*(A1.cols*countC + countL) + 1] = (int) data [char_nbr];
 				}
 				channels.push_back(A1);
@@ -137,20 +135,18 @@ int main(){
 				}
 				channels.push_back(A3);
 			}
-			
-			//if (line==2) std::cout << "Received One Frame" << std::endl;
 
 			int more = 0;           //  Multipart detection
 			size_t more_size = sizeof (more);
 			subscriber.getsockopt (ZMQ_RCVMORE, &more, &more_size);
-
-			if (!more) break; //  Break when there is no more message
 			//getchar();
+			if (!more) break; //  Break when there is no more message
 			line++;
     		}
 			merge(channels, fin_img);
 			//fin_img.download(gI);
 			if (count % 1 ==0 ) imshow("threshold",fin_img);
+
 			// Press  ESC on keyboard to  exit
 			char c = (char)waitKey(1);
 			if( c == 27 ) break;
