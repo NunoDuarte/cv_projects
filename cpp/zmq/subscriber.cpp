@@ -61,7 +61,6 @@ int main(){
 	subscriber.connect(oss.str()); // connect SUB_PORT IP 
 	subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
-	Mat A = Mat::zeros(720,1280, CV_8UC1);
 	vector<Mat> channels;
 	Mat fin_img;
 
@@ -85,7 +84,55 @@ int main(){
 			int countL = 0;
 			int countC = 0;
 			//std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
+			if (line==1){
+				msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());
+				msgpack::object obj = oh.get();
+				std::cout << obj << std::endl;
 
+				std::cout << data.data() << std::endl;
+
+				std::size_t pos = data.find("width");
+				std::cout << data.find("width") << std::endl;
+
+				std::string str3 = data.substr(pos-1);  // this gets me width
+				std::cout << data.substr(pos-1) << std::endl;
+
+				std::string str4 = data.substr(pos+5);  //
+				std::cout << data.substr(pos+5) << std::endl;
+
+				std::size_t pos1 = data.find("height");
+				std::cout << data.find("height") << std::endl;
+
+				std::string str5 = data.substr(pos1-1);  // this gets me height
+				std::cout << data.substr(pos1-1) << std::endl;
+
+				std::string str6 = data.substr(pos1+6);  //
+				std::cout << data.substr(pos1+6) << std::endl;
+
+				oh = msgpack::unpack(str6.data(), str6.size());
+				obj = oh.get();
+				std::cout << obj << std::endl;
+
+				getchar();
+			        /*msgpack::sbuffer buffer;
+				// deserializes these objects using msgpack::unpacker.
+				msgpack::unpacker pac;
+			
+				// feeds the buffer.
+				pac.reserve_buffer(data.size());
+				memcpy(pac.buffer(), data.data(), data.size());
+				pac.buffer_consumed(data.size());
+
+				// now starts streaming deserialization.
+				msgpack::object_handle oh;
+				while(pac.next(oh)) {
+					std::cout << oh.get() << std::endl;
+				}		
+				//msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());	*/
+				//msgpack::object obj = oh.get();
+				//std::cout << obj << std::endl;
+
+			}
 			// check if we have passed the first two messages
 			if (line==2){
 
@@ -143,15 +190,18 @@ int main(){
 			if (!more) break; //  Break when there is no more message
 			line++;
     		}
-			merge(channels, fin_img);
-			//fin_img.download(gI);
-			if (count % 1 ==0 ) imshow("threshold",fin_img);
+		merge(channels, fin_img);
+		//fin_img.download(gI);
 
-			// Press  ESC on keyboard to  exit
-			char c = (char)waitKey(1);
-			if( c == 27 ) break;
-			channels.clear();
-	count++;
+		if (count % 1 ==0 ) imshow("threshold",fin_img);
+
+		// Press  ESC on keyboard to  exit
+		char c = (char)	waitKey(1);
+		if( c == 27 ) break;
+
+		channels.clear();
+
+		count++;
 
    	}
 	return 0;
