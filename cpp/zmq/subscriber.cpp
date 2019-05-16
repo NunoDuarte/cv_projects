@@ -64,6 +64,9 @@ int main(){
 	vector<Mat> channels;
 	Mat fin_img;
 
+	int width;
+	int height;
+
 	int count = 0;
 	while(1){
 		
@@ -85,61 +88,30 @@ int main(){
 			int countC = 0;
 			//std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
 			if (line==1){
-				msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());
-				msgpack::object obj = oh.get();
-				std::cout << obj << std::endl;
-
-				std::cout << data.data() << std::endl;
 
 				std::size_t pos = data.find("width");
-				std::cout << data.find("width") << std::endl;
-
-				std::string str3 = data.substr(pos-1);  // this gets me width
-				std::cout << data.substr(pos-1) << std::endl;
-
-				std::string str4 = data.substr(pos+5);  //
-				std::cout << data.substr(pos+5) << std::endl;
+				std::string str1 = data.substr(pos+5);  //
+				msgpack::object_handle oh = msgpack::unpack(str1.data(), str1.size());
+				msgpack::object obj = oh.get();
+				//std::cout << obj << std::endl;
+				width = obj.as<int>();
 
 				std::size_t pos1 = data.find("height");
-				std::cout << data.find("height") << std::endl;
+				std::string str2 = data.substr(pos1+6);  //
 
-				std::string str5 = data.substr(pos1-1);  // this gets me height
-				std::cout << data.substr(pos1-1) << std::endl;
-
-				std::string str6 = data.substr(pos1+6);  //
-				std::cout << data.substr(pos1+6) << std::endl;
-
-				oh = msgpack::unpack(str6.data(), str6.size());
+				oh = msgpack::unpack(str2.data(), str2.size());
 				obj = oh.get();
-				std::cout << obj << std::endl;
-
-				getchar();
-			        /*msgpack::sbuffer buffer;
-				// deserializes these objects using msgpack::unpacker.
-				msgpack::unpacker pac;
-			
-				// feeds the buffer.
-				pac.reserve_buffer(data.size());
-				memcpy(pac.buffer(), data.data(), data.size());
-				pac.buffer_consumed(data.size());
-
-				// now starts streaming deserialization.
-				msgpack::object_handle oh;
-				while(pac.next(oh)) {
-					std::cout << oh.get() << std::endl;
-				}		
-				//msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());	*/
-				//msgpack::object obj = oh.get();
 				//std::cout << obj << std::endl;
+				height = obj.as<int>();
 
 			}
 			// check if we have passed the first two messages
 			if (line==2){
 
-				Mat A1 = Mat(720,1280, CV_8UC1);
+				Mat A1 = Mat(height,width, CV_8UC1);
 				for (char_nbr = 0; char_nbr < size; char_nbr+=3) {
- 					if (countC < 720){
-						if (countL < 1279) {
+ 					if (countC < height){
+						if (countL < width-1) {
 							//R << (int) data [char_nbr] << " ";
 							countL++;
 						}else{
@@ -151,12 +123,12 @@ int main(){
 					A1.data[A1.channels()*(A1.cols*countC + countL) + 1] = (int) data [char_nbr];
 				}
 				channels.push_back(A1);
-				Mat A2 = Mat(720,1280, CV_8UC1);
+				Mat A2 = Mat(height,width, CV_8UC1);
 				countL = 0;
 				countC = 0;
 				for (char_nbr = 1; char_nbr < size; char_nbr+=3) {
- 					if (countC < 720){
-						if (countL < 1279) {
+ 					if (countC < height){
+						if (countL < width-1) {
 							countL++;
 						}else{
 							countC++;
@@ -166,12 +138,12 @@ int main(){
 					A2.data[A2.channels()*(A2.cols*countC + countL) + 1] = (int) data [char_nbr];
 				}
 				channels.push_back(A2);
-				Mat A3 = Mat(720,1280, CV_8UC1);
+				Mat A3 = Mat(height,width, CV_8UC1);
 				countL = 0;
 				countC = 0;
 				for (char_nbr = 2; char_nbr < size; char_nbr+=3) {
- 					if (countC < 720){
-						if (countL < 1279) {
+ 					if (countC < height){
+						if (countL < width-1) {
 							countL++;
 						}else{
 							countC++;
