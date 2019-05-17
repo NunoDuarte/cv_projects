@@ -16,33 +16,12 @@
 #include "opencv2/cudawarping.hpp"
 #include "cuda_runtime_api.h"
 #include "device_launch_parameters.h"
-#include <jpeglib.h>
-
 
 using namespace cv;
 using namespace std;
 using namespace cv::cuda;
 
 int main(){
-
-	/*if (!cv::ocl::haveOpenCL()){
-		cout << "OpenCL is not avaiable..." << endl;
-		return -1;
-	}
-	cv::ocl::Context context1;
-	if (!context1.create(cv::ocl::Device::TYPE_GPU)){
-		cout << "Failed creating the context..." << endl;
-		return -1;
-	}
-
-	// In OpenCV 3.0.0 beta, only a single device is detected.
-	cout << context1.ndevices() << " GPU devices are detected." << endl;
-
-	cuda::GpuMat gI;
-
-	getchar();*/
-
-	Mat gI;
 
 	zmq::context_t context(1);
 	zmq::socket_t subscriber(context, ZMQ_SUB);
@@ -163,7 +142,6 @@ int main(){
 			line++;
     		}
 		merge(channels, fin_img);
-		//fin_img.download(gI);
 
 		if (count % 1 ==0 ) imshow("threshold",fin_img);
 
