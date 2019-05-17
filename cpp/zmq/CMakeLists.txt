@@ -14,12 +14,12 @@ find_package(OpenCV 3.4.1 EXACT REQUIRED PATHS /home/nduarte/software/opencv-3.4
 
 enable_testing()
 add_executable(
-    sub 
-    subscriber.cpp
+    frame 
+    pupil_frame.cpp
     )
 
 target_link_libraries(
-    sub
+    frame
     cppzmq
     ${OpenCV_LIBS}
     )
@@ -32,9 +32,9 @@ include_directories( ${Boost_INCLUDE_DIRS} )
 
 add_test(
   NAME
-    sub
+    frame
   COMMAND
-    ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}/sub
+    ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}/frame
   )
 
 
