@@ -5,9 +5,21 @@
 #include <fstream>
 #include "zhelper.hpp"
 #include <sstream>
+#include <opencv2/opencv.hpp>
+#include "opencv2/core/cuda.hpp"
+#include <opencv2/core/ocl.hpp>
+#include "opencv2/objdetect.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/cudaobjdetect.hpp"
+#include "opencv2/cudaimgproc.hpp"
+#include "opencv2/cudawarping.hpp"
+#include "cuda_runtime_api.h"
+#include "device_launch_parameters.h"
 
-
+using namespace cv;
 using namespace std;
+using namespace cv::cuda;
 
 int main(){
 
@@ -28,11 +40,15 @@ int main(){
 	subscriber.connect(oss.str()); // connect SUB_PORT IP 
 	subscriber.setsockopt(ZMQ_SUBSCRIBE, "frame.world", 11);
 
-	ofstream myfile;
-	myfile.open ("example.txt");
+	vector<Mat> channels;
+	Mat fin_img;
 
-	for(int i=0; i<1; i++){
+	int width;
+	int height;
 
+	int count = 0;
+	while(1){
+		
 		int line = 0;
 		while (1) {
 
@@ -43,70 +59,99 @@ int main(){
 			//  Dump the message as text or binary
 			int size = message.size();
 			std::string data(static_cast<char*>(message.data()), size);
-			msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());
-			msgpack::object obj = oh.get();
+			//msgpack::object_handle oh = msgpack::unpack(data.data(), data.size());
+			//msgpack::object obj = oh.get();
 
-			bool is_text = true;
 			int char_nbr;
-			unsigned char byte;
-			for (char_nbr = 0; char_nbr < size; char_nbr++) {
-			    byte = data [char_nbr];
-			    if (byte < 32 || byte > 127)
-				is_text = false;
-			}
 			int countL = 0;
 			int countC = 0;
 			//std::cout << "[" << std::setfill('0') << std::setw(3) << size << "]";
-	
+			if (line==1){
+
+				std::size_t pos = data.find("width");
+				std::string str1 = data.substr(pos+5);  //
+				msgpack::object_handle oh = msgpack::unpack(str1.data(), str1.size());
+				msgpack::object obj = oh.get();
+				//std::cout << obj << std::endl;
+				width = obj.as<int>();
+
+				std::size_t pos1 = data.find("height");
+				std::string str2 = data.substr(pos1+6);  //
+
+				oh = msgpack::unpack(str2.data(), str2.size());
+				obj = oh.get();
+				//std::cout << obj << std::endl;
+				height = obj.as<int>();
+
+			}
 			// check if we have passed the first two messages
 			if (line==2){
 
-				for (char_nbr = 0; char_nbr <= size; char_nbr++) {	
-					if (countC < 1280){
-						if (countL < 240) {
-							//myfile << (int) data[char_nbr] <<" ";
+				Mat A1 = Mat(height,width, CV_8UC1);
+				for (char_nbr = 0; char_nbr < size; char_nbr+=3) {
+ 					if (countC < height){
+						if (countL < width-1) {
+							//R << (int) data [char_nbr] << " ";
+							countL++;
 						}else{
-							//myfile << (int) data[char_nbr] <<"\n";
-							countL = 0;
+							//R << (int) data [char_nbr] << ";\n";
 							countC++;
-						}
-						countL++;
-					}
-					else if (countC >= 1280 and countC < 2560){
-						if (countL < 240) {
-							//myfile << (int) data[char_nbr] <<" ";
-						}else{
-							//myfile << (int) data[char_nbr] <<"\n";
 							countL = 0;
-							countC++;
 						}
-						countL++;
 					}
-					else if (countC >= 2560 and countC < 3840){
-						if (countL < 240) {
-							myfile << (int) data[char_nbr] <<" ";
-						}else{
-							myfile << (int) data[char_nbr] <<"\n";
-							countL = 0;
-							countC++;
-						}
-						countL++;
-					}
+					A1.data[A1.channels()*(A1.cols*countC + countL) + 1] = (int) data [char_nbr];
 				}
+				channels.push_back(A1);
+				Mat A2 = Mat(height,width, CV_8UC1);
+				countL = 0;
+				countC = 0;
+				for (char_nbr = 1; char_nbr < size; char_nbr+=3) {
+ 					if (countC < height){
+						if (countL < width-1) {
+							countL++;
+						}else{
+							countC++;
+							countL = 0;
+						}
+					}
+					A2.data[A2.channels()*(A2.cols*countC + countL) + 1] = (int) data [char_nbr];
+				}
+				channels.push_back(A2);
+				Mat A3 = Mat(height,width, CV_8UC1);
+				countL = 0;
+				countC = 0;
+				for (char_nbr = 2; char_nbr < size; char_nbr+=3) {
+ 					if (countC < height){
+						if (countL < width-1) {
+							countL++;
+						}else{
+							countC++;
+							countL = 0;
+						}
+					}
+					A3.data[A3.channels()*(A3.cols*countC + countL) + 2] = (int) data [char_nbr];
+				}
+				channels.push_back(A3);
 			}
-			
-			if (line==2) std::cout << "Received One Frame" << std::endl;
 
 			int more = 0;           //  Multipart detection
 			size_t more_size = sizeof (more);
 			subscriber.getsockopt (ZMQ_RCVMORE, &more, &more_size);
-
-			if (!more) break; //  Break when there is no more message
 			//getchar();
+			if (!more) break; //  Break when there is no more message
 			line++;
     		}
+		merge(channels, fin_img);
 
-	myfile.close();
+		if (count % 1 ==0 ) imshow("threshold",fin_img);
+
+		// Press  ESC on keyboard to  exit
+		char c = (char)	waitKey(1);
+		if( c == 27 ) break;
+
+		channels.clear();
+
+		count++;
 
    	}
 	return 0;
