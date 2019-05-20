@@ -192,7 +192,7 @@ int main(int argc, char** argv)
 	lsl::stream_inlet inlet(results[0]);
 
 	// make a new stream_info (GazePose) and open an outlet with it
-	lsl::stream_info info("GazePose", "NormPose2IP", 4, 100, lsl::cf_float32, "myuid34234");
+	lsl::stream_info info("GazePose", "NormPose2IP", 3, 100, lsl::cf_float32, "myuid34234");
 	info.desc().append_child_value("manufacturer", "VisLab");
 	lsl::stream_outlet outlet(info);
 
@@ -385,7 +385,7 @@ int main(int argc, char** argv)
 
 		// add to the original frame the location of the red Object
 		imgOriginalTotal = imgOriginalTotal + imgLines;
-		imshow("Thresholded Green", imgThresholded); //show the thresholded image
+		//imshow("Thresholded Green", imgThresholded); //show the thresholded image
 
 		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );
 		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
@@ -398,18 +398,16 @@ int main(int argc, char** argv)
 		//imshow("Thresholded Blue", imgThresholded); //show the thresholded image
 
 		// getting sample from inlet
-		vector<float> sample;
+		std::vector<std::vector<float>> chunk_nested_vector;
 		double ts;
+		//printChunk(sample, inlet.get_channel_count());
 		// get the sample and timestamp
-		if (ts = inlet.pull_chunk_numeric_structs(sample)){
-			cout << ts << endl; // only showing the time stamps here
+		if (ts = inlet.pull_chunk(chunk_nested_vector)){
 			// display
-			cout << ts << ':';
-			for (auto c: sample) cout << "\t" << c;
-			cout << endl;
+			//cout << ts << ':';
 
-			float pos_x = sample[0];
-			float pos_y = sample[1];
+			float pos_x = chunk_nested_vector[0][1];
+			float pos_y = chunk_nested_vector[0][2];
 
 			// Draw a circle 
 			circle(imgOriginalTotal,Point(int(pos_x*(width)), int(height) - int(pos_y*int(width))), 10, Scalar(0,255, 1), 5, 8);
