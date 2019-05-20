@@ -45,27 +45,6 @@ CascadeClassifier eyes_cascade;
 string window_name = "Capture - Face detection";
 RNG rng(12345);
 
-double t = 0.0;
-const double fps1 = 10.0;	// change when you want to cut frames
-const double fps2 = 10.0;
-
-const double t1 = 1.0 / fps1;
-const double t2 = 1.0 / fps2;
-
-// true - drop the frame
-// false - do NOT drop the frame
-bool NextTick()
-{
-  t += t1;
-  if ( t > t2 )
-  {
-    t -= t2;
-    return false;
-  }
-  return true;
-}
-
-
 void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded, int iLowHb, int iLowSb, int iLowVb, int iHighHb, int iHighSb, int iHighVb, int iLowHd, int iLowSd, int iLowVd, int iHighHd, int iHighSd, int iHighVd)
 {
 
@@ -353,10 +332,6 @@ int main(int argc, char** argv)
 		channels.clear();
 		count++;
 
-		//-- 1. Load the cascades
-		if( !face_cascade.load( face_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
-		if( !eyes_cascade.load( eyes_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
-
 		//// Read the Different Objects
 		// save the original frame
 		imgOriginal = fin_img;		
@@ -412,14 +387,6 @@ int main(int argc, char** argv)
 
 		// show the location of all the objects in the original frame
 		imshow("Original", imgOriginalTotal); //show the original image
-
-		// Face Detection
-		thread t4(task2, "Face");
-
-		t4.join();
-		//-- Show what you got
-		imshow("Faces", imgOriginal);
-
 	}
 
 
