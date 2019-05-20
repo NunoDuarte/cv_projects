@@ -400,11 +400,8 @@ int main(int argc, char** argv)
 		// getting sample from inlet
 		std::vector<std::vector<float>> chunk_nested_vector;
 		double ts;
-		//printChunk(sample, inlet.get_channel_count());
 		// get the sample and timestamp
 		if (ts = inlet.pull_chunk(chunk_nested_vector)){
-			// display
-			//cout << ts << ':';
 
 			float pos_x = chunk_nested_vector[0][1];
 			float pos_y = chunk_nested_vector[0][2];
