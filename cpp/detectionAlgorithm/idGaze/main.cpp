@@ -414,11 +414,11 @@ int main(int argc, char** argv)
 		imshow("Original", imgOriginalTotal); //show the original image
 
 		// Face Detection
-		//thread t4(task2, "Face");
+		thread t4(task2, "Face");
 
-		//t4.join();
+		t4.join();
 		//-- Show what you got
-		//imshow("Faces", imgOriginal);
+		imshow("Faces", imgOriginal);
 
 	}
 
