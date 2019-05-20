@@ -34,38 +34,6 @@ int iHighVd;
 int iLastX; 
 int iLastY;
 
-/** Function Headers */
-void detectAndDisplay( Mat frame );
-
-/** Global variables */
-String face_cascade_name = "cascade-icub-60v60.xml";
-String eyes_cascade_name = "haarcascade_eye.xml";
-CascadeClassifier face_cascade;
-CascadeClassifier eyes_cascade;
-string window_name = "Capture - Face detection";
-RNG rng(12345);
-
-double t = 0.0;
-const double fps1 = 10.0;	// change when you want to cut frames
-const double fps2 = 10.0;
-
-const double t1 = 1.0 / fps1;
-const double t2 = 1.0 / fps2;
-
-// true - drop the frame
-// false - do NOT drop the frame
-bool NextTick()
-{
-  t += t1;
-  if ( t > t2 )
-  {
-    t -= t2;
-    return false;
-  }
-  return true;
-}
-
-
 void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded, int iLowHb, int iLowSb, int iLowVb, int iHighHb, int iHighSb, int iHighVb, int iLowHd, int iLowSd, int iLowVd, int iHighHd, int iHighSd, int iHighVd)
 {
 
@@ -121,60 +89,6 @@ void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded, int iLowHb, int
 void task1(string msg, int iLowHb, int iLowSb, int iLowVb, int iHighHb, int iHighSb, int iHighVb, int iLowHd, int iLowSd, int iLowVd, int iHighHd, int iHighSd, int iHighVd)
 {
 	image(imgOriginal, imgLines, imgThresholded, iLowHb, iLowSb, iLowVb, iHighHb, iHighSb, iHighVb, iLowHd, iLowSd, iLowVd, iHighHd, iHighSd, iHighVd);
-}
-
-// The function we want to execute on the new thread.
-void task2(string msg)
-{
-	detectAndDisplay(imgOriginal);
-}
-
-/** @function detectAndDisplay */
-void detectAndDisplay( Mat frame )
-{
-	std::vector<Rect> faces;
-	Mat gray, blurred, thresh;
-
-	// cv2 - convert RGB to Gray scale
-	cvtColor( frame, gray, COLOR_BGR2GRAY );
-	// cv2 - blur the gray image
-	GaussianBlur( gray, blurred, Size( 31,31), 0);
-	// cv2 - Threshold the blurred image
-	threshold( blurred, thresh, 127, 255, THRESH_TOZERO);
-
-	//cvtColor( frame, frame_gray, CV_BGR2GRAY );
-	//equalizeHist( frame_gray, frame_gray );
-
-	//-- Detect faces
-	face_cascade.detectMultiScale( gray, faces, 1.1, 1, 0|CV_HAAR_SCALE_IMAGE);
-	bool detected = false;
-
-	for( size_t i = 0; i < faces.size(); i++ )
-	{
-		Point center( faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5 );
-		//ellipse( frame, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
-
-		Mat faceROI = gray( faces[i] );
-		std::vector<Rect> eyes;
-
-		//-- In each face, detect eyes
-		eyes_cascade.detectMultiScale( faceROI, eyes);
-
-		if (eyes.size() > 1 and eyes.size() < 3)
-		{
-			for( size_t j = 0; j < eyes.size(); j++ )
-			{
-				ellipse( frame, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
-				Point center( faces[i].x + eyes[j].x + eyes[j].width*0.5, faces[i].y + eyes[j].y + eyes[j].height*0.5 );
-				int radius = cvRound( (eyes[j].width + eyes[j].height)*0.25 );
-				circle( frame, center, radius, Scalar( 255, 0, 0 ), 4, 8, 0 );
-			}
-			detected = true;
-			break;
-		}
-		if (detected) break;
-	}
-	frame = imgOriginal;
 }
 
 int main(int argc, char** argv)
@@ -353,10 +267,6 @@ int main(int argc, char** argv)
 		channels.clear();
 		count++;
 
-		//-- 1. Load the cascades
-		if( !face_cascade.load( face_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
-		if( !eyes_cascade.load( eyes_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
-
 		//// Read the Different Objects
 		// save the original frame
 		imgOriginal = fin_img;		
@@ -412,13 +322,6 @@ int main(int argc, char** argv)
 
 		// show the location of all the objects in the original frame
 		imshow("Original", imgOriginalTotal); //show the original image
-
-		// Face Detection
-		thread t4(task2, "Face");
-
-		t4.join();
-		//-- Show what you got
-		imshow("Faces", imgOriginal);
 
 	}
 
