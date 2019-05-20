@@ -1,6 +1,9 @@
 #include <string>
 #include <iostream>
 #include <thread>
+#include "opencv2/opencv.hpp"
+#include "opencv2/cudafilters.hpp"
+#include "opencv2/cudaimgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/objdetect/objdetect.hpp" 	// for cascade classifier
@@ -59,14 +62,29 @@ void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded, int iLowHb, int
 	inRange(imgHSV, Scalar(iLowHb, iLowSb, iLowVb), Scalar(iHighHb, iHighSb, iHighVb), imgThresholded_bright); 
 	inRange(imgHSV, Scalar(iLowHd, iLowSd, iLowVd), Scalar(iHighHd, iHighSd, iHighVd), imgThresholded_dark); 
 
-	addWeighted(imgThresholded_bright, 1.0, imgThresholded_dark, 1.0, 0.0, imgThresholded);
+	cv::cuda::addWeighted(imgThresholded_bright, 1.0, imgThresholded_dark, 1.0, 0.0, imgThresholded);
 
 	//morphological opening (removes small objects from the foreground)
+	// CUDA erode
+	/*cuda::GpuMat d_img0(imgThresholded);
+	Mat element = cv::getStructuringElement(MORPH_ELLIPSE, Size(5, 5));
+	cv::Ptr<cv::cuda::Filter> erodeFilter = cv::cuda::createMorphologyFilter(cv::MORPH_ERODE, d_img0.type(), element);
+	erodeFilter->apply(d_img0, d_img0);*/
 	erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+
 	dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
+	// CUDA dilate
+	/*Ptr<cuda::Filter> dilateFilter = cv::cuda::createMorphologyFilter(MORPH_DILATE, d_img0.type(), element);
+	dilateFilter->apply(d_img0, d_img0);
 
 	//morphological closing (removes small holes from the foreground)
+	// CUDA dilate
+	dilateFilter->apply(d_img0, d_img0);*/
 	dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
+
+	// CUDA erode
+	/*erodeFilter->apply(d_img0, d_img0);
+	d_img0.download(imgThresholded);*/
 	erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
 
 	//Calculate the moments of the thresholded image
@@ -200,11 +218,6 @@ int main(int argc, char** argv)
 	int width;
 	int height;
 
-	int count = 0;
-
-	// set camera resolution
-	//cout << "Resolution" << cap.get(CV_CAP_PROP_FRAME_WIDTH) << cap.get(CV_CAP_PROP_FRAME_HEIGHT) << endl;
-
 	iLowHb = 0;
 	iHighHb = 10;
 
@@ -323,14 +336,11 @@ int main(int argc, char** argv)
 		}
 		merge(channels, fin_img);
 
-		//if (count % 1 ==0 ) imshow("threshold",fin_img);
-
 		// Press  ESC on keyboard to  exit
 		char c = (char)	waitKey(1);
 		if( c == 27 ) break;
 
 		channels.clear();
-		count++;
 
 		//// Read the Different Objects
 		// save the original frame
@@ -341,6 +351,7 @@ int main(int argc, char** argv)
 		Mat imgTmp = fin_img;
 
 		//Create a black image with the size as the camera output
+		//cv::cuda::multiply(imgLines, Mat::zeros( imgTmp.size(), CV_8UC3 ), imgLines);
 		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
 
 		// red Object
