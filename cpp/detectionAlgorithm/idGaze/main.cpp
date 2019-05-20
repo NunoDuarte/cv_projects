@@ -376,23 +376,24 @@ int main(int argc, char** argv)
 		imgOriginalTotal = imgOriginalTotal + imgLines;
 		//imshow("Thresholded Red", imgThresholded); //show the thresholded image
 
-		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );;
-		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );;
+		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );
+		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
 
 		// green Object
-	     	thread t2(task1, "Green Object", 65, 60, 60, 80, 255, 255, 65, 60, 160, 80, 255, 179);
+	     	thread t2(task1, "Green Object", 44, 54, 63, 71, 255, 255, 65, 60, 160, 71, 255, 255);
 		t2.join();
 
 		// add to the original frame the location of the red Object
 		imgOriginalTotal = imgOriginalTotal + imgLines;
-		//imshow("Thresholded Green", imgThresholded); //show the thresholded image
+		imshow("Thresholded Green", imgThresholded); //show the thresholded image
 
-		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );;
-		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );;
+		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );
+		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
 
 		// blue Object
 		thread t3(task1, "Blue Object", 90, 130, 60, 140, 255, 255, 100, 170, 80, 140, 255, 255);
 		t3.join();
+
 		imgOriginalTotal = imgOriginalTotal + imgLines;
 		//imshow("Thresholded Blue", imgThresholded); //show the thresholded image
 
