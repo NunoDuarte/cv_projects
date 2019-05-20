@@ -18,22 +18,6 @@ Mat imgOriginal;
 Mat imgOriginalTotal;
 Mat imgThresholded;
 
-int iLowHb;
-int iHighHb;
-int iLowSb; 
-int iHighSb;
-int iLowVb;
-int iHighVb;
-int iLowHd;
-int iHighHd;
-int iLowSd; 
-int iHighSd;
-int iLowVd;
-int iHighVd;
-
-int iLastX; 
-int iLastY;
-
 /** Function Headers */
 void detectAndDisplay( Mat frame );
 
@@ -44,84 +28,6 @@ CascadeClassifier face_cascade;
 CascadeClassifier eyes_cascade;
 string window_name = "Capture - Face detection";
 RNG rng(12345);
-
-double t = 0.0;
-const double fps1 = 10.0;	// change when you want to cut frames
-const double fps2 = 10.0;
-
-const double t1 = 1.0 / fps1;
-const double t2 = 1.0 / fps2;
-
-// true - drop the frame
-// false - do NOT drop the frame
-bool NextTick()
-{
-  t += t1;
-  if ( t > t2 )
-  {
-    t -= t2;
-    return false;
-  }
-  return true;
-}
-
-
-void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded, int iLowHb, int iLowSb, int iLowVb, int iHighHb, int iHighSb, int iHighVb, int iLowHd, int iLowSd, int iLowVd, int iHighHd, int iHighSd, int iHighVd)
-{
-
-	Mat imgHSV;
-	Mat imgThresholded_bright;
-	Mat imgThresholded_dark;
-
-	//Convert the captured frame from BGR to HSV
-	cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); 	
-
-	//Threshold the image
-	inRange(imgHSV, Scalar(iLowHb, iLowSb, iLowVb), Scalar(iHighHb, iHighSb, iHighVb), imgThresholded_bright); 
-	inRange(imgHSV, Scalar(iLowHd, iLowSd, iLowVd), Scalar(iHighHd, iHighSd, iHighVd), imgThresholded_dark); 
-
-	addWeighted(imgThresholded_bright, 1.0, imgThresholded_dark, 1.0, 0.0, imgThresholded);
-
-	//morphological opening (removes small objects from the foreground)
-	erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-	dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
-
-	//morphological closing (removes small holes from the foreground)
-	dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
-	erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-
-	//Calculate the moments of the thresholded image
-	Moments oMoments = moments(imgThresholded);
-
-	double dM01 = oMoments.m01;
-	double dM10 = oMoments.m10;
-	double dArea = oMoments.m00;
-
-	// if the area <= 10000, I consider that the there are no 
-	// object in the image and it's because of the noise, the area is not zero 
-	if (dArea > 10000)
-	{
-		//calculate the position of the ball
-		int posX = dM10 / dArea;
-		int posY = dM01 / dArea;        
-
-		if (iLastX >= 0 && iLastY >= 0 && posX >= 0 && posY >= 0)
-		{
-			//Draw a red line from the previous point to the current point
-			line(imgLines, Point(posX, posY), Point(iLastX, iLastY), Scalar(0,0,255), 2);
-		}
-
-		iLastX = posX;
-		iLastY = posY;
-	}
-
-}
-
-// The function we want to execute on the new thread.
-void task1(string msg, int iLowHb, int iLowSb, int iLowVb, int iHighHb, int iHighSb, int iHighVb, int iLowHd, int iLowSd, int iLowVd, int iHighHd, int iHighSd, int iHighVd)
-{
-	image(imgOriginal, imgLines, imgThresholded, iLowHb, iLowSb, iLowVb, iHighHb, iHighSb, iHighVb, iLowHd, iLowSd, iLowVd, iHighHd, iHighSd, iHighVd);
-}
 
 // The function we want to execute on the new thread.
 void task2(string msg)
@@ -222,30 +128,6 @@ int main(int argc, char** argv)
 	int height;
 
 	int count = 0;
-
-	// set camera resolution
-	//cout << "Resolution" << cap.get(CV_CAP_PROP_FRAME_WIDTH) << cap.get(CV_CAP_PROP_FRAME_HEIGHT) << endl;
-
-	iLowHb = 0;
-	iHighHb = 10;
-
-	iLowSb = 100; 
-	iHighSb = 255;
-
-	iLowVb = 100;
-	iHighVb = 255;
-
-	iLowHd = 160;
-	iHighHd = 179;
-
-	iLowSd = 100; 
-	iHighSd = 255;
-
-	iLowVd = 100;
-	iHighVd = 255;
-
-	iLastX = -1; 
-	iLastY = -1;
 
 	int i = 0;
 	while (true)
@@ -368,35 +250,6 @@ int main(int argc, char** argv)
 		//Create a black image with the size as the camera output
 		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
 
-		// red Object
-		thread t1(task1, "Red Object", 0, 100, 100, 10, 255, 255, 160, 100, 100, 179, 255, 255);
-		t1.join();
-
-		// add to the original frame the location of the red Object
-		imgOriginalTotal = imgOriginalTotal + imgLines;
-		//imshow("Thresholded Red", imgThresholded); //show the thresholded image
-
-		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );
-		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
-
-		// green Object
-	     	thread t2(task1, "Green Object", 44, 54, 63, 71, 255, 255, 65, 60, 160, 71, 255, 255);
-		t2.join();
-
-		// add to the original frame the location of the red Object
-		imgOriginalTotal = imgOriginalTotal + imgLines;
-		//imshow("Thresholded Green", imgThresholded); //show the thresholded image
-
-		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );
-		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
-
-		// blue Object
-		thread t3(task1, "Blue Object", 90, 130, 60, 140, 255, 255, 100, 170, 80, 140, 255, 255);
-		t3.join();
-
-		imgOriginalTotal = imgOriginalTotal + imgLines;
-		//imshow("Thresholded Blue", imgThresholded); //show the thresholded image
-
 		// getting sample from inlet
 		std::vector<std::vector<float>> chunk_nested_vector;
 		double ts;
@@ -409,9 +262,6 @@ int main(int argc, char** argv)
 			// Draw a circle 
 			circle(imgOriginalTotal,Point(int(pos_x*(width)), int(height) - int(pos_y*int(width))), 10, Scalar(0,255, 1), 5, 8);
 		}
-
-		// show the location of all the objects in the original frame
-		imshow("Original", imgOriginalTotal); //show the original image
 
 		// Face Detection
 		thread t4(task2, "Face");
