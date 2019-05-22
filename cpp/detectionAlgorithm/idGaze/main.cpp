@@ -108,16 +108,15 @@ void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded, int iLowHb, int
 	{
 		//calculate the position of the ball
 		int posX = dM10 / dArea;
-		int posY = dM01 / dArea;        
+		int posY = dM01 / dArea;  
 
-		if (iLastX >= 0 && iLastY >= 0 && posX >= 0 && posY >= 0)
+		float radius = sqrt(dArea/3.14);      
+
+		if (posX >= 0 && posY >= 0)
 		{
-			//Draw a red line from the previous point to the current point
-			line(imgLines, Point(posX, posY), Point(iLastX, iLastY), Scalar(0,0,255), 2);
+			//Draw a red circle 
+			circle(imgLines, Point(posX, posY), 5, Scalar(0,0,255), 2);
 		}
-
-		iLastX = posX;
-		iLastY = posY;
 	}
 
 }
