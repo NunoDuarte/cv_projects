@@ -200,11 +200,11 @@ void detectAndDisplay( Mat frame )
 
 	for (size_t i = 0; i < faces.size(); ++i)
 	{
-	    rectangle(resized_cpu, faces[i], Scalar(255));
-		
+	    rectangle(imgLines, faces[i], Scalar(255));
 	}
 
-	frameDisp = resized_cpu;
+	//cv::cvtColor(imgLines, frameDisp, COLOR_GRAY2BGR);
+
 
 /*	std::vector<Rect> faces;
 	Mat gray, blurred, thresh;
@@ -432,74 +432,71 @@ int main(int argc, char** argv)
 
 		channels.clear();
 
-		i++;
+		//// Read the Different Objects
+		// save the original frame
+		imgOriginal = fin_img;		
+		imgOriginalTotal = fin_img;
 
-		if (i%4 == 0){
+		//Capture a temporary image from the camera
+		Mat imgTmp = fin_img;
 
-			//// Read the Different Objects
-			// save the original frame
-			imgOriginal = fin_img;		
-			imgOriginalTotal = fin_img;
+		//Create a black image with the size as the camera output
+		//cv::cuda::multiply(imgLines, Mat::zeros( imgTmp.size(), CV_8UC3 ), imgLines);
+		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
 
-			//Capture a temporary image from the camera
-			Mat imgTmp = fin_img;
+		// red Object
+		thread t1(task1, "Red Object", 0, 100, 100, 10, 255, 255, 160, 100, 100, 179, 255, 255);
+		t1.join();
 
-			//Create a black image with the size as the camera output
-			//cv::cuda::multiply(imgLines, Mat::zeros( imgTmp.size(), CV_8UC3 ), imgLines);
-			imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
+		// add to the original frame the location of the red Object
+		imgOriginalTotal = imgOriginalTotal + imgLines;
+		//imshow("Thresholded Red", imgThresholded); //show the thresholded image
 
-			// red Object
-			thread t1(task1, "Red Object", 0, 100, 100, 10, 255, 255, 160, 100, 100, 179, 255, 255);
-			t1.join();
+		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );
+		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
 
-			// add to the original frame the location of the red Object
-			imgOriginalTotal = imgOriginalTotal + imgLines;
-			//imshow("Thresholded Red", imgThresholded); //show the thresholded image
+		// green Object
+	     	thread t2(task1, "Green Object", 44, 54, 63, 71, 255, 255, 65, 60, 160, 71, 255, 255);
+		t2.join();
 
-			imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );
-			imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
+		// add to the original frame the location of the red Object
+		imgOriginalTotal = imgOriginalTotal + imgLines;
+		//imshow("Thresholded Green", imgThresholded); //show the thresholded image
 
-			// green Object
-		     	thread t2(task1, "Green Object", 44, 54, 63, 71, 255, 255, 65, 60, 160, 71, 255, 255);
-			t2.join();
+		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );
+		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
 
-			// add to the original frame the location of the red Object
-			imgOriginalTotal = imgOriginalTotal + imgLines;
-			//imshow("Thresholded Green", imgThresholded); //show the thresholded image
+		// blue Object
+		thread t3(task1, "Blue Object", 90, 130, 60, 140, 255, 255, 100, 170, 80, 140, 255, 255);
+		t3.join();
 
-			imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );
-			imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
+		imgOriginalTotal = imgOriginalTotal + imgLines;
+		//imshow("Thresholded Blue", imgThresholded); //show the thresholded image
 
-			// blue Object
-			thread t3(task1, "Blue Object", 90, 130, 60, 140, 255, 255, 100, 170, 80, 140, 255, 255);
-			t3.join();
+		// getting sample from inlet
+		std::vector<std::vector<float>> chunk_nested_vector;
+		double ts;
+		// get the sample and timestamp
+		if (ts = inlet.pull_chunk(chunk_nested_vector)){
 
-			imgOriginalTotal = imgOriginalTotal + imgLines;
-			//imshow("Thresholded Blue", imgThresholded); //show the thresholded image
+			float pos_x = chunk_nested_vector[0][1];
+			float pos_y = chunk_nested_vector[0][2];
 
-			// getting sample from inlet
-			std::vector<std::vector<float>> chunk_nested_vector;
-			double ts;
-			// get the sample and timestamp
-			if (ts = inlet.pull_chunk(chunk_nested_vector)){
-
-				float pos_x = chunk_nested_vector[0][1];
-				float pos_y = chunk_nested_vector[0][2];
-
-				// Draw a circle 
-				circle(imgOriginalTotal,Point(int(pos_x*(width)), int(height) - int(pos_y*int(width))), 10, Scalar(0,255, 1), 5, 8);
-			}
-
-			// show the location of all the objects in the original frame
-			//imshow("Original", imgOriginalTotal); //show the original image
-
-			// Face Detection
-			thread t4(task2, "Face");
-
-			t4.join();
-			//-- Show what you got
-			imshow("Faces", imgOriginal);	
+			// Draw a circle 
+			circle(imgOriginalTotal,Point(int(pos_x*(width)), int(height) - int(pos_y*int(width))), 10, Scalar(0,255, 1), 5, 8);
 		}
+
+		// show the location of all the objects in the original frame
+		//imshow("Original", imgOriginalTotal); //show the original image
+
+		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
+		// Face Detection
+		thread t4(task2, "Face");
+
+		t4.join();
+		//-- Show what you got
+		imgOriginalTotal = imgOriginalTotal + imgLines;
+		imshow("Faces", imgOriginalTotal);
 	
 
 
