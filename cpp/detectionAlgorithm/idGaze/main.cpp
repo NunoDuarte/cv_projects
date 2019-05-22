@@ -40,13 +40,21 @@ int iLastY;
 /** Function Headers */
 void detectAndDisplay( Mat frame );
 
-/** Global variables */
-String face_cascade_name = "cascade-icub-60v60.xml";
+/** Global variables **/
+String face_cascade_name = "haarcascade_frontalface_alt.xml"; //cascade-icub-60v60.xml
 String eyes_cascade_name = "haarcascade_eye.xml";
-CascadeClassifier face_cascade;
-CascadeClassifier eyes_cascade;
-string window_name = "Capture - Face detection";
-RNG rng(12345);
+Ptr<cuda::CascadeClassifier> cascade_gpu;
+Mat frame, frame_cpu, gray_cpu, resized_cpu, frameDisp;
+vector<Rect> faces;
+
+cv::cuda::GpuMat frame_gpu, gray_gpu, resized_gpu, facesBuf_gpu;
+
+/* parameters */
+bool useGPU = true;
+double scaleFactor = 1.0;
+bool findLargestObject = false;
+bool filterRects = true;
+bool helpScreen = false;
 
 void image(Mat &imgOriginal, Mat &imgLines, Mat &imgThresholded, int iLowHb, int iLowSb, int iLowVb, int iHighHb, int iHighSb, int iHighVb, int iLowHd, int iLowSd, int iLowVd, int iHighHd, int iHighSd, int iHighVd)
 {
@@ -126,10 +134,79 @@ void task2(string msg)
 	detectAndDisplay(imgOriginal);
 }
 
+static void convertAndResize(const cv::cuda::GpuMat& src, cv::cuda::GpuMat& gray, cv::cuda::GpuMat& resized, double scale)
+{
+    if (src.channels() == 3)
+    {
+        cv::cuda::cvtColor( src, gray, COLOR_BGR2GRAY );
+    }
+    else
+    {
+        gray = src;
+    }
+
+    Size sz(cvRound(gray.cols * scale), cvRound(gray.rows * scale));
+
+    if (scale != 1)
+    {
+        cv::cuda::resize(gray, resized, sz);
+    }
+    else
+    {
+        resized = gray;
+    }
+}
+
+static void convertAndResize(const Mat& src, Mat& gray, Mat& resized, double scale)
+{
+    if (src.channels() == 3)
+    {
+        cv::cvtColor( src, gray, COLOR_BGR2GRAY );
+    }
+    else
+    {
+        gray = src;
+    }
+
+    Size sz(cvRound(gray.cols * scale), cvRound(gray.rows * scale));
+
+    if (scale != 1)
+    {
+        cv::resize(gray, resized, sz);
+    }
+    else
+    {
+        resized = gray;
+    }
+}
+
 /** @function detectAndDisplay */
 void detectAndDisplay( Mat frame )
 {
-	std::vector<Rect> faces;
+
+	imgOriginal.copyTo(frame_cpu);
+	frame_gpu.upload(imgOriginal);
+
+	convertAndResize(frame_gpu, gray_gpu, resized_gpu, scaleFactor);
+	convertAndResize(frame_cpu, gray_cpu, resized_cpu, scaleFactor);
+
+	cascade_gpu->setFindLargestObject(findLargestObject);
+	cascade_gpu->setScaleFactor(1.2);
+	cascade_gpu->setMinNeighbors((filterRects || findLargestObject) ? 4 : 0);
+
+	cascade_gpu->detectMultiScale(resized_gpu, facesBuf_gpu);
+	cascade_gpu->convert(facesBuf_gpu, faces);
+
+
+	for (size_t i = 0; i < faces.size(); ++i)
+	{
+	    rectangle(resized_cpu, faces[i], Scalar(255));
+		
+	}
+
+	frameDisp = resized_cpu;
+
+/*	std::vector<Rect> faces;
 	Mat gray, blurred, thresh;
 
 	// cv2 - convert RGB to Gray scale
@@ -146,7 +223,7 @@ void detectAndDisplay( Mat frame )
 	face_cascade.detectMultiScale( gray, faces, 1.1, 1, 0|CV_HAAR_SCALE_IMAGE);
 	bool detected = false;
 
-	for( size_t i = 0; i < faces.size(); i++ )
+	for( size_t i = 0; i < 1; i++ )
 	{
 		Point center( faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5 );
 		//ellipse( frame, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
@@ -168,11 +245,14 @@ void detectAndDisplay( Mat frame )
 			}
 			detected = true;
 			break;
+		}else{
+			break; // not enough eyes
 		}
 		if (detected) break;
-	}
-	frame = imgOriginal;
+	}*/
 }
+
+
 
 int main(int argc, char** argv)
 {
@@ -238,6 +318,16 @@ int main(int argc, char** argv)
 
 	iLastX = -1; 
 	iLastY = -1;
+
+
+    	cascade_gpu = cuda::CascadeClassifier::create(face_cascade_name);
+    	Ptr<cuda::CascadeClassifier> eyes_cascade = cuda::CascadeClassifier::create(eyes_cascade_name);
+
+	cv::CascadeClassifier cascade_cpu;
+	if (!cascade_cpu.load(face_cascade_name))
+	{
+	return cerr << "ERROR: Could not load cascade classifier \"" << face_cascade_name << "\"" << endl, -1;
+	}
 
 	int i = 0;
 	while (true)
@@ -342,65 +432,78 @@ int main(int argc, char** argv)
 
 		channels.clear();
 
-		//// Read the Different Objects
-		// save the original frame
-		imgOriginal = fin_img;		
-		imgOriginalTotal = fin_img;
+		i++;
 
-		//Capture a temporary image from the camera
-		Mat imgTmp = fin_img;
+		if (i%4 == 0){
 
-		//Create a black image with the size as the camera output
-		//cv::cuda::multiply(imgLines, Mat::zeros( imgTmp.size(), CV_8UC3 ), imgLines);
-		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
+			//// Read the Different Objects
+			// save the original frame
+			imgOriginal = fin_img;		
+			imgOriginalTotal = fin_img;
 
-		// red Object
-		thread t1(task1, "Red Object", 0, 100, 100, 10, 255, 255, 160, 100, 100, 179, 255, 255);
-		t1.join();
+			//Capture a temporary image from the camera
+			Mat imgTmp = fin_img;
 
-		// add to the original frame the location of the red Object
-		imgOriginalTotal = imgOriginalTotal + imgLines;
-		//imshow("Thresholded Red", imgThresholded); //show the thresholded image
+			//Create a black image with the size as the camera output
+			//cv::cuda::multiply(imgLines, Mat::zeros( imgTmp.size(), CV_8UC3 ), imgLines);
+			imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
 
-		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );
-		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
+			// red Object
+			thread t1(task1, "Red Object", 0, 100, 100, 10, 255, 255, 160, 100, 100, 179, 255, 255);
+			t1.join();
 
-		// green Object
-	     	thread t2(task1, "Green Object", 44, 54, 63, 71, 255, 255, 65, 60, 160, 71, 255, 255);
-		t2.join();
+			// add to the original frame the location of the red Object
+			imgOriginalTotal = imgOriginalTotal + imgLines;
+			//imshow("Thresholded Red", imgThresholded); //show the thresholded image
 
-		// add to the original frame the location of the red Object
-		imgOriginalTotal = imgOriginalTotal + imgLines;
-		//imshow("Thresholded Green", imgThresholded); //show the thresholded image
+			imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );
+			imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
 
-		imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );
-		imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
+			// green Object
+		     	thread t2(task1, "Green Object", 44, 54, 63, 71, 255, 255, 65, 60, 160, 71, 255, 255);
+			t2.join();
 
-		// blue Object
-		thread t3(task1, "Blue Object", 90, 130, 60, 140, 255, 255, 100, 170, 80, 140, 255, 255);
-		t3.join();
+			// add to the original frame the location of the red Object
+			imgOriginalTotal = imgOriginalTotal + imgLines;
+			//imshow("Thresholded Green", imgThresholded); //show the thresholded image
 
-		imgOriginalTotal = imgOriginalTotal + imgLines;
-		//imshow("Thresholded Blue", imgThresholded); //show the thresholded image
+			imgThresholded = Mat::zeros( imgTmp.size(), CV_8UC3 );
+			imgLines = Mat::zeros( imgTmp.size(), CV_8UC3 );
 
-		// getting sample from inlet
-		std::vector<std::vector<float>> chunk_nested_vector;
-		double ts;
-		// get the sample and timestamp
-		if (ts = inlet.pull_chunk(chunk_nested_vector)){
+			// blue Object
+			thread t3(task1, "Blue Object", 90, 130, 60, 140, 255, 255, 100, 170, 80, 140, 255, 255);
+			t3.join();
 
-			float pos_x = chunk_nested_vector[0][1];
-			float pos_y = chunk_nested_vector[0][2];
+			imgOriginalTotal = imgOriginalTotal + imgLines;
+			//imshow("Thresholded Blue", imgThresholded); //show the thresholded image
 
-			// Draw a circle 
-			circle(imgOriginalTotal,Point(int(pos_x*(width)), int(height) - int(pos_y*int(width))), 10, Scalar(0,255, 1), 5, 8);
+			// getting sample from inlet
+			std::vector<std::vector<float>> chunk_nested_vector;
+			double ts;
+			// get the sample and timestamp
+			if (ts = inlet.pull_chunk(chunk_nested_vector)){
+
+				float pos_x = chunk_nested_vector[0][1];
+				float pos_y = chunk_nested_vector[0][2];
+
+				// Draw a circle 
+				circle(imgOriginalTotal,Point(int(pos_x*(width)), int(height) - int(pos_y*int(width))), 10, Scalar(0,255, 1), 5, 8);
+			}
+
+			// show the location of all the objects in the original frame
+			//imshow("Original", imgOriginalTotal); //show the original image
+
+			// Face Detection
+			thread t4(task2, "Face");
+
+			t4.join();
+			//-- Show what you got
+			imshow("Faces", imgOriginal);	
 		}
+	
 
-		// show the location of all the objects in the original frame
-		imshow("Original", imgOriginalTotal); //show the original image
+
 	}
-
-
 }
 
 
