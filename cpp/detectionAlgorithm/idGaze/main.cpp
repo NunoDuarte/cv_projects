@@ -432,6 +432,9 @@ int main(int argc, char** argv)
 
 		channels.clear();
 
+		i++;
+
+		if (i%4 == 0) {
 		//// Read the Different Objects
 		// save the original frame
 		imgOriginal = fin_img;		
@@ -497,7 +500,8 @@ int main(int argc, char** argv)
 		//-- Show what you got
 		imgOriginalTotal = imgOriginalTotal + imgLines;
 		imshow("Faces", imgOriginalTotal);
-	
+		
+		}
 
 
 	}
