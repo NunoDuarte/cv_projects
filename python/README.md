@@ -9,16 +9,20 @@ This folder is the main repository for the Python modules that are separated int
 2. [haarClassifiers](https://github.com/NunoDuarte/openCVdevelop/tree/master/python/haarClassifiers) - Face detection using Haar Cascades classifier 
 
 ## Setup
-to open onlineStream or offlineVideo project:
+add anaconda and activate virtual environment
 ```
 export PATH=/home/nuno/anaconda3/bin:$PATH
-```
-```
 source activate cpy3.5_cv
 ```
+open onlineStream
 ```
 python3 onlineDetection --buffer 68
 ```
+or offlineVideo
+```
+python3 offlineDetection --buffer 68
+```
+
 ## Authors
 
 * **[NunoDuarte](https://github.com/NunoDuarte)** - *Initial work* 
