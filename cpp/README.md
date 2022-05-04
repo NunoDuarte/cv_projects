@@ -2,13 +2,11 @@
 
 This folder is where all the modules developed in c++ are located when using openCV
 
-## Getting Started
-
-This folder is the main repository for the c++ modules that are separated into several subfolders:
+This folder for the c++ modules are separated into several subfolders:
 1. [detectionAlgorithm](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/detectionAlgorithm)
-2. [haarClassifier](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/haarClassifier)
-3. [videoCamera](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/videoCamera)
-4. [zmq](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/zmq)
+2. [haarClassifier](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/haarClassifier) - Face classifier using Haar Cascade algorithm
+3. [videoCamera](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/videoCamera) - Opening and viewing the video output of a video camera
+4. [zmq](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/zmq) - Asynchronous messaging library to connect with Pupil-Labs video output
 
 ### inside detection Algorithm
 1. [colorDetection](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/detectionAlgorithm/colorDetection)
