@@ -1,14 +1,12 @@
-# [Python](https://github.com/NunoDuarte/openCVdevelop/tree/master/python) modules using openCV
-# [C++](https://github.com/NunoDuarte/openCVdevelop/tree/master/c++)  modules using openCV
-# [Deep](https://github.com/NunoDuarte/openCVdevelop/tree/master/deep) Learning modules using openCV
+# Useful multi-purpose openCV projects
+Code is available in two programming languages:
+- [Python](https://github.com/NunoDuarte/openCVdevelop/tree/master/python) modules using openCV
+- [C++](https://github.com/NunoDuarte/openCVdevelop/tree/master/c++)  modules using openCV
 
-## Deep Neural Networks (current project) 
-1.  python3 dnnImageClassifier.py -i images/eagle.png -p bvlc_googlenet.prototxt -m bvlc_googlenet.caffemodel -l synset_words.txt
+One folder is reserved for ready to use DeepNN approaches in Python
+- [Deep](https://github.com/NunoDuarte/openCVdevelop/tree/master/deep) Learning modules using openCV
 
-2. import caffe
-export PYTHONPATH=/home/nduarte/software/caffe/python
-
-# in case you cant find a module
+### in case you cant find a module
 python3 
 
 import $package
@@ -19,19 +17,19 @@ e.g.
 import cv2
 help(cv2.face)
 
-# to open onlineStream or offlineVideo project:
+### to open onlineStream or offlineVideo project:
 export PATH=/home/nuno/anaconda3/bin:$PATH
 
 source activate cpy3.5_cv
 
 python3 onlineDetection --buffer 68
 
-### new goals:
-1. run haarclassifier using opencv with gpu enable
-2. use a pre-train network to detect and mark objects in a image
-3. move the application to video
-4. train a new network to the objects of my choosing
-5. check the speed in the new machine
+## Goals:
+- [ ] run haarclassifier using opencv with gpu enable
+- [ ] use a pre-train network to detect and mark objects in a image
+- [ ] move the application to video
+- [ ] train a new network to the objects of my choosing
+- [ ] check the speed in the new machine
 
 ## Authors
 
