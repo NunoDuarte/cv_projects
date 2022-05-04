@@ -24,16 +24,3 @@ This folder for the c++ modules are separated into several subfolders:
 
 #### inside gpu 
 1. [haarCascades](https://github.com/NunoDuarte/openCVdevelop/tree/master/cpp/haarClassifier/gpu/haarCascades) -  GPU CUDA version of Haar cascade algorithm
-
-## Authors
-
-* **Nuno Duarte** - *Initial work* - [NunoDuarte](https://github.com/NunoDuarte)
-
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* openCV LSL Pupil-Labs
