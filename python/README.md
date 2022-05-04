@@ -22,15 +22,3 @@ or offlineVideo
 ```
 python3 offlineDetection --buffer 68
 ```
-
-## Authors
-
-* **[NunoDuarte](https://github.com/NunoDuarte)** - *Initial work* 
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* openCV Pupil-Labs LSL 
