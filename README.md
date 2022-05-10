@@ -6,6 +6,9 @@ Code is available in two programming languages:
 One folder is reserved for ready to use DeepNN approaches in Python
 - [Deep](https://github.com/NunoDuarte/openCVdevelop/tree/master/deep) Learning modules using openCV
 
+## Info
+- Ubuntu 20.04 works only with Opencv 4.5.5 (early versions might not work since with 4.2.0 the frame rate and image quality of a usb camera is slow and low, respectively.
+
 ## Goals:
 - [ ] run haarclassifier using opencv with gpu enable
 - [ ] use a pre-train network to detect and mark objects in a image
