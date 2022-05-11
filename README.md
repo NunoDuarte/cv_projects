@@ -8,6 +8,7 @@ One folder is reserved for ready to use DeepNN approaches in Python
 
 ## Info
 - Ubuntu 20.04 works only with Opencv 4.5.5 (early versions might not work since with 4.2.0 the frame rate and image quality of a usb camera is slow and low, respectively.
+  - compile from source the opencv-4.5.5 
 
 ## Goals:
 - [ ] run haarclassifier using opencv with gpu enable
